@@ -80,6 +80,7 @@ dhcp-boot=pxelinux.0
 dhcp-option=101,"{{ dhcp.timezone }}"
 domain={{ initial_config.domain }}
 interface={{ hostvars['bastion'].host_interface }}
+dhcp-option={{ hostvars['bastion'].host_interface }},3,192.168.100.1
 dhcp-option=option:netmask,{{ networking.internal_network_netmask }}
 dhcp-option=option:dns-server,{{ hostvars['bastion'].host_ip }}
 dhcp-option=option:ntp-server,{{ dhcp.ntp }}

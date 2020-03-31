@@ -3,7 +3,7 @@ variable "hostname" { default = "test" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
 variable "ipMode" { default = "static" } # dhcp is other valid type
-variable "memoryMB" { default = 1024*1 }
+variable "memoryMB" { default = 1024*2 }
 variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
@@ -26,7 +26,7 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   pool = "default"
-  source = "/home/alex/test/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
+  source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
   format = "qcow2"
 }
 

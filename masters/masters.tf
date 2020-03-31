@@ -1,7 +1,7 @@
 # variables that can be overriden
 variable "hostname" { default = "master" }
-variable "memoryMB" { default = 1024*1 }
-variable "cpu" { default = 1 }
+variable "memoryMB" { default = 1024*16 }
+variable "cpu" { default = 4 }
 variable "vm_count" { default = 2 }
 
 

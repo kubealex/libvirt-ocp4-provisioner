@@ -12,29 +12,29 @@
     # Basic deploy of a service
 
     - terraform:
+        force_init: true
         project_path: "{{ initial_config.project_dir }}/bootstrap"
         variables:
           hostname: "bootstrap"
           vm_count: "{{ cluster_nodes.host_list.bootstrap | count }}"
-        variables_file: "bootstrap.tfvars"
         state: present
       register: output_bootstrap
 
     - terraform:
         project_path: "{{ initial_config.project_dir }}/masters"
+        force_init: true
         variables:
           hostname: "master"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
-        variables_file: "masters.tfvars"
         state: present
       register: output_masters
 
     - terraform:
         project_path: "{{ initial_config.project_dir }}/workers"
+        force_init: true
         variables:
           hostname: "worker"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
-        variables_file: "workers.tfvars"
         state: present
       register: output_workers
 
