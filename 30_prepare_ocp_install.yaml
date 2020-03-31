@@ -1,0 +1,166 @@
+---
+- name: Install config
+  hosts: bastion 
+  vars_files:
+     - vars/vars.yaml
+     - vars/downloads.yaml
+  tasks:
+    
+    - name: Removing config directory
+      file:
+        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        state: absent
+      become: true
+
+    - name: Creating config directory
+      file:
+        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        state: directory
+
+    - name: Getting ssh public key
+      slurp:
+        src: ~/.ssh/id_rsa.pub
+      register: key
+
+    - set_fact:
+        sshKey: "{{ key['content'] | b64decode }}"
+
+    - name: Firing up install-config.yaml
+      template:
+        src: templates/install-config.j2
+        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+      
+    - name: Creating ignition manifest
+      command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+
+    - name: Setting master unchedulable
+      lineinfile:
+        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
+        regexp: '  mastersSchedulable'
+        line: '  mastersSchedulable: False'
+
+    - name: Creating ignition files
+      command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+
+    - name: Copying ignition files to webserver
+      copy:
+        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
+        dest: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}"
+        remote_src: yes
+      loop:
+        - bootstrap.ign
+        - master.ign
+        - worker.ign
+      become: True
+
+#    - name: Copying ignition files to webserver
+#      command: >
+#               cp "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
+#               "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}";
+#               chmod 755
+#      loop: 
+#        - bootstrap.ign
+#        - master.ign
+#        - worker.ign
+#      become: True
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: true 
+
+    - name: Fixing permission
+      file:
+        path: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}/{{ item }}"
+        mode: "u=rw,g=r,o=r"
+      loop: 
+        - bootstrap.ign
+        - master.ign
+        - worker.ign
+      become: True
+
+    - name: Creating csr approver script
+      template:
+        src: templates/csr.j2
+        dest: "{{ workspace_directory.base_path }}/csr.sh"
+        mode: '0755'
+
+    - name: Installing csr cronjob
+      cron:
+        name: "Openshift csr approver"
+        minute: "1"
+        job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
+        state: present
+
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: destroyed
+      loop: "{{ groups['bootstrap'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: running
+      loop: "{{ groups['bootstrap'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: destroyed
+      loop: "{{ groups['masters'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: running
+      loop: "{{ groups['masters'] }}"
+      delegate_to: 127.0.0.1
+    
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: destroyed
+      loop: "{{ groups['workers'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: running
+      loop: "{{ groups['workers'] }}"
+      delegate_to: 127.0.0.1 
+ 
+    - debug:
+        msg:  Pxe boot the bootstrap and masters vm selecting the appropiate boot menu
+
+    - name: Waiting for bootstrap to complete
+      command: openshift-install wait-for bootstrap-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      retries: 10
+      delay: 5
+      register: result
+      until: result.rc == 0
+
+    - debug:
+        msg: "Pxe boot the workers vms selecting the appropiate boot menu" 
+
+    - name: Waiting for install to complete
+      command: openshift-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      retries: 10
+      delay: 5
+      register: result
+      until: result.rc == 0
+
+    - name: Removing csr cronjob
+      cron:
+        name: "Openshift csr approver"
+        state: absent
+    
+    - name: Jedy
+      debug:
+        msg: May OCP will be with you

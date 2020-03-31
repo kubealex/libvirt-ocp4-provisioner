@@ -1,0 +1,5 @@
+#!/bin/bash
+/usr/local/bin/oc adm -a {{ disconnected.local_secret_json }} release mirror \
+     --from=quay.io/{{ disconnected.product_repo }}/{{ disconnected.release_name }}:{{ disconnected.ocp_release }} \
+     --to={{ local_registry }}/{{ disconnected.local_repository }} \
+     --to-release-image={{ local_registry }}/{{ disconnected.local_repository }}:{{ disconnected.release_name }}

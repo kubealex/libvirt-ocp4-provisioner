@@ -1,0 +1,32 @@
+apiVersion: v1
+baseDomain: {{ initial_config.domain}}
+compute:
+- hyperthreading: Enabled   
+  name: worker
+  replicas: 0 
+controlPlane:
+  hyperthreading: Enabled   
+  name: master 
+  replicas: {{ cluster_nodes.host_list.masters | count }}
+metadata:
+  name: {{ initial_config.cluster_name }}
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14 
+    hostPrefix: 23 
+  networkType: OpenShiftSDN
+  serviceNetwork: 
+  - 172.30.0.0/16
+platform:
+  none: {} 
+pullSecret: '{% if disconnected_secret is undefined %}{{ cluster.pullSecret }}{% else %}{{ disconnected_secret | to_json }}{% endif %}'
+sshKey: '{{ sshKey }}'
+{% if disconnected_secret is defined %}
+imageContentSources:
+- mirrors:
+  - {{ inventory_hostname }}:5000/{{ disconnected.local_repository }}
+  source: quay.io/{{ disconnected.product_repo }}/{{ disconnected.release_name }}
+- mirrors:
+  -  {{ inventory_hostname }}:5000/{{ disconnected.local_repository }}
+  source: quay.io/{{ disconnected.product_repo }}/{{ disconnected.branch }}
+{% endif %}

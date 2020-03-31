@@ -1,0 +1,10 @@
+services:
+  - http
+  - https
+
+internal_zone_port:
+  - "22623/tcp"
+  - "6443/tcp"
+
+public_zone_port:
+  - "6443/tcp"

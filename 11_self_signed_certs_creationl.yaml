@@ -1,0 +1,80 @@
+---
+- name: Creating rootCa and {{ inventory_hostname }} certs
+  hosts: bastion
+  become: true
+  vars_files:
+     - vars/vars.yaml
+     - vars/downloads.yaml
+     - vars/self_signed_certs.yaml
+   
+  tasks:
+    - name: Ensure required packages are installed
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - podman
+        - httpd-tools
+       
+    - package:
+        name: python-pip 
+        state: present
+      when: ansible_distribution != "CentOS"
+    
+
+    - name: Installing pyopenssl
+      command: pip install pyopenssl
+      when: ansible_distribution != "CentOS"
+
+    - name: Installing pyopenssl (CentOS)
+      command: pip3 install pyopenssl
+      when: ansible_distribution == "CentOS"
+   
+    - name: Refreshing certificates dir
+      file:
+        path: "{{ cert_dir }}"
+        state: absent
+    
+    - file:
+        path: "{{ cert_dir }}"
+        state: directory
+    
+    - file:
+        path: "/opt/registry/{{ item }}"
+        state: directory
+      loop:
+        - certs
+        - auth
+        - data
+   
+    - name: Create Root CA Key
+      command: openssl genrsa -out {{ cert_dir }}/rootCA.key 4096
+
+    - name: Create and self sign the Root Certificate
+      command: openssl req -x509 -new -nodes -key {{ cert_dir }}/rootCA.key -sha256 -days 1024 -out {{ cert_dir }}/rootCA.crt -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
+   
+    - name: Create the key for {{ inventory_hostname }}
+      command: openssl genrsa -out {{ cert_dir }}/{{ inventory_hostname }}.key 2048
+
+    - name: Create CSR for {{ inventory_hostname }}
+      command: openssl req -new -sha256 -key {{ cert_dir }}/{{ inventory_hostname }}.key -subj "/C=IT/ST=MA/O=Valez./CN={{ inventory_hostname }}" -out {{ cert_dir }}/{{ inventory_hostname }}.csr
+    
+    - name: Generate the certificate using the networking.domain_name csr and key along with the CA Root key
+      command: openssl x509 -req -in {{ cert_dir }}/{{ inventory_hostname }}.csr -CA {{ cert_dir }}/rootCA.crt -CAkey {{ cert_dir }}/rootCA.key -CAcreateserial -out {{ cert_dir }}/{{ inventory_hostname }}.crt -days 500 -sha256
+
+    - name: Copying required certificate and key
+      copy: 
+        src: "{{ cert_dir }}/{{ item }}"
+        dest: /opt/registry/certs/
+        remote_src: yes
+      loop:
+        - "{{ inventory_hostname }}.crt"
+        - "{{ inventory_hostname }}.key"
+
+    - name: Trusting certificate
+      copy: 
+        src: "{{ cert_dir }}/rootCA.crt"
+        dest: /etc/pki/ca-trust/source/anchors/
+        remote_src: yes
+
+    - command: update-ca-trust

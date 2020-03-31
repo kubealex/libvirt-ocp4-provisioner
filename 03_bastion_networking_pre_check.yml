@@ -1,0 +1,10 @@
+---
+- name: Bastion networking playbook 
+  hosts: bastion 
+  become: True
+  tasks:
+    - name: Activating firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: true

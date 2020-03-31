@@ -1,0 +1,11 @@
+menu:
+ - label: "MASTER NODE"
+   menu_label: "^1 MASTER"
+   ign: "master.ign"
+ - label: "WORKER NODE"
+   menu_label: "^2 WORKER"
+   ign: "worker.ign"
+ - label: "BOOTSTRAP NODE"
+   menu_label: "^3 BOOTSTRAP"
+   ign: "bootstrap.ign"
+

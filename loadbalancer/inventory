@@ -1,0 +1,2 @@
+[test]
+192.168.100.31 ansible_ssh_private_key_file=/home/alex/test/terraform-libvirt-ubuntu-examples/staticip/id_rsa ansible_user=ocpinstall

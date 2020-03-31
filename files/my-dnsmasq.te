@@ -1,0 +1,18 @@
+
+module my-dnsmas 1.0;
+
+require {
+	type dnsmasq_t;
+	type var_lib_t;
+	type dnsmasq_exec_t;
+	class file { getattr open read };
+	class dir search;
+}
+
+#============= dnsmasq_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow dnsmasq_t dnsmasq_exec_t:dir search;
+
+#!!!! This avc is allowed in the current policy
+allow dnsmasq_t var_lib_t:file { getattr open read };

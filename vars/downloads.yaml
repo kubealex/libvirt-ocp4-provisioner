@@ -1,0 +1,23 @@
+skip_download: no
+downloads:
+  ngnix_document_root: /usr/share/nginx/html
+  tftp_boot_root: /var/lib/tftpboot
+  tftp_workspace_dir: rhcos
+  nginix_workspace_dir: metal
+  utils:
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
+    ocp_oc_cli: openshift-client-linux.tar.gz
+    ocp_installer: openshift-install-linux.tar.gz
+  boot:
+    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/ 
+    initramfs: rhcos-4.3.8-x86_64-installer-initramfs.x86_64.img
+    kernel: rhcos-4.3.8-x86_64-installer-kernel-x86_64
+    coreos: rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
+disconnected:
+  product_repo: 'openshift-release-dev'
+  release_name: 'ocp-release'
+  ocp_release: '4.3.0-x86_64'
+  local_repository: 'ocp4/openshift4'
+  local_secret_json: '/tmp/disconnected.json'
+  branch: 'ocp-v4.0-art-dev'
+

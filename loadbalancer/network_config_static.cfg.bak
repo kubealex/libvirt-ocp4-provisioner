@@ -1,0 +1,11 @@
+version: 2
+ethernets:
+  eth0:
+     dhcp4: false
+     dhcp6: false
+     # default libvirt network
+     addresses: [ ${prefixIP}.${octetIP}/24 ]
+     gateway4: ${prefixIP}.1
+     nameservers:
+       addresses: [ ${prefixIP}.1 ]
+       search: [ ${domain} ]

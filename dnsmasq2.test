@@ -1,0 +1,42 @@
+## Bootstrap ##
+
+address=/bootstrap-0.ocp4.hetzner.lab/192.168.100.6
+ptr-record=6.100.168.192.in-addr.arpa,bootstrap-0.ocp4.hetzner.lab
+dhcp-host=52:54:00:d2:37:c4,192.168.100.6
+
+## Bootstrap end ##
+
+## Etcd ##
+
+address=/etcd-0.ocp4.hetzner.lab/192.168.100.7
+address=/etcd-1.ocp4.hetzner.lab/192.168.100.8
+
+## Etcd  end ##
+
+## Masters ##
+address=/master-0.ocp4.hetzner.lab/192.168.100.7
+ptr-record=7.100.168.192.in-addr.arpa,master-0.ocp4.hetzner.lab
+dhcp-host=52:54:00:da:4d:b5,192.168.100.7
+address=/master-1.ocp4.hetzner.lab/192.168.100.8
+ptr-record=8.100.168.192.in-addr.arpa,master-1.ocp4.hetzner.lab
+dhcp-host=52:54:00:02:42:83,192.168.100.8
+
+## Masters end ##
+
+## Workers ##
+address=/worker-0.ocp4.hetzner.lab/192.168.100.9
+ptr-record=9.100.168.192.in-addr.arpa,worker-0.ocp4.hetzner.lab
+dhcp-host=52:54:00:86:92:3d,192.168.100.9
+address=/worker-1.ocp4.hetzner.lab/192.168.100.10
+ptr-record=10.100.168.192.in-addr.arpa,worker-1.ocp4.hetzner.lab
+dhcp-host=52:54:00:2a:2d:90,192.168.100.10
+
+## Workers end ##
+
+## SRV records for etcd service. Priority must be 0 and Weight must be 10 ###
+
+srv-host=_etcd-server-ssl._tcp.ocp4.hetzner.lab,etcd-0.ocp4.hetzner.lab,2380,0,10
+srv-host=_etcd-server-ssl._tcp.ocp4.hetzner.lab,etcd-1.ocp4.hetzner.lab,2380,0,10
+
+## SRV records end ##
+

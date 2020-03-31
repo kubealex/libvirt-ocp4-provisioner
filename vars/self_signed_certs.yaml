@@ -1,0 +1,2 @@
+dnsname: "{{ inventory_hostname }}"
+cert_dir: "{{ workspace_directory.base_path }}/certificates/{{ dnsname }}"

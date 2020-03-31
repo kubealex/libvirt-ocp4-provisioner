@@ -1,0 +1,102 @@
+- name: Test playbook
+  hosts: localhost
+  vars_files:
+    - vars/vars.yaml
+  tasks:
+    - debug: 
+        msg: "IP: {{ item.ip }}  at master-{{ master_idx }}"
+      loop: "{{ cluster_nodes.host_list.masters }}"
+      loop_control:
+        index_var: master_idx
+
+    # Basic deploy of a service
+
+    - terraform:
+        project_path: "{{ initial_config.project_dir }}/bootstrap"
+        variables:
+          hostname: "bootstrap"
+          vm_count: "{{ cluster_nodes.host_list.bootstrap | count }}"
+        variables_file: "bootstrap.tfvars"
+        state: present
+      register: output_bootstrap
+
+    - terraform:
+        project_path: "{{ initial_config.project_dir }}/masters"
+        variables:
+          hostname: "master"
+          vm_count: "{{ cluster_nodes.host_list.masters | count }}"
+        variables_file: "masters.tfvars"
+        state: present
+      register: output_masters
+
+    - terraform:
+        project_path: "{{ initial_config.project_dir }}/workers"
+        variables:
+          hostname: "worker"
+          vm_count: "{{ cluster_nodes.host_list.workers | count }}"
+        variables_file: "workers.tfvars"
+        state: present
+      register: output_workers
+
+    - name: Add bootstrap to given group
+      add_host:
+        hostname: 'bootstrap-{{ bootstrap_idx }}'
+        node_hostname: 'bootstrap-{{ bootstrap_idx }}'
+        node_mac: "{{ output_bootstrap.outputs.macs.value[bootstrap_idx]|lower }}"
+        node_ip: "{{ item.ip }}"
+        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_role: "bootstrap"
+        node_fqdn: bootstrap-{{ bootstrap_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+        groups:
+          - "bootstrap"
+
+      loop: "{{ cluster_nodes.host_list.bootstrap }}"
+      loop_control:
+        index_var: bootstrap_idx
+
+    - name: Add masters to given group
+      add_host:
+        hostname: 'master-{{ master_idx }}'
+        node_hostname: 'master-{{ master_idx }}'
+        etcd_fqdn: 'etcd-{{ master_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}'
+        etcd_ip: '{{ item.ip }}'
+        node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
+        node_ip: "{{ item.ip }}"
+        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_role: "master"
+        node_fqdn: master-{{ master_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }} 
+        groups:
+          - "masters"
+
+      loop: "{{ cluster_nodes.host_list.masters }}"
+      loop_control:
+        index_var: master_idx
+
+    - name: Add workers to given group
+      add_host:
+        hostname: 'worker-{{ worker_idx }}'
+        node_hostname: 'worker-{{ worker_idx }}'
+        node_mac: "{{ output_workers.outputs.macs.value[worker_idx]|lower }}"
+        node_ip: "{{ item.ip }}"
+        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_role: "worker"
+        node_fqdn: worker-{{ worker_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+        groups:
+          - "workers"
+
+      loop: "{{ cluster_nodes.host_list.workers }}"
+      loop_control:
+        index_var: worker_idx
+
+
+
+    - name: Print master variables
+      debug:
+        msg: "Test hostname: {{ hostvars[item].node_hostname }} - IP: {{ hostvars[item].node_ip }} - MAC: {{ hostvars[item].node_mac }} - ROLE: {{ hostvars[item].node_role }}"
+      loop: "{{ groups['masters'] }}"
+
+    - name: Print workers variables
+      debug:
+        msg: "Test hostname: {{ hostvars[item].node_hostname }} - IP: {{ hostvars[item].node_ip }} - MAC: {{ hostvars[item].node_mac }} - ROLE: {{ hostvars[item].node_role }}"
+      loop: "{{ groups['workers'] }}"
+

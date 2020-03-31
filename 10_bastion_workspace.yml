@@ -1,0 +1,81 @@
+---
+- name: Creating a workspace on Bastion
+  hosts: bastion 
+  gather_facts: no
+  vars_files:
+    - vars/downloads.yaml
+    - vars/vars.yaml
+  tasks:
+
+    - name: Erasing dnsmasq lease
+      file:
+        path: /var/lib/dnsmasq/dnsmasq.leases
+        state: absent
+      become: true
+
+    - name: Creating workspace
+      file:
+        state: directory
+        path: "{{ item }}"
+      loop: 
+        - "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        - "~/.ssh"
+
+    - name: Creating ssh keys if not exists
+      openssh_keypair:
+        path: "~/.ssh/id_rsa"
+        
+
+    - name: Creating tftpboot and nginx workspace
+      file:
+        state: directory
+        path: "{{ item }}"
+      loop: 
+        - "{{ downloads.tftp_boot_root }}/{{ downloads.tftp_workspace_dir }}"
+        - "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}"
+      become: True
+
+    - name: Downloading installer and OCP cli
+      unarchive:
+        src: "{{ item }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      loop:
+        - "{{ downloads.utils.base_url + downloads.utils.ocp_oc_cli }}"
+        - "{{ downloads.utils.base_url + downloads.utils.ocp_installer }}"
+      when: not (skip_download | bool)
+      
+
+
+    - name: Checking for openshift-install tool
+      command: openshift-install
+      register: output
+      failed_when: output.rc !=0
+
+    - name: Checking for OCP cli tool
+      command: oc
+      register: output
+      failed_when: output.rc !=0
+
+    - block:
+        - name: Download initramfs and kernel 
+          get_url:
+            url: "{{ downloads.boot.base_url + item }}"
+            dest: "{{ downloads.tftp_boot_root }}/{{ downloads.tftp_workspace_dir }}/{{ item }}"
+          loop:
+            - "{{ downloads.boot.initramfs }}"
+            - "{{ downloads.boot.kernel }}"
+      
+
+        - name: Download Red Hat CoreOS for bare metal
+          get_url:
+            url:  "{{ downloads.boot.base_url + downloads.boot.coreos }}"
+            dest: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}/{{ downloads.boot.coreos }}"
+      when: not (skip_download | bool)
+      become: true
+        
+          
+          
+
+

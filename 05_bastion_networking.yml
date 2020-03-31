@@ -1,0 +1,51 @@
+---
+- name: Bastion networking playbook 
+  hosts: bastion 
+  become: True
+  vars_files:
+    - vars/services.yaml
+  
+  tasks:
+    - name: Checking Bastion internal network interfaces
+      fail: 
+        msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
+      when: host_interface not in ansible_facts.interfaces
+
+    - name: Adding interface {{ host_interface }} to internal zone
+      command: nmcli con mod {{ host_interface }} connection.zone internal     
+
+    - name: Adding Bastion interface {{ host_interface }} to firewall internal zone  
+      firewalld:
+        zone: internal
+        interface: "{{ host_interface }}"
+        permanent: yes
+        state: enabled
+
+    - name: Allow required service for internal zone
+      firewalld:
+        zone: internal
+        state: enabled
+        permanent: yes
+        service: "{{ item }}"
+      loop: "{{ services }}"
+
+    - name: Allow tftp and pxe ports
+      firewalld:
+        zone: internal
+        state: enabled
+        permanent: yes
+        port: "{{ item }}"
+      loop:
+        - "69/udp"
+        - "69/tcp"
+        - "68/tcp"
+        - "68/udp"
+        - "4011/tcp"
+        - "4011/udp"
+
+    - name: Reload Bastion firewalld service
+      service:
+        name: firewalld
+        state: restarted 
+        
+    

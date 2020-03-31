@@ -1,0 +1,44 @@
+## Bootstrap ##
+
+{% for node in groups['bootstrap'] %}
+address=/{{ hostvars[node].node_fqdn }}/{{ hostvars[node].node_ip }}
+ptr-record={{ hostvars[node].node_reversedns[:-1] }},{{ hostvars[node].node_fqdn }}
+dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
+{%endfor%}
+
+## Bootstrap end ##
+
+## Etcd ##
+
+{% for node in groups['masters'] %}
+address=/{{ hostvars[node].etcd_fqdn }}/{{ hostvars[node].etcd_ip }}
+{%endfor%}
+
+## Etcd  end ##
+
+## Masters ##
+{% for node in groups['masters'] %}
+address=/{{ hostvars[node].node_fqdn }}/{{ hostvars[node].node_ip }}
+ptr-record={{ hostvars[node].node_reversedns[:-1] }},{{ hostvars[node].node_fqdn }}
+dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
+{%endfor%}
+
+## Masters end ##
+
+## Workers ##
+{% for node in groups['workers'] %}
+address=/{{ hostvars[node].node_fqdn }}/{{ hostvars[node].node_ip }}
+ptr-record={{ hostvars[node].node_reversedns[:-1] }},{{ hostvars[node].node_fqdn }}
+dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
+{%endfor%}
+
+## Workers end ##
+
+## SRV records for etcd service. Priority must be 0 and Weight must be 10 ###
+
+{% for node in groups['masters'] %}
+srv-host=_etcd-server-ssl._tcp.{{ initial_config.cluster_name }}.{{ initial_config.domain }},{{ hostvars[node].etcd_fqdn }},2380,0,10
+{%endfor%}
+
+## SRV records end ##
+

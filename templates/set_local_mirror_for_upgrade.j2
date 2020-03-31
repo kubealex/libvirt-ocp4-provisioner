@@ -1,0 +1,12 @@
+apiVersion: operator.openshift.io/v1alpha1
+kind: ImageContentSourcePolicy
+metadata:
+  name: example
+spec:
+  repositoryDigestMirrors:
+  - mirrors:
+    - {{ inventory_hostname }}:5000/{{ disconnected.local_repository }}
+    source: quay.io/{{ disconnected.product_repo }}/{{ disconnected.release_name }}
+  - mirrors:
+    - {{ inventory_hostname }}:5000/{{ disconnected.local_repository }}4
+    source: quay.io/{{ disconnected.product_repo }}/{{ disconnected.branch }}
