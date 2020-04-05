@@ -45,12 +45,12 @@
              service: "{{ item }}"
            loop: "{{ services }}"
 
-         - name: Allow service for public zone
-           firewalld:
-             state: enabled
-             permanent: yes
-             service: "{{ item }}"
-           loop: "{{ services }}"
+#         - name: Allow service for public zone
+#           firewalld:
+#             state: enabled
+#             permanent: yes
+#             service: "{{ item }}"
+#           loop: "{{ services }}"
 
          - name: Allow ports for internal zone
            firewalld:
@@ -60,12 +60,12 @@
              port: "{{ item }}"
            loop: "{{ internal_zone_port }}"
 
-         - name: Allow service for public zone
-           firewalld:
-             state: enabled
-             permanent: yes
-             port: "{{ item }}"
-           loop: "{{ public_zone_port }}"
+#         - name: Allow service for public zone
+#           firewalld:
+#             state: enabled
+#             permanent: yes
+#             port: "{{ item }}"
+#           loop: "{{ public_zone_port }}"
     
          - name: Reload firewalld service
            service:

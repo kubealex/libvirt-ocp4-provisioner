@@ -1,0 +1,15 @@
+<network connections='3'>
+  <name>ocp_auto</name>
+  <uuid>e953162a-8418-4402-b6dd-e2553b46c4f9</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='nat1' stp='on' delay='0'/>
+  <mac address='52:54:00:96:56:c1'/>
+  <domain name='nat1'/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+

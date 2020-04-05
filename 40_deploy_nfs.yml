@@ -1,0 +1,61 @@
+- name: Create nfs share and registry pv
+  hosts: bastion
+  become: True
+  vars_files:
+    - vars/vars.yaml
+  tasks:
+    - name: Creating exports file
+      template:
+        src: templates/nfs_exports.j2
+        dest: /etc/exports.d/openshift.exports
+
+    - name: Activating selinux boolean (virt_use_nfs)
+      seboolean:
+        name: virt_use_nfs
+        state: yes
+        persistent: yes
+   
+    - name: Ensuring export registry directory dosen't exists
+      file:
+        state: absent
+        path: /exports/registry
+        
+    - name: Creating registry export
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: 0775
+        owner: nobody
+        group: nobody
+      loop: 
+        - /exports/registry
+        - /exports/ocp
+
+    - name: Restarting nfs
+      service:
+        name: nfs-server
+        state: started
+        enabled: true
+        
+    - name: Deploy yaml config for creating registry PV
+      template:
+        src: templates/pv_registry.j2
+        dest: "{{ workspace_directory.base_path }}/pv_registry.yaml"
+
+    - name: Creating persistent volume for registry
+      command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/pv_registry.yaml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+
+    - name: Firing registry template patch
+      template:
+        src: templates/patch_registry.j2
+        dest: /tmp/patch_registry.sh
+        mode: '0755'
+      
+    - name: Applying patch
+      command: /tmp/patch_registry.sh
+
+    - name: Deleting temp files
+      file:
+        path: /tmp/patch_registry.sh
+        state: absent
+    

@@ -13,7 +13,7 @@
 
     - terraform:
         force_init: true
-        project_path: "{{ initial_config.project_dir }}/bootstrap"
+        project_path: "terraform/bootstrap"
         variables:
           hostname: "bootstrap"
           vm_count: "{{ cluster_nodes.host_list.bootstrap | count }}"
@@ -21,7 +21,7 @@
       register: output_bootstrap
 
     - terraform:
-        project_path: "{{ initial_config.project_dir }}/masters"
+        project_path: "terraform/masters"
         force_init: true
         variables:
           hostname: "master"
@@ -30,7 +30,7 @@
       register: output_masters
 
     - terraform:
-        project_path: "{{ initial_config.project_dir }}/workers"
+        project_path: "terraform/workers"
         force_init: true
         variables:
           hostname: "worker"

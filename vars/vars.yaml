@@ -1,5 +1,4 @@
 initial_config:
-  project_dir: '.'
   host_list:
     bastion:
       ip: 192.168.100.4
@@ -14,10 +13,12 @@ cluster_nodes:
       - ip: 192.168.100.6
     masters:
       - ip: 192.168.100.7
-#      - ip: 192.168.100.8
+      - ip: 192.168.100.8
+      - ip: 192.168.100.9
     workers:
-#      - ip: 192.168.100.9
       - ip: 192.168.100.10
+      - ip: 192.168.100.11
+      - ip: 192.168.100.12
 
   domain: hetzner.lab
   cluster_name: ocp4

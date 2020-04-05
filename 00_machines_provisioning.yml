@@ -13,12 +13,12 @@
 
     - name: Create ssh keypair
       openssh_keypair:
-        path: "{{ initial_config.project_dir }}/id_rsa"
+        path: "id_rsa"
 
     # Basic deploy of a service
     - terraform:
         force_init: true
-        project_path: "{{ initial_config.project_dir }}/{{ item.key }}"
+        project_path: "terraform/{{ item.key }}"
         variables:
           network_data: '{ hostIP = "{{ item.value.ip }}", prefixIP = "192.168.100", dns = "192.168.100.1", gateway = "192.168.100.1" }'
           hostname: "{{ item.key }}"
@@ -34,7 +34,7 @@
       add_host:
         hostname: '{{ item.key }}'
         ansible_host: '{{ item.value.ip }}'
-        ansible_ssh_private_key_file: "{{ initial_config.project_dir }}/id_rsa"
+        ansible_ssh_private_key_file: "id_rsa"
         ansible_user: ocpinstall
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
         groups:
@@ -45,6 +45,8 @@
   hosts: bastion,loadbalancer
   gather_facts: no
   become: true
+  vars_files:
+    - vars/vars.yaml
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection: 
@@ -61,6 +63,12 @@
         host_mac: "{{ machine_facts.ansible_facts.ansible_default_ipv4.macaddress }}"
         host_fqdn: "{{ machine_facts.ansible_facts.ansible_fqdn }}"
         cacheable: yes
+
+    - set_fact: 
+        host_api_fqdn: "api.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
+        host_api_int_fqdn: "api-int.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
+        host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
+    
 
     - name: Rename default connection
       command: nmcli con mod System\ eth0 connection.id {{ host_interface }}

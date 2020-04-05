@@ -7,7 +7,6 @@
 - import_playbook: 10_bastion_workspace.yml
 - import_playbook: 00_master.yml
 - import_playbook: 15_bastion_services.yml
-#- import_playbook: 18_saving_node_data.yaml
 - import_playbook: 20_lb_packages.yml
 - import_playbook: 25_lb_services.yaml
 - import_playbook: 30_prepare_ocp_install.yaml

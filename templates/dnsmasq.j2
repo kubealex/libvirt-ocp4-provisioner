@@ -1,12 +1,17 @@
-{% set api_fqdn = "api." + initial_config.cluster_name + "." + initial_config.domain %}
-{% set api_int_fqdn = "api-int." + initial_config.cluster_name + "." + initial_config.domain %}
-{% set wildcard_fqdn = "apps." + initial_config.cluster_name + "." + initial_config.domain %}
+{% set cluster_domain = initial_config.cluster_name + "." + initial_config.domain %}
 
 ## External dns ##
 
 server={{ networking.external_dns }}
 
 ## External dns end ##
+
+## Bastion ##
+
+address=/{{ hostvars['bastion']['host_fqdn'] }}/{{ hostvars['bastion']['host_ip'] }}
+dhcp-host={{ hostvars['bastion']['host_mac'] }},{{ hostvars['bastion']['host_ip'] }}
+
+## Bastion end ##
 
 ## LoadBalancer ##
 
@@ -17,9 +22,9 @@ dhcp-host={{ hostvars['loadbalancer']['host_mac'] }},{{ hostvars['loadbalancer']
 
 ## Required fqdn and wildcard for OCP ##
 
-address=/{{ api_fqdn }}/{{ hostvars['loadbalancer']['host_ip'] }}
-address=/{{ wildcard_fqdn }}/{{ hostvars['loadbalancer']['host_ip'] }}
-address=/{{ api_int_fqdn }}/{{ hostvars['loadbalancer']['host_ip'] }}
+address=/{{ hostvars['loadbalancer']['host_api_fqdn'] }}/{{ hostvars['loadbalancer']['host_ip'] }}
+address=/{{ hostvars['loadbalancer']['host_apps_fqdn'] }}/{{ hostvars['loadbalancer']['host_ip'] }}
+address=/{{ hostvars['loadbalancer']['host_api_int_fqdn'] }}/{{ hostvars['loadbalancer']['host_ip'] }}
 
 ## Required fqdn and wildcard for OCP end ##
 
