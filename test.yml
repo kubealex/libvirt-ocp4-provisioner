@@ -1,7 +1,0 @@
-- name: test
-  hosts: localhost
-  vars_files: 
-    - vars/vars.yaml
-  tasks: 
-    - debug: 
-        msg: Cluster domain is {{ initial_config.cluster_domain }}

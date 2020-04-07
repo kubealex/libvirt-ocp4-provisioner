@@ -4,6 +4,25 @@
   vars_files:
     - vars/vars.yaml
   tasks:
+
+    - name: Prepare disk
+      parted:
+        device: /dev/vdb
+        number: 1
+        state: present        
+
+    - name: Create a ext2 filesystem on /dev/sdb1
+      filesystem:
+        fstype: xfs
+        dev: /dev/vdb1
+
+    - name: Mount up device by label
+      mount:
+        path: /exports
+        src: /dev/vdb1
+        fstype: xfs
+        state: mounted
+
     - name: Creating exports file
       template:
         src: templates/nfs_exports.j2
@@ -36,26 +55,3 @@
         name: nfs-server
         state: started
         enabled: true
-        
-    - name: Deploy yaml config for creating registry PV
-      template:
-        src: templates/pv_registry.j2
-        dest: "{{ workspace_directory.base_path }}/pv_registry.yaml"
-
-    - name: Creating persistent volume for registry
-      command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/pv_registry.yaml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
-
-    - name: Firing registry template patch
-      template:
-        src: templates/patch_registry.j2
-        dest: /tmp/patch_registry.sh
-        mode: '0755'
-      
-    - name: Applying patch
-      command: /tmp/patch_registry.sh
-
-    - name: Deleting temp files
-      file:
-        path: /tmp/patch_registry.sh
-        state: absent
-    

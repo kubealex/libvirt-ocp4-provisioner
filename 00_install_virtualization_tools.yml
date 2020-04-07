@@ -1,0 +1,27 @@
+---
+- name: This play installs needed tools to provision infrastructure VMs
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Download and provision Terraform
+      unarchive: 
+        src: https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+        dest: /usr/bin
+        mode: 755
+
+    - name: Install qemu and libvirt 
+      yum:
+        name: 
+          - libvirt-devel
+          - libvirt
+          - qemu-kvm
+          - virt-install
+          - virt-manager
+
+    - name: Virtualization services are enabled
+      service:
+        name: libvirtd
+        state: started
+        enabled: true
+
+
