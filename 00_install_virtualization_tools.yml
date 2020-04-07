@@ -2,16 +2,21 @@
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: localhost
   become: true
+  vars:
+    gopath: "~/go"
   tasks:
     - name: Download and provision Terraform
       unarchive: 
         src: https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
-        dest: /usr/bin
+        dest: /usr/bin/
         mode: 755
+        remote_src: yes
 
-    - name: Install qemu and libvirt 
+    - name: Install qemu, libvirt, git
       yum:
         name: 
+          - git
+          - python3-lxml
           - libvirt-devel
           - libvirt
           - qemu-kvm
@@ -24,4 +29,30 @@
         state: started
         enabled: true
 
+    - git:
+        repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
+        dest: ~/libvirt-provider
 
+    - name: Run 'install' target as root
+      make:
+        chdir: ~/libvirt-provider
+        target: install
+      become: yes
+
+    - name: Create terraform plugins directory
+      file:
+        path: ~/.terraform/plugins
+        state: directory
+
+    - name: Copy libvirt provider to plugins directory
+      copy:
+        src: "{{ gopath }}/bin/terraform-provider-libvirt"
+        dest: ~/.terraform.d/plugins/
+
+    - name: Define libvirt network
+      virt_net:
+        command: define
+        name: ocp_auto
+        xml: '{{ lookup("template", "templates/ocp_net.xml.j2") }}'
+        autostart: true
+        state: active

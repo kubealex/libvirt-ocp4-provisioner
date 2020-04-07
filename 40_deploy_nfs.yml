@@ -11,7 +11,7 @@
         number: 1
         state: present        
 
-    - name: Create a ext2 filesystem on /dev/sdb1
+    - name: Create xfs filesystem on /dev/sdb1
       filesystem:
         fstype: xfs
         dev: /dev/vdb1
