@@ -1,12 +1,12 @@
 - name: Test playbook
   hosts: localhost
   vars_files:
-    - vars/vars.yaml
+    - vars/vars.yml
 
   tasks:
     - name: Another way to call known_hosts
       known_hosts:
-        host: "{{ item.value.ip }}"   # or 10.9.8.77
+        host: "{{ item.value.ip }}" 
         path: ~/.ssh/known_hosts
         state: absent
       loop: "{{ initial_config.host_list|dict2items }}"
@@ -20,7 +20,7 @@
         force_init: true
         project_path: "terraform/{{ item.key }}"
         variables:
-          network_data: '{ hostIP = "{{ item.value.ip }}", prefixIP = "192.168.100", dns = "192.168.100.1", gateway = "192.168.100.1" }'
+          network_data: '{ hostIP = "{{ item.value.ip }}", broadcast= "{{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}", dns = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", gateway = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", network = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') }}" }'
           hostname: "{{ item.key }}"
         state: present
       register: output
@@ -46,7 +46,7 @@
   gather_facts: no
   become: true
   vars_files:
-    - vars/vars.yaml
+    - vars/vars.yml
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection: 
@@ -62,21 +62,13 @@
         host_interface: "{{ machine_facts.ansible_facts.ansible_default_ipv4.interface }}"
         host_mac: "{{ machine_facts.ansible_facts.ansible_default_ipv4.macaddress }}"
         host_fqdn: "{{ machine_facts.ansible_facts.ansible_fqdn }}"
-        cacheable: yes
-
+    
     - set_fact: 
         host_api_fqdn: "api.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
         host_api_int_fqdn: "api-int.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
-        host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
-    
+        host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"  
+      when inventory_hostname == 'loadbalancer'
 
     - name: Rename default connection
       command: nmcli con mod System\ eth0 connection.id {{ host_interface }}
-
-- name: Test
-  hosts: bastion,loadbalancer
-  gather_facts: yes
-  tasks:
-    - debug:
-        msg: "Test {{ hostvars['bastion']['host_ip'] }} for bastion and  {{ hostvars['loadbalancer']['host_ip'] }} for lb"
 

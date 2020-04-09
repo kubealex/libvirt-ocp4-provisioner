@@ -2,14 +2,13 @@
 - name: Haproxy  configuration
   hosts: loadbalancer
   vars_files: 
-    - vars/vars.yaml
+    - vars/vars.yml
     - vars/downloads.yaml
     - vars/lb_firewall.yaml
           
   tasks:
     
     - block:
-
          - name: Checking internal network interfaces
            fail: 
             msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
@@ -45,13 +44,6 @@
              service: "{{ item }}"
            loop: "{{ services }}"
 
-#         - name: Allow service for public zone
-#           firewalld:
-#             state: enabled
-#             permanent: yes
-#             service: "{{ item }}"
-#           loop: "{{ services }}"
-
          - name: Allow ports for internal zone
            firewalld:
              zone: internal
@@ -60,13 +52,6 @@
              port: "{{ item }}"
            loop: "{{ internal_zone_port }}"
 
-#         - name: Allow service for public zone
-#           firewalld:
-#             state: enabled
-#             permanent: yes
-#             port: "{{ item }}"
-#           loop: "{{ public_zone_port }}"
-    
          - name: Reload firewalld service
            service:
              name: firewalld

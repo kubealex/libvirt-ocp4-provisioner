@@ -4,7 +4,7 @@
   gather_facts: no
   vars_files:
     - vars/downloads.yaml
-    - vars/vars.yaml
+    - vars/vars.yml
   tasks:
 
     - name: Erasing dnsmasq lease

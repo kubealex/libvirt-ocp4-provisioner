@@ -2,7 +2,7 @@
   hosts: bastion
   become: True
   vars_files:
-    - vars/vars.yaml
+    - vars/vars.yml
   tasks:
     - name: Deploy yaml config for creating registry PV
       template:

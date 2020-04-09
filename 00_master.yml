@@ -1,15 +1,13 @@
 - name: Test playbook
   hosts: localhost
   vars_files:
-    - vars/vars.yaml
+    - vars/vars.yml
   tasks:
     - debug: 
         msg: "IP: {{ item.ip }}  at master-{{ master_idx }}"
       loop: "{{ cluster_nodes.host_list.masters }}"
       loop_control:
         index_var: master_idx
-
-    # Basic deploy of a service
 
     - terraform:
         force_init: true

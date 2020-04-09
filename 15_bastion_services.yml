@@ -2,7 +2,7 @@
   hosts: bastion
   gather_facts: no
   vars_files: 
-    - vars/vars.yaml
+    - vars/vars.yml
     - vars/downloads.yaml
     - vars/pxe_menu.yaml
       

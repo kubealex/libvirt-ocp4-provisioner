@@ -13,7 +13,7 @@ variable "network_data" {
   type = map
   default = {
        hostIP = "192.168.100.31"
-       prefixIP = "192.168.100"
+       broadcast = "192.168.100.255"
        dns = "192.168.100.1"
        gateway = "192.168.100.1"
        network = "192.168.100.0"
@@ -65,7 +65,7 @@ data "template_file" "meta_data" {
     hostIP = var.network_data["hostIP"]
     dns = var.network_data["dns"]
     gateway = var.network_data["gateway"]
-    prefixIP = var.network_data["prefixIP"]
+    broadcast = var.network_data["broadcast"]
     iface = var.iface
     ipMode = var.ipMode
   }

@@ -2,7 +2,7 @@
 - name: Install config
   hosts: bastion 
   vars_files:
-     - vars/vars.yaml
+     - vars/vars.yml
      - vars/downloads.yaml
   tasks:
     
@@ -53,17 +53,6 @@
         - worker.ign
       become: True
 
-#    - name: Copying ignition files to webserver
-#      command: >
-#               cp "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
-#               "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}";
-#               chmod 755
-#      loop: 
-#        - bootstrap.ign
-#        - master.ign
-#        - worker.ign
-#      become: True
-
     - name: Restart nginx
       service:
         name: nginx
@@ -93,49 +82,26 @@
         job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present
 
-
     - name: restart vms
       virt:
         name: "{{ hostvars[item].node_hostname }}"
         state: destroyed
-      loop: "{{ groups['bootstrap'] }}"
+      loop: 
+        - "{{ groups['bootstrap'] }}"
+        - "{{ groups['masters'] }}"
+        - "{{ groups['workers'] }}"
       delegate_to: 127.0.0.1
 
     - name: restart vms
       virt:
         name: "{{ hostvars[item].node_hostname }}"
         state: running
-      loop: "{{ groups['bootstrap'] }}"
+      loop: 
+        - "{{ groups['bootstrap'] }}"
+        - "{{ groups['masters'] }}"
+        - "{{ groups['workers'] }}"
       delegate_to: 127.0.0.1
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: destroyed
-      loop: "{{ groups['masters'] }}"
-      delegate_to: 127.0.0.1
-
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: running
-      loop: "{{ groups['masters'] }}"
-      delegate_to: 127.0.0.1
-    
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: destroyed
-      loop: "{{ groups['workers'] }}"
-      delegate_to: 127.0.0.1
-
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: running
-      loop: "{{ groups['workers'] }}"
-      delegate_to: 127.0.0.1 
- 
     - debug:
         msg:  Pxe boot the bootstrap and masters vm selecting the appropiate boot menu
 
