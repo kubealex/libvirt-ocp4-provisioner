@@ -86,20 +86,43 @@
       virt:
         name: "{{ hostvars[item].node_hostname }}"
         state: destroyed
-      loop: 
-        - "{{ groups['bootstrap'] }}"
-        - "{{ groups['masters'] }}"
-        - "{{ groups['workers'] }}"
+      loop: "{{ groups['bootstrap'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: destroyed
+      loop: "{{ groups['masters'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: destroyed
+      loop: "{{ groups['workers'] }}"
+      delegate_to: 127.0.0.1
+
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: running
+      loop: "{{ groups['bootstrap'] }}"
       delegate_to: 127.0.0.1
 
     - name: restart vms
       virt:
         name: "{{ hostvars[item].node_hostname }}"
         state: running
-      loop: 
-        - "{{ groups['bootstrap'] }}"
-        - "{{ groups['masters'] }}"
-        - "{{ groups['workers'] }}"
+      loop: "{{ groups['masters'] }}"
+      delegate_to: 127.0.0.1
+
+    - name: restart vms
+      virt:
+        name: "{{ hostvars[item].node_hostname }}"
+        state: running
+      loop: "{{ groups['workers'] }}"
       delegate_to: 127.0.0.1
 
     - debug:

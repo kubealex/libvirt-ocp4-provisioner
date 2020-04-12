@@ -65,6 +65,7 @@ data "template_file" "meta_data" {
     hostIP = var.network_data["hostIP"]
     dns = var.network_data["dns"]
     gateway = var.network_data["gateway"]
+    network = var.network_data["network"]
     broadcast = var.network_data["broadcast"]
     iface = var.iface
     ipMode = var.ipMode

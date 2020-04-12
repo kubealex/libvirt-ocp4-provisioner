@@ -86,15 +86,3 @@
       loop_control:
         index_var: worker_idx
 
-
-
-    - name: Print master variables
-      debug:
-        msg: "Test hostname: {{ hostvars[item].node_hostname }} - IP: {{ hostvars[item].node_ip }} - MAC: {{ hostvars[item].node_mac }} - ROLE: {{ hostvars[item].node_role }}"
-      loop: "{{ groups['masters'] }}"
-
-    - name: Print workers variables
-      debug:
-        msg: "Test hostname: {{ hostvars[item].node_hostname }} - IP: {{ hostvars[item].node_ip }} - MAC: {{ hostvars[item].node_mac }} - ROLE: {{ hostvars[item].node_role }}"
-      loop: "{{ groups['workers'] }}"
-

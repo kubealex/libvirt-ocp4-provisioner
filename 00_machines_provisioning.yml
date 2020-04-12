@@ -15,12 +15,19 @@
       openssh_keypair:
         path: "id_rsa"
 
+    # Basic deploy of a service 
+
+    - debug:
+        msg: |
+          network_data: "{ hostIP = {{ item.value.ip }}, broadcast= {{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}, dns = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, gateway = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, network = {{ item.value.ip | ipsubnet(24) | ipaddr('network') }} }"
+      loop: "{{ initial_config.host_list|dict2items }}"
+
     # Basic deploy of a service
     - terraform:
         force_init: true
         project_path: "terraform/{{ item.key }}"
         variables:
-          network_data: "{ hostIP = {{ item.value.ip }}, broadcast= {{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}, dns = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, gateway = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, network = {{ item.value.ip | ipsubnet(24) | ipaddr('network') }} }"
+          network_data: "{ hostIP = \"{{ item.value.ip }}\", broadcast= \"{{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "{{ item.key }}"
         state: present
       register: output
