@@ -13,11 +13,5 @@ downloads:
     initramfs: rhcos-4.3.8-x86_64-installer-initramfs.x86_64.img
     kernel: rhcos-4.3.8-x86_64-installer-kernel-x86_64
     coreos: rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
-disconnected:
-  product_repo: 'openshift-release-dev'
-  release_name: 'ocp-release'
-  ocp_release: '4.3.0-x86_64'
-  local_repository: 'ocp4/openshift4'
-  local_secret_json: '/tmp/disconnected.json'
-  branch: 'ocp-v4.0-art-dev'
+
 
