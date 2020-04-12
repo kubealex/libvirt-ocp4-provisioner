@@ -20,7 +20,7 @@
         force_init: true
         project_path: "terraform/{{ item.key }}"
         variables:
-          network_data: '{ hostIP = "{{ item.value.ip }}", broadcast= "{{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}", dns = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", gateway = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", network = "{{ item.value.ip | ipsubnet(24) | ipaddr('net') }}" }'
+          network_data: "{ hostIP = {{ item.value.ip }}, broadcast= {{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}, dns = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, gateway = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, network = {{ item.value.ip | ipsubnet(24) | ipaddr('network') }} }"
           hostname: "{{ item.key }}"
         state: present
       register: output
