@@ -67,7 +67,7 @@
         host_api_fqdn: "api.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
         host_api_int_fqdn: "api-int.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
         host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"  
-      when inventory_hostname == 'loadbalancer'
+      when: inventory_hostname == 'loadbalancer'
 
     - name: Rename default connection
       command: nmcli con mod System\ eth0 connection.id {{ host_interface }}
