@@ -1,8 +1,0 @@
----
-- name: test
-  hosts: localhost
-  vars: 
-    address: 192.168.100.4
-  tasks:
-    - debug:
-        msg: network_data '{ hostIP = "192.168.100.2", broadcast= "{{ 192.168.100.2 | ipsubnet(24) | ipaddr('broadcast') }}", dns = "{{ 192.168.100.2 | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", gateway = "{{ 192.168.100.2 | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}", network = "{{ 192.168.100.2 | ipsubnet(24) | ipaddr('net') }}" }'
