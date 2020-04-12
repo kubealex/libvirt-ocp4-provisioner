@@ -1,6 +1,6 @@
 # variables that can be overriden
 variable "hostname" { default = "worker" }
-variable "memoryMB" { default = 1024*12 }
+variable "memoryMB" { default = 1024*16 }
 variable "cpu" { default = 4 }
 variable "vm_count" { default = 2 }
 variable "vm_volume_size" { default = 1073741824*20 }

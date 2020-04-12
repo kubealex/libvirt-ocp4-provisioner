@@ -1,6 +1,6 @@
 #!/bin/bash
 export KUBECONFIG={{ workspace_directory.base_path }}/config/auth/kubeconfig
-htpasswd -c -B -b {{ workspace_directory.base_path }}/user.htpasswd {{ ocp_user }} {{ ocp_pass }}
+htpasswd -c -B -b {{ workspace_directory.base_path }}/user.htpasswd {{ cluster.ocp_user }} {{ cluster.ocp_pass }}
 /usr/local/bin/oc create secret generic htpass-secret --from-file=htpasswd={{ workspace_directory.base_path }}/user.htpasswd -n openshift-config
 /usr/local/bin/oc apply -f {{ workspace_directory.base_path }}/htpasswd_provider.yaml
-/usr/local/bin/oc adm policy add-cluster-role-to-user cluster-admin {{ ocp_user }}
+/usr/local/bin/oc adm policy add-cluster-role-to-user cluster-admin {{ cluster.ocp_user }}

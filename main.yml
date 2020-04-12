@@ -10,3 +10,5 @@
 - import_playbook: 20_lb_packages.yml
 - import_playbook: 25_lb_services.yaml
 - import_playbook: 30_prepare_ocp_install.yaml
+- import_playbook: 40_deploy_nfs.yml
+- import_playbook: 50_create_users.yml

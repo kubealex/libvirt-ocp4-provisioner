@@ -5,21 +5,58 @@
     - vars/vars.yml
   tasks:
 
+    - name: Ensuring export registry directory dosen't exists
+      file:
+        state: absent
+        path: "{{ item }}"
+      loop:
+        - /exports/registry
+        - /exports/ocp
+
+    - name: Creating registry export
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: 0775
+        owner: nobody
+        group: nobody
+      loop:
+        - /exports/registry
+        - /exports/ocp
+
     - name: Prepare disk
       parted:
         device: /dev/vdb
         number: 1
-        state: present        
+        part_end: 100GiB
+        state: present  
+
+    - name: Prepare second mount
+      parted: 
+        device: /dev/vdb
+        number: 2
+        part_start: 100GiB
+        state: present      
 
     - name: Create xfs filesystem on /dev/sdb1
       filesystem:
         fstype: xfs
-        dev: /dev/vdb1
+        dev: "{{ item }}"
+      loop: 
+        - /dev/vdb1
+        - /dev/vdb2
 
     - name: Mount up device by label
       mount:
-        path: /exports
+        path: /exports/registry
         src: /dev/vdb1
+        fstype: xfs
+        state: mounted
+
+    - name: Mount up device by label
+      mount:
+        path: /exports/ocp
+        src: /dev/vdb2
         fstype: xfs
         state: mounted
 
@@ -34,21 +71,6 @@
         state: yes
         persistent: yes
    
-    - name: Ensuring export registry directory dosen't exists
-      file:
-        state: absent
-        path: /exports/registry
-        
-    - name: Creating registry export
-      file:
-        state: directory
-        path: "{{ item }}"
-        mode: 0775
-        owner: nobody
-        group: nobody
-      loop: 
-        - /exports/registry
-
     - name: Restarting nfs
       service:
         name: nfs-server

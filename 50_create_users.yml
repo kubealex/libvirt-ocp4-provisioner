@@ -1,0 +1,63 @@
+- name: Create admin with cluster admin privileges
+  hosts: bastion
+  tasks:
+    
+    - name: Ensuring httpd-tools is present
+      package:
+        name: httpd-tools
+        state: present
+      become: true
+
+    - name: Ensuring passlib is present
+      pip:
+        name: 
+          - passlib
+          - bcrypt
+      become: true
+      
+
+    - name: Creating yaml configuration for htpasswd identity provider
+      template:
+        src: ../templates/htpasswd_provider.j2
+        dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
+
+    - template:
+        src: ../templates/ocp_user_script.j2
+        dest: /tmp/ocp_user.sh
+        mode: +x
+        
+    - name: Creating oauth login url var
+      set_fact:
+        auth_url: oauth-openshift.apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+                
+    #https://unix.stackexchange.com/questions/368123/how-to-extract-the-root-ca-and-subordinate-ca-from-a-certificate-chain-in-linux
+    - name: Getting router certificates chain
+      shell: >
+                openssl s_client -showcerts -servername {{ auth_url }} 
+                -connect {{ auth_url }}:443 < /dev/null 
+                2>/dev/null | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="/tmp/cert"a".pem"; print >out}'
+      
+    - shell: cat /tmp/cert1.pem /tmp/cert2.pem > /tmp/login.pem
+    
+    - name: Copying certificate to trusted certificate directory
+      copy:
+        src: /tmp/login.pem
+        dest: /etc/pki/ca-trust/source/anchors/login.pem
+        remote_src: yes
+      become: true
+
+    - name: Trusting router certificate
+      command: update-ca-trust  
+      become: true
+      
+    - name: Creating htpasswd identiry and user
+      command: /tmp/ocp_user.sh
+
+    - name: Sleeping 120 seconds...
+      command: sleep 120
+
+    - name: Try to login with admin
+      command: > 
+               /usr/local/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} 
+               https://api.{{ initial_config.cluster_name }}.{{ initial_config.domain }}:6443 --config {{ workspace_directory.base_path }}/config/auth/kubeconfig
+      retries: 10   
