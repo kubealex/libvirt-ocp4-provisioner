@@ -1,9 +1,9 @@
 skip_download: no
 downloads:
-  ngnix_document_root: /usr/share/nginx/html
+  nginx_document_root: /usr/share/nginx/html
   tftp_boot_root: /var/lib/tftpboot
   tftp_workspace_dir: rhcos
-  nginix_workspace_dir: metal
+  nginx_workspace_dir: metal
   utils:
     base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
     ocp_oc_cli: openshift-client-linux.tar.gz

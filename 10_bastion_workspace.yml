@@ -32,7 +32,7 @@
         path: "{{ item }}"
       loop: 
         - "{{ downloads.tftp_boot_root }}/{{ downloads.tftp_workspace_dir }}"
-        - "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}"
+        - "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}"
       become: True
 
     - name: Downloading installer and OCP cli
@@ -71,7 +71,7 @@
         - name: Download Red Hat CoreOS for bare metal
           get_url:
             url:  "{{ downloads.boot.base_url + downloads.boot.coreos }}"
-            dest: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}/{{ downloads.boot.coreos }}"
+            dest: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ downloads.boot.coreos }}"
       when: not (skip_download | bool)
       become: true
         

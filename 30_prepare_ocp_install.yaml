@@ -45,7 +45,7 @@
     - name: Copying ignition files to webserver
       copy:
         src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
-        dest: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}"
+        dest: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}"
         remote_src: yes
       loop:
         - bootstrap.ign
@@ -61,7 +61,7 @@
 
     - name: Fixing permission
       file:
-        path: "{{ downloads.ngnix_document_root }}/{{ downloads.nginix_workspace_dir }}/{{ item }}"
+        path: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ item }}"
         mode: "u=rw,g=r,o=r"
       loop: 
         - bootstrap.ign
