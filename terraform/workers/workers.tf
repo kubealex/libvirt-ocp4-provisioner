@@ -1,9 +1,11 @@
 # variables that can be overriden
 variable "hostname" { default = "worker" }
 variable "memoryMB" { default = 1024*16 }
-variable "cpu" { default = 4 }
+variable "cpu" { default = 6 }
 variable "vm_count" { default = 2 }
 variable "vm_volume_size" { default = 1073741824*20 }
+variable "vm_disk1_size" { default = 1073741824*10 }
+variable "vm_disk2_size" { default = 1073741824*100 }
 
 # instance the provider
 provider "libvirt" {
@@ -16,6 +18,24 @@ resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image-${count.index}"
   pool = "default"
   size =  var.vm_volume_size
+  format = "qcow2"
+}
+
+# fetch the latest ubuntu release image from their mirrors
+resource "libvirt_volume" "storage1_image" {
+  count= var.vm_count
+  name = "${var.hostname}-storage_image-${count.index}"
+  pool = "default"
+  size = var.vm_disk1_size
+  format = "qcow2"
+}
+
+# fetch the latest ubuntu release image from their mirrors
+resource "libvirt_volume" "storage2_image" {
+  count= var.vm_count
+  name = "${var.hostname}-storage2_image-${count.index}"
+  pool = "default"
+  size = var.vm_disk2_size
   format = "qcow2"
 }
 
@@ -34,6 +54,13 @@ resource "libvirt_domain" "worker" {
   disk {
        volume_id = libvirt_volume.os_image[count.index].id
   }
+  disk {
+     volume_id = libvirt_volume.storage1_image[count.index].id
+  }
+  disk  {
+     volume_id = libvirt_volume.storage2_image[count.index].id
+  }
+
   network_interface {
        network_name = "ocp_auto"
   }

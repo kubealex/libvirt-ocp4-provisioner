@@ -21,8 +21,8 @@
         owner: nobody
         group: nobody
       loop:
-        - /exports/registry
-        - /exports/ocp
+        - /registry
+        - /ocp
 
     - name: Prepare disk
       parted:
@@ -48,14 +48,14 @@
 
     - name: Mount up device by label
       mount:
-        path: /exports/registry
+        path: /registry
         src: /dev/vdb1
         fstype: xfs
         state: mounted
 
     - name: Mount up device by label
       mount:
-        path: /exports/ocp
+        path: /ocp
         src: /dev/vdb2
         fstype: xfs
         state: mounted

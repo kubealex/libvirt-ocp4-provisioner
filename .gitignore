@@ -2,3 +2,4 @@ id_rsa*
 terraform.tfstate*
 vars/vars.yml
 test.yml
+.terraform

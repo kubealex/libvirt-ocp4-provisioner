@@ -2,7 +2,7 @@
 
 ## External dns ##
 
-server={{ hostvars['bastion']['host_ip'] | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}
+server={{ hostvars['bastion']['host_ip'] | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
 
 ## External dns end ##
 
@@ -85,7 +85,7 @@ dhcp-boot=pxelinux.0
 dhcp-option=101,"{{ dhcp.timezone }}"
 domain={{ initial_config.domain }}
 interface={{ hostvars['bastion'].host_interface }}
-dhcp-option={{ hostvars['bastion'].host_interface }},3,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('net') | ipaddr('1') }}
+dhcp-option={{ hostvars['bastion'].host_interface }},3,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
 dhcp-option=option:netmask,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('netmask') }}
 dhcp-option=option:dns-server,{{ hostvars['bastion'].host_ip }}
 dhcp-option=option:ntp-server,{{ dhcp.ntp }}
