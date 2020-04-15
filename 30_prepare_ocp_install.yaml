@@ -2,7 +2,12 @@
 - name: Install config
   hosts: bastion 
   tasks:
-    
+   
+    - name: Check for pullSecret variable and fail fast
+      fail:
+        msg: "Check the pullSecret var in files/vars.yaml"
+      when: (cluster.pullSecret is undefined) or (cluster.pullSecret | length < 1) 
+
     - name: Removing config directory
       file:
         path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
