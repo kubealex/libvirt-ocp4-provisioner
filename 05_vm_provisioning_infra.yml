@@ -1,10 +1,7 @@
 - name: Test playbook
   hosts: localhost
-  vars_files:
-    - vars/vars.yml
-
   tasks:
-    - name: Another way to call known_hosts
+    - name: Ensure to clean known_hosts
       known_hosts:
         host: "{{ item.value.ip }}" 
         path: ~/.ssh/known_hosts
@@ -15,15 +12,8 @@
       openssh_keypair:
         path: "id_rsa"
 
-    # Basic deploy of a service 
-
-    - debug:
-        msg: |
-          network_data: "{ hostIP = {{ item.value.ip }}, broadcast= {{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}, dns = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, gateway = {{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}, network = {{ item.value.ip | ipsubnet(24) | ipaddr('network') }} }"
-      loop: "{{ initial_config.host_list|dict2items }}"
-
-    # Basic deploy of a service
-    - terraform:
+    - name: Deploy bastion and loadbalancer VMs with terraform
+      terraform:
         force_init: true
         project_path: "terraform/{{ item.key }}"
         variables:
@@ -33,11 +23,7 @@
       register: output
       loop: "{{ initial_config.host_list|dict2items }}"
 
-    - name: Show terraform output
-      debug:
-        var: output.results
-    
-    - name: Add host to multiple groups
+    - name: Add bastion and loadbalancer vars, belonging to groups
       add_host:
         hostname: '{{ item.key }}'
         ansible_host: '{{ item.value.ip }}'
@@ -52,8 +38,6 @@
   hosts: bastion,loadbalancer
   gather_facts: no
   become: true
-  vars_files:
-    - vars/vars.yml
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection: 
@@ -75,7 +59,4 @@
         host_api_int_fqdn: "api-int.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
         host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"  
       when: inventory_hostname == 'loadbalancer'
-
-    - name: Rename default connection
-      command: nmcli con mod System\ eth0 connection.id {{ host_interface }}
 

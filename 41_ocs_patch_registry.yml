@@ -2,14 +2,6 @@
   hosts: bastion
   become: True
   tasks:
-    - name: Deploy yaml config for creating registry PV
-      template:
-        src: templates/pv_registry.j2
-        dest: "{{ workspace_directory.base_path }}/pv_registry.yaml"
-
-    - name: Creating persistent volume for registry
-      command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/pv_registry.yaml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
-
     - name: Firing registry template patch
       template:
         src: templates/patch_registry.j2

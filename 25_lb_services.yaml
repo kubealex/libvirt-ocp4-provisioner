@@ -1,77 +1,73 @@
 ---
-- name: Haproxy  configuration
+- name: Loadbalancer configuration play
   hosts: loadbalancer
-  vars_files: 
-    - vars/vars.yml
-    - vars/downloads.yaml
-    - vars/lb_firewall.yaml
-          
+  become: true
   tasks:
     
-    - block:
-         - name: Checking internal network interfaces
-           fail: 
-            msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
-           when: host_interface not in ansible_facts.interfaces
+    - name: Checking internal network interfaces
+      fail: 
+        msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
+      when: host_interface not in ansible_facts.interfaces
 
-         - name: enable firewalld
-           service:
-             name: firewalld
-             enabled: true
-             state: started
+    - name: enable firewalld
+      service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - firewalld
+        - haproxy
 
-         #https://access.redhat.com/discussions/1455033
+    #https://access.redhat.com/discussions/1455033
 
-         - name: Setting static ip configuration
-           command: > 
-              nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ initial_config.host_list.bastion.ip }}
-         
-         - name: Refreshing {{ host_interface }}
-           shell:  nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+    - name: Setting bastion's IP as DNS for our interface
+      command: > 
+        nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ initial_config.host_list.bastion.ip }}
+     
+    - name: Refreshing {{ host_interface }}
+      shell:  nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
-         - name: Adding interface {{ host_interface }} to firewall internal zone  
-           firewalld:
-             zone: internal
-             interface: "{{ host_interface }}"
-             permanent: yes
-             state: enabled
+    - name: Adding interface {{ host_interface }} to firewall internal zone  
+      firewalld:
+        zone: internal
+        interface: "{{ host_interface }}"
+        permanent: yes
+        state: enabled
 
-         - name: Allow service for internal zone
-           firewalld:
-             zone: internal
-             state: enabled
-             permanent: yes
-             service: "{{ item }}"
-           loop: "{{ services }}"
+    - name: Allow service for internal zone
+      firewalld:
+        zone: internal
+        state: enabled
+        permanent: yes
+        service: "{{ item }}"
+      loop: "{{ services }}"
 
-         - name: Allow ports for internal zone
-           firewalld:
-             zone: internal
-             state: enabled
-             permanent: yes
-             port: "{{ item }}"
-           loop: "{{ internal_zone_port }}"
+    - name: Allow ports for internal zone
+      firewalld:
+        zone: internal
+        state: enabled
+        permanent: yes
+        port: "{{ item }}"
+      loop: "{{ internal_zone_port }}"
 
-         - name: Reload firewalld service
-           service:
-             name: firewalld
-             state: restarted 
-                   
-         - name: Enabling selinux boolean for haproxy
-           seboolean:
-             name: haproxy_connect_any
-             state: yes
-             persistent: yes 
-    
-         - name: Firing haproxy template
-           template:
-             src: templates/haproxy.j2
-             dest: /etc/haproxy/haproxy.cfg
+    - name: Reload firewalld service
+      service:
+        name: firewalld
+        state: restarted 
+              
+    - name: Enabling selinux boolean for haproxy
+      seboolean:
+        name: haproxy_connect_any
+        state: yes
+        persistent: yes 
 
-         - name: Reload haproxy service
-           service:
-             name: haproxy
-             state: restarted
-             enabled: true
-        
-      become: True
+    - name: Firing haproxy template
+      template:
+        src: templates/haproxy.j2
+        dest: /etc/haproxy/haproxy.cfg
+
+    - name: Reload haproxy service
+      service:
+        name: haproxy
+        state: restarted
+        enabled: true

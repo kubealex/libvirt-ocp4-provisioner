@@ -1,12 +1,12 @@
 <network>
-  <name>ocp_auto</name>
+  <name>{{ libvirt.network_name }}</name>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <bridge name='ocpbr1' stp='on' delay='0'/>
-  <ip address='192.168.240.1' netmask='255.255.255.0'>
+  <bridge name='{{ libvirt.network_bridge }}' stp='on' delay='0'/>
+  <ip address='{{ libvirt.network_gateway }}' netmask='{{ libvirt.network_mask }}'>
   </ip>
 </network>
 

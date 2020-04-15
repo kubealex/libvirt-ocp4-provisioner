@@ -1,9 +1,6 @@
 ---
 - name: Install config
   hosts: bastion 
-  vars_files:
-     - vars/vars.yml
-     - vars/downloads.yaml
   tasks:
     
     - name: Removing config directory
@@ -47,6 +44,7 @@
         src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
         dest: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}"
         remote_src: yes
+        mode: 644
       loop:
         - bootstrap.ign
         - master.ign
@@ -59,15 +57,15 @@
         state: restarted
       become: true 
 
-    - name: Fixing permission
-      file:
-        path: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ item }}"
-        mode: "u=rw,g=r,o=r"
-      loop: 
-        - bootstrap.ign
-        - master.ign
-        - worker.ign
-      become: True
+#    - name: Fixing permission
+#      file:
+#        path: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ item }}"
+#        mode: "u=rw,g=r,o=r"
+#      loop: 
+#        - bootstrap.ign
+#        - master.ign
+#        - worker.ign
+#      become: True
 
     - name: Creating csr approver script
       template:
@@ -102,7 +100,6 @@
         state: destroyed
       loop: "{{ groups['workers'] }}"
       delegate_to: 127.0.0.1
-
 
     - name: restart vms
       virt:
@@ -153,3 +150,14 @@
     - name: Jedy
       debug:
         msg: May OCP will be with you
+
+
+- name: Clean up haproxy config
+  hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Remove bootstrap
+      lineinfile:
+        regexp: 'bootstrap'
+        state: absent
+        path: /etc/haproxy/haproxy.cfg

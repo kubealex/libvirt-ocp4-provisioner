@@ -1,0 +1,28 @@
+---
+- name: Bastion packages installer
+  hosts: bastion
+  become: True
+  tasks:
+     
+    - name: Installing required packages for Bastion Vm (Fedora)
+      package:
+        name: "{{ packages.fedora }}"
+        state: present
+      when: ansible_distribution == "Fedora"
+
+    - name: Installing required packages for Bastion Vm (Centos 8)
+      package:
+        name: "{{ packages.centos }}"
+        state: present
+      when: ansible_distribution == "CentOS"
+      
+
+- name: Loadbalancer packages installer
+  hosts: loadbalancer
+  become: true
+  tasks:
+
+    - name: Installing required packages
+      package:
+        name: "{{ packages }}"
+        state: present

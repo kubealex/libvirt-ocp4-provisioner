@@ -4,14 +4,12 @@ variable "memoryMB" { default = 1024*16 }
 variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
 variable "vm_volume_size" { default = 1073741824*20 }
+variable "libvirt_network" { default = "ocp_auto" }
 
-
-# instance the provider
 provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
@@ -22,7 +20,6 @@ resource "libvirt_volume" "os_image" {
 
 # Create the machine
 resource "libvirt_domain" "master" {
-  # domain name in libvirt, not hostname
   count = var.vm_count
   name = "${var.hostname}-${count.index}"
   memory = var.memoryMB
@@ -36,16 +33,13 @@ resource "libvirt_domain" "master" {
        volume_id = libvirt_volume.os_image[count.index].id
   }
   network_interface {
-       network_name = "ocp_auto"
+       network_name = "${var.libvirt_network}"
   }
 
   boot_device {
     dev = [ "hd", "network" ]
   }
 
-  # IMPORTANT
-  # Ubuntu can hang is a isa-serial is not present at boot time.
-  # If you find your CPU 100% and never is available this is why
   console {
     type        = "pty"
     target_port = "0"

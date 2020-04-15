@@ -7,6 +7,8 @@ variable "memoryMB" { default = 1024*2 }
 variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
+variable "libvirt_network" { default = "ocp_auto" }
+
 variable "network_data" { 
   type = map
   default = {
@@ -35,7 +37,6 @@ resource "libvirt_cloudinit_disk" "commoninit" {
   name = "${var.hostname}-commoninit-${var.network_data["hostIP"]}.iso"
   pool = "default"
   user_data = data.template_file.user_data.rendered
-  #network_config = data.template_file.network_config.rendered
   meta_data = data.template_file.meta_data.rendered
 }
 
@@ -66,7 +67,6 @@ data "template_file" "meta_data" {
 
 
 # Create the machine
-#resource "libvirt_domain" "infra-machine" {
 resource "libvirt_domain" "infra-machine" {
   # domain name in libvirt, not hostname
   name = "${var.hostname}-${var.network_data["hostIP"]}"
@@ -77,10 +77,7 @@ resource "libvirt_domain" "infra-machine" {
        volume_id = libvirt_volume.os_image.id
   }
   network_interface {
-       network_name = "ocp_auto"
-      # hostname       = "master"
-      # addresses      = ["10.17.3.3"]
-#       mac = var.mac
+       network_name = "${var.libvirt_network}"
   }
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id

@@ -1,15 +1,13 @@
 ---
-- import_playbook: 00_machines_provisioning.yml
-- import_playbook: 01_bastion_packages.yml
-- import_playbook: 20_lb_packages.yml
-- import_playbook: 03_bastion_networking_pre_check.yml
-- import_playbook: 05_bastion_networking.yml
-- import_playbook: 10_bastion_workspace.yml
-- import_playbook: 00_master.yml
-- import_playbook: 15_bastion_services.yml
-- import_playbook: 20_lb_packages.yml
+- import_playbook: 05_vm_provisioning_infra.yml
+- import_playbook: 10_infra_packages.yml
+- import_playbook: 15_bastion_networking.yml
+- import_playbook: 17_bastion_workspace.yml
+- import_playbook: 99_vm_provisioning_ocp.yml
+- import_playbook: 19_bastion_services.yml
 - import_playbook: 25_lb_services.yaml
 - import_playbook: 30_prepare_ocp_install.yaml
-- import_playbook: 40_deploy_nfs.yml
-- import_playbook: 41_patch_registry.yml
+#- import_playbook: 40_deploy_nfs.yml
+#- import_playbook: 41_patch_registry.yml
+#- import_playbook: 41_ocs_patch_registry.yml
 - import_playbook: 50_create_users.yml

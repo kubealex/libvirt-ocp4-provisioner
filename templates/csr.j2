@@ -1,5 +1,3 @@
 #!/bin/bash
 export KUBECONFIG={{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
 /usr/local/bin/oc get csr -oname | xargs /usr/local/bin/oc adm certificate approve
-
-

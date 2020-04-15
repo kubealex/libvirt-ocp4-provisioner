@@ -3,10 +3,11 @@ variable "hostname" { default = "test" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
 variable "ipMode" { default = "static" } # dhcp is other valid type
-variable "memoryMB" { default = 1024*4 }
+variable "memoryMB" { default = 1024*6 }
 variable "cpu" { default = 2 }
 variable "iface" { default = "eth0" }
-variable "vm_volume_size" { default = 1073741824*200 }
+variable "libvirt_network" { default = "ocp_auto" }
+variable "vm_volume_size" { default = 1073741824*20 }
 
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
@@ -33,12 +34,12 @@ resource "libvirt_volume" "os_image" {
 }
 
 # fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "storage_image" {
-  name = "${var.hostname}-storage_image"
-  pool = "default"
-  size = var.vm_volume_size
-  format = "qcow2"
-}
+#resource "libvirt_volume" "storage_image" {
+#  name = "${var.hostname}-storage_image"
+#  pool = "default"
+#  size = var.vm_volume_size
+#  format = "qcow2"
+#}
 
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
@@ -54,6 +55,7 @@ data "template_file" "user_data" {
   vars = {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
     fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
+    iface = "${var.iface}"
   }
 }
 
@@ -83,12 +85,12 @@ resource "libvirt_domain" "bastion" {
   disk {
      volume_id = libvirt_volume.os_image.id
   }
-  disk  {
-     volume_id = libvirt_volume.storage_image.id
-  }
+#  disk  {
+#     volume_id = libvirt_volume.storage_image.id
+#  }
  
   network_interface {
-       network_name = "ocp_auto"
+       network_name = "${var.libvirt_network}"
       # hostname       = "master"
       # addresses      = ["10.17.3.3"]
 #       mac = var.mac

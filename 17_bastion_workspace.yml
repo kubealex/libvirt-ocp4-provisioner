@@ -2,9 +2,6 @@
 - name: Creating a workspace on Bastion
   hosts: bastion 
   gather_facts: no
-  vars_files:
-    - vars/downloads.yaml
-    - vars/vars.yml
   tasks:
 
     - name: Erasing dnsmasq lease
@@ -24,7 +21,6 @@
     - name: Creating ssh keys if not exists
       openssh_keypair:
         path: "~/.ssh/id_rsa"
-        
 
     - name: Creating tftpboot and nginx workspace
       file:
@@ -46,8 +42,6 @@
         - "{{ downloads.utils.base_url + downloads.utils.ocp_installer }}"
       when: not (skip_download | bool)
       
-
-
     - name: Checking for openshift-install tool
       command: openshift-install
       register: output
@@ -74,8 +68,3 @@
             dest: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ downloads.boot.coreos }}"
       when: not (skip_download | bool)
       become: true
-        
-          
-          
-
-

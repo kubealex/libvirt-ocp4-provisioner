@@ -1,7 +1,5 @@
 - name: Create admin with cluster admin privileges
   hosts: bastion
-  vars_files:
-    - vars/vars.yml
   tasks:
     
     - name: Ensuring httpd-tools is present

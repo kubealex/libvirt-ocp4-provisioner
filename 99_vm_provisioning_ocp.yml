@@ -1,13 +1,15 @@
-- name: Test playbook
+- name: This play provisions OCP VMs based on intial config
   hosts: localhost
-  vars_files:
-    - vars/vars.yml
   tasks:
-    - debug: 
-        msg: "IP: {{ item.ip }}  at master-{{ master_idx }}"
-      loop: "{{ cluster_nodes.host_list.masters }}"
-      loop_control:
-        index_var: master_idx
+    # Fail fast if there is any incoherence with nodes
+
+    - fail: 
+        msg: "Only ONE bootstrap node can be present"
+      when: cluster_nodes.host_list.bootstrap | count > 1
+
+    - fail: 
+        msg: "Please check the host_list variable in cluster_nodes"
+      when: cluster_nodes.host_list.masters | count <= 0 or cluster_nodes.host_list.workers | count <= 0
 
     - terraform:
         force_init: true
@@ -36,21 +38,18 @@
         state: present
       register: output_workers
 
-    - name: Add bootstrap to given group
+    - name: Add bootstrap node and set vars
       add_host:
-        hostname: 'bootstrap-{{ bootstrap_idx }}'
-        node_hostname: 'bootstrap-{{ bootstrap_idx }}'
-        node_mac: "{{ output_bootstrap.outputs.macs.value[bootstrap_idx]|lower }}"
+        hostname: 'bootstrap'
+        node_hostname: 'bootstrap'
+        node_mac: "{{ output_bootstrap.outputs.macs.value[0]|lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
         node_role: "bootstrap"
-        node_fqdn: bootstrap-{{ bootstrap_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+        node_fqdn: bootstrap.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
         groups:
           - "bootstrap"
-
       loop: "{{ cluster_nodes.host_list.bootstrap }}"
-      loop_control:
-        index_var: bootstrap_idx
 
     - name: Add masters to given group
       add_host:
@@ -65,7 +64,6 @@
         node_fqdn: master-{{ master_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }} 
         groups:
           - "masters"
-
       loop: "{{ cluster_nodes.host_list.masters }}"
       loop_control:
         index_var: master_idx
@@ -81,7 +79,6 @@
         node_fqdn: worker-{{ worker_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
         groups:
           - "workers"
-
       loop: "{{ cluster_nodes.host_list.workers }}"
       loop_control:
         index_var: worker_idx

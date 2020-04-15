@@ -1,11 +1,12 @@
 # variables that can be overriden
 variable "hostname" { default = "worker" }
-variable "memoryMB" { default = 1024*16 }
-variable "cpu" { default = 6 }
+variable "memoryMB" { default = 1024*32 }
+variable "cpu" { default = 10 }
 variable "vm_count" { default = 2 }
+variable "libvirt_network" { default = "ocp_auto" }
 variable "vm_volume_size" { default = 1073741824*20 }
 variable "vm_disk1_size" { default = 1073741824*10 }
-variable "vm_disk2_size" { default = 1073741824*100 }
+variable "vm_disk2_size" { default = 1073741824*150 }
 
 # instance the provider
 provider "libvirt" {
@@ -62,7 +63,7 @@ resource "libvirt_domain" "worker" {
   }
 
   network_interface {
-       network_name = "ocp_auto"
+       network_name = "${var.libvirt_network}"
   }
 
   boot_device {

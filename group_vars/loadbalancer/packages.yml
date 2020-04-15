@@ -1,0 +1,4 @@
+packages:
+  - haproxy
+  - policycoreutils-python-utils
+  - firewalld

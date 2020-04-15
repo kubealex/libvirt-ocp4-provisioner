@@ -1,9 +1,9 @@
 # variables that can be overriden
-variable "hostname" { default = "master" }
+variable "hostname" { default = "bootstrap" }
 variable "memoryMB" { default = 1024*16 }
 variable "cpu" { default = 4 }
-variable "vm_count" { default = 2 }
-
+variable "vm_volume_size" { default = 1073741824*25 }
+variable "libvirt_network" { default = "ocp_auto" }
 
 # instance the provider
 provider "libvirt" {
@@ -12,35 +12,29 @@ provider "libvirt" {
 
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
-  count = var.vm_count
-  name = "${var.hostname}-os_image-${count.index}"
-  size =  30737418240
+  name = "${var.hostname}-os_image"
+  size = "${var.vm_volume_size}"
   pool = "default"
   format = "qcow2"
 }
 
 # Create the machine
-resource "libvirt_domain" "master" {
-  # domain name in libvirt, not hostname
-  count = var.vm_count
-  name = "${var.hostname}-${count.index}"
+resource "libvirt_domain" "bootstrap" {
+  name = "${var.hostname}"
   memory = var.memoryMB
   vcpu = var.cpu
 
   disk {
-       volume_id = libvirt_volume.os_image[count.index].id
+       volume_id = libvirt_volume.os_image.id
   }
   network_interface {
-       network_name = "ocp_auto"
+       network_name = "${var.libvirt_network}"
   }
 
   boot_device {
     dev = [ "hd", "network" ]
   }
 
-  # IMPORTANT
-  # Ubuntu can hang is a isa-serial is not present at boot time.
-  # If you find your CPU 100% and never is available this is why
   console {
     type        = "pty"
     target_port = "0"
@@ -59,6 +53,6 @@ terraform {
 }
 
 output "macs" {
-  value = "${flatten(libvirt_domain.master.*.network_interface.0.mac)}"
+  value = "${flatten(libvirt_domain.bootstrap.*.network_interface.0.mac)}"
 }
 
