@@ -38,7 +38,7 @@
 
     - name: Ensures terraform plugins directory exists
       file:
-        path: ~/.terraform/plugins
+        path: ~/.terraform.d/plugins
         state: directory
 
     - name: Copy libvirt provider to plugins directory
