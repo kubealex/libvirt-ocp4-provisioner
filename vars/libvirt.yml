@@ -3,7 +3,7 @@ libvirt:
     pool_name: ocp4_vms
     pool_path: /var/lib/libvirt/images/ocp4
   network:
-    network_name:
-    network_gateway:
-    network_bridge:
-    network_mask:
+    network_name: ocp4
+    network_gateway: 192.168.100.1
+    network_bridge: ocpbr1
+    network_mask: 255.255.255.0

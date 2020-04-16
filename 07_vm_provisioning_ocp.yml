@@ -18,6 +18,8 @@
         project_path: "terraform/bootstrap"
         variables:
           hostname: "bootstrap"
+          cpu: "{{ cluster_nodes.specs.bootstrap.vcpu }}"
+          memoryMB: "{{ cluster_nodes.specs.bootstrap.mem }}"
           vm_count: "{{ cluster_nodes.host_list.bootstrap | count }}"
         state: present
       register: output_bootstrap
@@ -27,6 +29,8 @@
         force_init: true
         variables:
           hostname: "master"
+          cpu: "{{ cluster_nodes.specs.masters.vcpu }}"
+          memoryMB: "{{ cluster_nodes.specs.masters.mem }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
       register: output_masters
@@ -36,6 +40,9 @@
         force_init: true
         variables:
           hostname: "worker"
+          cpu: "{{ cluster_nodes.specs.workers.vcpu }}"
+          memoryMB: "{{ cluster_nodes.specs.workers.mem }}"
+          
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
         state: present
       register: output_workers
