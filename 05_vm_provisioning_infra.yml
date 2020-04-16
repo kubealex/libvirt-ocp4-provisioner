@@ -5,7 +5,7 @@
   tasks:
 
     - set_fact:
-      ocp_domain: "{{ cluster_name }}.{{ domain }}"
+        ocp_domain: "{{ cluster_name }}.{{ domain }}"
 
     - name: Ensure to clean known_hosts
       known_hosts:
