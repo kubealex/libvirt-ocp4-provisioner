@@ -20,6 +20,7 @@
         variables:
           hostname: "bootstrap"
           libvirt_network: "{{ libvirt.network.network_name }}"
+          libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.bootstrap.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.bootstrap.mem }}"
         state: present
@@ -31,6 +32,7 @@
         variables:
           hostname: "master"
           libvirt_network: "{{ libvirt.network.network_name }}"
+          libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.masters.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.masters.mem }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
@@ -45,6 +47,7 @@
         variables:
           hostname: "worker"
           libvirt_network: "{{ libvirt.network.network_name }}"
+          libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.workers.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.workers.mem }}"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"

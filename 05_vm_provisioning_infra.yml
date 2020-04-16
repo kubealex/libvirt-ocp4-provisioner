@@ -25,6 +25,7 @@
         project_path: "terraform/{{ item.key }}"
         variables:
           libvirt_network: "{{ libvirt.network.network_name }}"
+          libvirt_pool: "{{ libvirt.storage.pool_name }}"
           network_data: "{ hostIP = \"{{ item.value.ip }}\", broadcast= \"{{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "{{ item.key }}"
         state: present
