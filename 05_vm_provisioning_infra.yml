@@ -1,12 +1,18 @@
 - name: Test playbook
   hosts: localhost
+  vars_files:
+    - infra_vars.yml
   tasks:
+
+    - set_fact:
+      ocp_domain: "{{ cluster_name }}.{{ domain }}"
+
     - name: Ensure to clean known_hosts
       known_hosts:
         host: "{{ item.value.ip }}" 
         path: ~/.ssh/known_hosts
         state: absent
-      loop: "{{ initial_config.host_list|dict2items }}"
+      loop: "{{ infra_nodes.host_list|dict2items }}"
 
     - name: Create ssh keypair
       openssh_keypair:
@@ -21,7 +27,7 @@
           hostname: "{{ item.key }}"
         state: present
       register: output
-      loop: "{{ initial_config.host_list|dict2items }}"
+      loop: "{{ infra_nodes.host_list|dict2items }}"
 
     - name: Add bastion and loadbalancer vars, belonging to groups
       add_host:
@@ -29,10 +35,13 @@
         ansible_host: '{{ item.value.ip }}'
         ansible_ssh_private_key_file: "id_rsa"
         ansible_user: ocpinstall
-        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no"
+        domain: "{{ domain }}"
+        cluster_name: "{{ domain }}"
+        ocp_domain: "{{ ocp_domain }}"
         groups:
           - "{{ item.key }}"
-      loop: "{{ initial_config.host_list|dict2items }}"
+      loop: "{{ infra_nodes.host_list|dict2items }}"
 
 - name: Check connection, rename connection and set facts
   hosts: bastion,loadbalancer
@@ -55,8 +64,8 @@
         host_fqdn: "{{ machine_facts.ansible_facts.ansible_fqdn }}"
     
     - set_fact: 
-        host_api_fqdn: "api.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
-        host_api_int_fqdn: "api-int.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"
-        host_apps_fqdn: "apps.{{ initial_config.cluster_name }}.{{ initial_config.domain }}"  
+        host_api_fqdn: "api.{{ ocp_domain }}"
+        host_api_int_fqdn: "api-int.{{ ocp_domain }}"
+        host_apps_fqdn: "apps.{{ ocp_domain }}"  
       when: inventory_hostname == 'loadbalancer'
 

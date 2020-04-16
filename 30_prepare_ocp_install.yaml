@@ -47,7 +47,7 @@
     - name: Copying ignition files to webserver
       copy:
         src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
-        dest: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}"
+        dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}"
         remote_src: yes
         mode: 644
       loop:
@@ -62,16 +62,6 @@
         state: restarted
       become: true 
 
-#    - name: Fixing permission
-#      file:
-#        path: "{{ downloads.nginx_document_root }}/{{ downloads.nginx_workspace_dir }}/{{ item }}"
-#        mode: "u=rw,g=r,o=r"
-#      loop: 
-#        - bootstrap.ign
-#        - master.ign
-#        - worker.ign
-#      become: True
-
     - name: Creating csr approver script
       template:
         src: templates/csr.j2
@@ -85,50 +75,47 @@
         job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: destroyed
-      loop: "{{ groups['bootstrap'] }}"
-      delegate_to: 127.0.0.1
+    - name: Restart OCP VMs sequentially
+      block:
+        - name: Destroy bootstrap node
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['bootstrap'] }}"
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: destroyed
-      loop: "{{ groups['masters'] }}"
-      delegate_to: 127.0.0.1
+        - name: Destroy master nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['masters'] }}"
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: destroyed
-      loop: "{{ groups['workers'] }}"
-      delegate_to: 127.0.0.1
+        - name: Destroy worker nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['workers'] }}"
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: running
-      loop: "{{ groups['bootstrap'] }}"
-      delegate_to: 127.0.0.1
+        - name: Restart bootstrap node
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['bootstrap'] }}"
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: running
-      loop: "{{ groups['masters'] }}"
-      delegate_to: 127.0.0.1
+        - name: Restart master nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['masters'] }}"
 
-    - name: restart vms
-      virt:
-        name: "{{ hostvars[item].node_hostname }}"
-        state: running
-      loop: "{{ groups['workers'] }}"
+        - name: Restart worker nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['workers'] }}"
       delegate_to: 127.0.0.1
 
     - debug:
-        msg:  Pxe boot the bootstrap and masters vm selecting the appropiate boot menu
+        msg:  Boot via PXE the VMs, using the MAC-tailored pxeboot configuration
 
     - name: Waiting for bootstrap to complete
       command: openshift-install wait-for bootstrap-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
@@ -136,9 +123,6 @@
       delay: 5
       register: result
       until: result.rc == 0
-
-    - debug:
-        msg: "Pxe boot the workers vms selecting the appropiate boot menu" 
 
     - name: Waiting for install to complete
       command: openshift-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
@@ -156,13 +140,3 @@
       debug:
         msg: May OCP will be with you
 
-
-- name: Clean up haproxy config
-  hosts: loadbalancer
-  become: true
-  tasks:
-    - name: Remove bootstrap
-      lineinfile:
-        regexp: 'bootstrap'
-        state: absent
-        path: /etc/haproxy/haproxy.cfg

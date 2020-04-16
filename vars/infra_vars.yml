@@ -1,0 +1,17 @@
+
+infra_nodes:
+  host_list:
+    bastion:
+      ip: 192.168.100.4
+    loadbalancer:
+      ip: 192.168.100.5
+  domain: hetzner.lab
+  cluster_name: ocp4
+
+workspace_directory:
+  base_path: /home/ocpinstall/ocpInstallerFile
+  config_dir: config
+
+dhcp:
+  timezone: "Europe/Rome"
+  ntp: 204.11.201.10

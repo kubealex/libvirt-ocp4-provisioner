@@ -1,0 +1,8 @@
+virtualization_packages:
+  - git
+  - python3-lxml
+  - libvirt-devel
+  - libvirt
+  - qemu-kvm
+  - virt-install
+  - virt-manager
