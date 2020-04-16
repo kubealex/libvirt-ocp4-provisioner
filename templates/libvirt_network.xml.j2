@@ -1,12 +1,12 @@
 <network>
-  <name>{{ libvirt.network_name }}</name>
+  <name>{{ libvirt.network.network_name }}</name>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <bridge name='{{ libvirt.network_bridge }}' stp='on' delay='0'/>
-  <ip address='{{ libvirt.network_gateway }}' netmask='{{ libvirt.network_mask }}'>
+  <bridge name='{{ libvirt.network.network_bridge }}' stp='on' delay='0'/>
+  <ip address='{{ libvirt.network.network_gateway }}' netmask='{{ libvirt.network.network_mask }}'>
   </ip>
 </network>
 
