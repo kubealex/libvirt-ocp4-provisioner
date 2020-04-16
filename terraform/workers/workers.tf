@@ -2,7 +2,7 @@
 variable "hostname" { default = "worker" }
 variable "memoryMB" { default = 1024*32 }
 variable "cpu" { default = 10 }
-variable "vm_count" { default = 2 }
+variable "vm_count" { default = 3 }
 variable "libvirt_network" { default = "ocp_auto" }
 variable "vm_volume_size" { default = 1073741824*20 }
 variable "vm_disk1_size" { default = 1073741824*10 }
@@ -13,7 +13,6 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-# fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
@@ -22,7 +21,6 @@ resource "libvirt_volume" "os_image" {
   format = "qcow2"
 }
 
-# fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "storage1_image" {
   count= var.vm_count
   name = "${var.hostname}-storage_image-${count.index}"
@@ -31,7 +29,6 @@ resource "libvirt_volume" "storage1_image" {
   format = "qcow2"
 }
 
-# fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "storage2_image" {
   count= var.vm_count
   name = "${var.hostname}-storage2_image-${count.index}"
@@ -42,7 +39,6 @@ resource "libvirt_volume" "storage2_image" {
 
 # Create the machine
 resource "libvirt_domain" "worker" {
-  # domain name in libvirt, not hostname
   count = var.vm_count
   name = "${var.hostname}-${count.index}"
   memory = var.memoryMB
@@ -53,7 +49,7 @@ resource "libvirt_domain" "worker" {
   }
 
   disk {
-       volume_id = libvirt_volume.os_image[count.index].id
+     volume_id = libvirt_volume.os_image[count.index].id
   }
   disk {
      volume_id = libvirt_volume.storage1_image[count.index].id
@@ -63,7 +59,7 @@ resource "libvirt_domain" "worker" {
   }
 
   network_interface {
-       network_name = "${var.libvirt_network}"
+       network_name = var.libvirt_network
   }
 
   boot_device {

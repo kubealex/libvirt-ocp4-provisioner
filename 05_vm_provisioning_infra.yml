@@ -1,7 +1,8 @@
 - name: Test playbook
   hosts: localhost
   vars_files:
-    - infra_vars.yml
+    - vars/infra_vars.yml
+    - vars/libvirt.yml
   tasks:
 
     - set_fact:
@@ -23,6 +24,7 @@
         force_init: true
         project_path: "terraform/{{ item.key }}"
         variables:
+          libvirt_network: "{{ libvirt.network.network_name }}"
           network_data: "{ hostIP = \"{{ item.value.ip }}\", broadcast= \"{{ item.value.ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ item.value.ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "{{ item.key }}"
         state: present
@@ -37,8 +39,10 @@
         ansible_user: ocpinstall
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
         domain: "{{ domain }}"
-        cluster_name: "{{ domain }}"
+        cluster_name: "{{ cluster_name }}"
         ocp_domain: "{{ ocp_domain }}"
+        timezone: "{{ dhcp.timezone }}"
+        ntp_server: "{{ dhcp.ntp }}"
         groups:
           - "{{ item.key }}"
       loop: "{{ infra_nodes.host_list|dict2items }}"

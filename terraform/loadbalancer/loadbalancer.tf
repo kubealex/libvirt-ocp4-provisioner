@@ -46,6 +46,7 @@ data "template_file" "user_data" {
   vars = {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
     fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
+    iface = var.iface
   }
 }
 
