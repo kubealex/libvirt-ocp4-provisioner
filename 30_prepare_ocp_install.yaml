@@ -1,6 +1,8 @@
 ---
 - name: Install config
   hosts: bastion 
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
    
     - name: Check for pullSecret variable and fail fast

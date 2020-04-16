@@ -2,17 +2,16 @@
   hosts: bastion
   gather_facts: no
   become: true
-      
   tasks:
     - name: Ensuring tftp boot directory exists
       file:
         state: directory
-        path: "{{ tftpboot_root }}/pxelinux.cfg"
+        path: "{{ tftp_boot_root }}/pxelinux.cfg"
 
     - name: Copy pxelinux.0 file
       copy:
         src: /usr/share/syslinux/{{ item }}
-        dest: "{{ tftpboot_root }}/"
+        dest: "{{ tftp_boot_root }}/"
         remote_src: yes
       loop: "{{ pxe_files }}"
 
@@ -40,19 +39,19 @@
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: "{{ tftpboot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
       loop: "{{ groups['masters'] }}"
 
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: "{{ tftpboot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
       loop: "{{ groups['bootstrap'] }}"
 
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: "{{ tftpboot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
       loop: "{{ groups['workers'] }}"
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server

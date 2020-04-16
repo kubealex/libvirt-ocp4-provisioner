@@ -1,7 +1,8 @@
 - name: This play provisions OCP VMs based on intial config
   hosts: localhost
   vars_files:
-    - cluster_vars.yml
+    - vars/cluster_vars.yml
+    - vars/libvirt.yml
   tasks:
     # Fail fast if there is any incoherence with nodes
 
@@ -18,9 +19,9 @@
         project_path: "terraform/bootstrap"
         variables:
           hostname: "bootstrap"
+          libvirt_network: "{{ libvirt.network.network_name }}"
           cpu: "{{ cluster_nodes.specs.bootstrap.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.bootstrap.mem }}"
-          vm_count: "{{ cluster_nodes.host_list.bootstrap | count }}"
         state: present
       register: output_bootstrap
 
@@ -29,20 +30,23 @@
         force_init: true
         variables:
           hostname: "master"
+          libvirt_network: "{{ libvirt.network.network_name }}"
           cpu: "{{ cluster_nodes.specs.masters.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.masters.mem }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
       register: output_masters
 
+    - debug:
+        msg: Workers are {{ cluster_nodes.host_list.workers | count }}
     - terraform:
         project_path: "terraform/workers"
         force_init: true
         variables:
           hostname: "worker"
+          libvirt_network: "{{ libvirt.network.network_name }}"
           cpu: "{{ cluster_nodes.specs.workers.vcpu }}"
           memoryMB: "{{ cluster_nodes.specs.workers.mem }}"
-          
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
         state: present
       register: output_workers

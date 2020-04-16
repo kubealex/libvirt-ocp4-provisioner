@@ -2,8 +2,6 @@
 - name: Creating a workspace on Bastion
   hosts: bastion 
   gather_facts: no
-  vars_files:
-    - vars/downloads.yml
   tasks:
 
     - name: Erasing dnsmasq lease
