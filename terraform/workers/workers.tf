@@ -4,6 +4,7 @@ variable "memoryMB" { default = 1024*32 }
 variable "cpu" { default = 10 }
 variable "vm_count" { default = 3 }
 variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_pool" { default = "default" }
 variable "vm_volume_size" { default = 1073741824*20 }
 variable "vm_disk1_size" { default = 1073741824*10 }
 variable "vm_disk2_size" { default = 1073741824*150 }
@@ -16,7 +17,7 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
-  pool = "default"
+  pool = var.libvirt_pool
   size =  var.vm_volume_size
   format = "qcow2"
 }
@@ -24,7 +25,7 @@ resource "libvirt_volume" "os_image" {
 resource "libvirt_volume" "storage1_image" {
   count= var.vm_count
   name = "${var.hostname}-storage_image-${count.index}"
-  pool = "default"
+  pool = var.libvirt_pool
   size = var.vm_disk1_size
   format = "qcow2"
 }
@@ -32,7 +33,7 @@ resource "libvirt_volume" "storage1_image" {
 resource "libvirt_volume" "storage2_image" {
   count= var.vm_count
   name = "${var.hostname}-storage2_image-${count.index}"
-  pool = "default"
+  pool = var.libvirt_pool
   size = var.vm_disk2_size
   format = "qcow2"
 }

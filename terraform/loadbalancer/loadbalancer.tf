@@ -8,7 +8,7 @@ variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "libvirt_network" { default = "ocp_auto" }
-
+variable "libvirt_pool" { default = "default" }
 variable "network_data" { 
   type = map
   default = {
@@ -27,7 +27,7 @@ provider "libvirt" {
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
-  pool = "default"
+  pool = var.libvirt_pool
   source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
   format = "qcow2"
 }
@@ -35,7 +35,7 @@ resource "libvirt_volume" "os_image" {
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "${var.hostname}-commoninit-${var.network_data["hostIP"]}.iso"
-  pool = "default"
+  pool = var.libvirt_pool
   user_data = data.template_file.user_data.rendered
   meta_data = data.template_file.meta_data.rendered
 }
@@ -78,7 +78,7 @@ resource "libvirt_domain" "infra-machine" {
        volume_id = libvirt_volume.os_image.id
   }
   network_interface {
-       network_name = "${var.libvirt_network}"
+       network_name = var.libvirt_network
   }
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id

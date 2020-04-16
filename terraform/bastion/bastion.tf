@@ -7,6 +7,7 @@ variable "memoryMB" { default = 1024*6 }
 variable "cpu" { default = 2 }
 variable "iface" { default = "eth0" }
 variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_pool" { default= "default" }
 variable "vm_volume_size" { default = 1073741824*20 }
 
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
@@ -28,7 +29,7 @@ provider "libvirt" {
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
-  pool = "default"
+  pool = var.libvirt_pool
   source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
   format = "qcow2"
 }
@@ -36,7 +37,7 @@ resource "libvirt_volume" "os_image" {
 # fetch the latest ubuntu release image from their mirrors
 #resource "libvirt_volume" "storage_image" {
 #  name = "${var.hostname}-storage_image"
-#  pool = "default"
+#  pool = var.libvirt_pool
 #  size = var.vm_volume_size
 #  format = "qcow2"
 #}
@@ -44,7 +45,7 @@ resource "libvirt_volume" "os_image" {
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "${var.hostname}-commoninit-${var.network_data["hostIP"]}.iso"
-  pool = "default"
+  pool = var.libvirt_pool 
   user_data = data.template_file.user_data.rendered
   meta_data = data.template_file.meta_data.rendered
 }
@@ -90,10 +91,7 @@ resource "libvirt_domain" "bastion" {
 #  }
  
   network_interface {
-       network_name = "${var.libvirt_network}"
-      # hostname       = "master"
-      # addresses      = ["10.17.3.3"]
-#       mac = var.mac
+       network_name = var.libvirt_network
   }
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id

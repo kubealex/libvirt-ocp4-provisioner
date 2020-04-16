@@ -4,6 +4,7 @@ variable "memoryMB" { default = 1024*16 }
 variable "cpu" { default = 4 }
 variable "vm_volume_size" { default = 1073741824*25 }
 variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_pool" { default = "default" }
 
 # instance the provider
 provider "libvirt" {
@@ -14,7 +15,7 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   size = "${var.vm_volume_size}"
-  pool = "default"
+  pool = var.libvirt_pool
   format = "qcow2"
 }
 
@@ -28,7 +29,7 @@ resource "libvirt_domain" "bootstrap" {
        volume_id = libvirt_volume.os_image.id
   }
   network_interface {
-       network_name = "${var.libvirt_network}"
+       network_name = var.libvirt_network
   }
 
   boot_device {

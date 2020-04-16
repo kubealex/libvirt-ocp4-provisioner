@@ -5,6 +5,7 @@ variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
 variable "vm_volume_size" { default = 1073741824*20 }
 variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_pool" { default = "default" }
 
 provider "libvirt" {
   uri = "qemu:///system"
@@ -13,8 +14,8 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
-  size =  var.vm_volume_size
-  pool = "default"
+  size = var.vm_volume_size
+  pool = var.libvirt_pool
   format = "qcow2"
 }
 
@@ -33,7 +34,7 @@ resource "libvirt_domain" "master" {
        volume_id = libvirt_volume.os_image[count.index].id
   }
   network_interface {
-       network_name = "${var.libvirt_network}"
+       network_name = var.libvirt_network
   }
 
   boot_device {
