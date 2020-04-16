@@ -1,5 +1,7 @@
 - name: This play provisions OCP VMs based on intial config
   hosts: localhost
+  vars_files:
+    - cluster_vars.yml
   tasks:
     # Fail fast if there is any incoherence with nodes
 
@@ -46,7 +48,7 @@
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
         node_role: "bootstrap"
-        node_fqdn: bootstrap.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+        node_fqdn: bootstrap.{{ ocp_domain }}
         groups:
           - "bootstrap"
       loop: "{{ cluster_nodes.host_list.bootstrap }}"
@@ -55,13 +57,13 @@
       add_host:
         hostname: 'master-{{ master_idx }}'
         node_hostname: 'master-{{ master_idx }}'
-        etcd_fqdn: 'etcd-{{ master_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}'
+        etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
         etcd_ip: '{{ item.ip }}'
         node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
         node_role: "master"
-        node_fqdn: master-{{ master_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }} 
+        node_fqdn: master-{{ master_idx }}.{{ ocp_domain }} 
         groups:
           - "masters"
       loop: "{{ cluster_nodes.host_list.masters }}"
@@ -76,7 +78,7 @@
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
         node_role: "worker"
-        node_fqdn: worker-{{ worker_idx }}.{{ initial_config.cluster_name }}.{{ initial_config.domain }}
+        node_fqdn: worker-{{ worker_idx }}.{{ ocp_domain }}
         groups:
           - "workers"
       loop: "{{ cluster_nodes.host_list.workers }}"

@@ -1,14 +1,10 @@
 skip_download: no
 downloads:
-  nginx_document_root: /usr/share/nginx/html
-  tftp_boot_root: /var/lib/tftpboot
-  tftp_workspace_dir: rhcos
-  nginx_workspace_dir: metal
-  utils:
+  ocp:
     base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
     ocp_oc_cli: openshift-client-linux.tar.gz
     ocp_installer: openshift-install-linux.tar.gz
-  boot:
+  rhcos:
     base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/ 
     initramfs: rhcos-4.3.8-x86_64-installer-initramfs.x86_64.img
     kernel: rhcos-4.3.8-x86_64-installer-kernel-x86_64

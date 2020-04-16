@@ -7,18 +7,14 @@
     - name: Ensuring tftp boot directory exists
       file:
         state: directory
-        path: /var/lib/tftpboot/pxelinux.cfg
+        path: "{{ tftpboot_root }}"/pxelinux.cfg
 
     - name: Copy pxelinux.0 file
-      command: cp /usr/share/syslinux/{{ item }} /var/lib/tftpboot/
-      loop:
-        - menu.c32
-        - chain.c32
-        - ldlinux.c32
-        - libcom32.c32
-        - ldlinux.c32
-        - pxelinux.0
-        - libutil.c32
+      copy:
+        src: /usr/share/syslinux/{{ item }}
+        dest: "{{ tftpboot_root }}/"
+        remote_src: yes
+      loop: "{{ pxe_files }}"
 
     - name: Creating seelinux rules for dnsmasq service
       copy:
@@ -36,11 +32,6 @@
         - /tmp/my-dnsmasq.pp
         - /tmp/my-dnsmasq.te 
 
-    - name: Creating nginx subdirectory
-      file:
-        state: directory
-        path: /usr/share/nginx/html/metal
-
     - name: Firing dnsmasq template
       template:
         src: templates/dnsmasq.j2
@@ -49,19 +40,19 @@
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
+        dest: "{{ tftpboot_root }}"/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
       loop: "{{ groups['masters'] }}"
 
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
+        dest: "{{ tftpboot_root }}"/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
       loop: "{{ groups['bootstrap'] }}"
 
     - name: Firing pxe boot template
       template:
         src: templates/pxeboot_mac.j2
-        dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
+        dest: "{{ tftpboot_root }}"/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}
       loop: "{{ groups['workers'] }}"
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server

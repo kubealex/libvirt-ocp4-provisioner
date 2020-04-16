@@ -1,5 +1,3 @@
-{% set cluster_domain = initial_config.cluster_name + "." + initial_config.domain %}
-
 ## External dns ##
 
 server={{ hostvars['bastion']['host_ip'] | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
@@ -67,7 +65,7 @@ dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
 ## SRV records for etcd service. Priority must be 0 and Weight must be 10 ###
 
 {% for node in groups['masters'] %}
-srv-host=_etcd-server-ssl._tcp.{{ initial_config.cluster_name }}.{{ initial_config.domain }},{{ hostvars[node].etcd_fqdn }},2380,0,10
+srv-host=_etcd-server-ssl._tcp.{{ hostvars[node].ocp_domain }},{{ hostvars[node].etcd_fqdn }},2380,0,10
 {%endfor%}
 
 ## SRV records end ##
@@ -75,7 +73,7 @@ srv-host=_etcd-server-ssl._tcp.{{ initial_config.cluster_name }}.{{ initial_conf
 ## PXE ##
 
 enable-tftp
-tftp-root=/var/lib/tftpboot,{{ hostvars['bastion'].host_interface }}
+tftp-root={{ tftpboot_root }},{{ hostvars['bastion'].host_interface }}
 dhcp-boot=pxelinux.0
 
 ## PXE end ##
@@ -83,7 +81,7 @@ dhcp-boot=pxelinux.0
 ## DHCP ##
 
 dhcp-option=101,"{{ dhcp.timezone }}"
-domain={{ initial_config.domain }}
+domain={{ infra_nodes.domain }}
 interface={{ hostvars['bastion'].host_interface }}
 dhcp-option={{ hostvars['bastion'].host_interface }},3,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
 dhcp-option=option:netmask,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('netmask') }}

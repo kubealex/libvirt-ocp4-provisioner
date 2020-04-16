@@ -1,9 +1,9 @@
 ---
 - import_playbook: 05_vm_provisioning_infra.yml
+- import_playbook: 07_vm_provisioning_ocp.yml
 - import_playbook: 10_infra_packages.yml
 - import_playbook: 15_bastion_networking.yml
 - import_playbook: 17_bastion_workspace.yml
-- import_playbook: 99_vm_provisioning_ocp.yml
 - import_playbook: 19_bastion_services.yml
 - import_playbook: 25_lb_services.yaml
 - import_playbook: 30_prepare_ocp_install.yaml

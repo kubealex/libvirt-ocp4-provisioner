@@ -1,0 +1,12 @@
+nginx_document_root: /usr/share/nginx/html
+tftp_boot_root: /var/lib/tftpboot
+tftp_workspace_dir: rhcos
+nginx_workspace_dir: metal
+pxe_files:
+  - menu.c32
+  - chain.c32
+  - ldlinux.c32
+  - libcom32.c32
+  - ldlinux.c32
+  - pxelinux.0
+  - libutil.c32
