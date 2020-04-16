@@ -54,7 +54,7 @@
     - name: Define libvirt network
       virt_net:
         command: define
-        name: ocp_auto
+        name: "{{ libvirt.network.network_name }}"
         xml: '{{ lookup("template", "templates/libvirt_network.xml.j2") }}'
         autostart: true
         state: active
