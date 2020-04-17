@@ -1,7 +1,7 @@
 
 # Openshift libvirt provisioning
 Welcome to the home of the project!
-This project has been inspired by the great work of my friend @valentinouberti, that did a great job creating the playbooks to deploy infrastructure nodes on oVirt ().
+This project has been inspired by the great work of my friend @ValentinoUberti, that did a great job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt).
 I wanted to play around with terraform and port his great work to libvirt and so, here we are!
 
 To give a quick overview, this project will allow you to provision a fully working OCP **stable** environment, consisting of:
