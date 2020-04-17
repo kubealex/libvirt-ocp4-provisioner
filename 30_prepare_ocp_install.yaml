@@ -114,7 +114,7 @@
             name: "{{ hostvars[item].node_hostname }}"
             state: running
           loop: "{{ groups['workers'] }}"
-      delegate_to: 127.0.0.1
+      delegate_to: vm_host
 
     - debug:
         msg:  Boot via PXE the VMs, using the MAC-tailored pxeboot configuration

@@ -1,5 +1,5 @@
 - name: Test playbook
-  hosts: localhost
+  hosts: vm_host
   vars_files:
     - vars/infra_vars.yml
     - vars/libvirt.yml
@@ -32,7 +32,7 @@
       register: output
       loop: "{{ infra_nodes.host_list|dict2items }}"
 
-    - name: Add bastion and loadbalancer vars, belonging to groups
+    - name: Add bastion and loadbalancer to in-memory inventory
       add_host:
         hostname: '{{ item.key }}'
         ansible_host: '{{ item.value.ip }}'
@@ -44,8 +44,6 @@
         ocp_domain: "{{ ocp_domain }}"
         timezone: "{{ dhcp.timezone }}"
         ntp_server: "{{ dhcp.ntp }}"
-        groups:
-          - "{{ item.key }}"
       loop: "{{ infra_nodes.host_list|dict2items }}"
 
 - name: Check connection, rename connection and set facts

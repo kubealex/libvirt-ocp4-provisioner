@@ -1,5 +1,5 @@
 - name: This play provisions OCP VMs based on intial config
-  hosts: localhost
+  hosts: vm_host
   vars_files:
     - vars/cluster_vars.yml
     - vars/libvirt.yml
