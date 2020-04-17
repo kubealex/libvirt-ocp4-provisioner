@@ -9,13 +9,16 @@ cluster_nodes:
   specs:
     bootstrap:
       vcpu: 4
-      mem: 16384
+      mem: 16
+      disk: 40
     masters:
       vcpu: 4
-      mem: 16384
+      mem: 16
+      disk: 40
     workers:
       vcpu: 4
-      mem: 16384
+      mem: 16
+      disk: 40
 cluster:
   ocp_user: admin
   ocp_pass: openshift

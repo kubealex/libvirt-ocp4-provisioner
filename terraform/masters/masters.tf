@@ -1,9 +1,9 @@
 # variables that can be overriden
 variable "hostname" { default = "master" }
-variable "memoryMB" { default = 1024*16 }
+variable "memory" { default = 16 }
 variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
-variable "vm_volume_size" { default = 1073741824*20 }
+variable "vm_volume_size" { default = 40 }
 variable "libvirt_network" { default = "ocp_auto" }
 variable "libvirt_pool" { default = "default" }
 
@@ -14,7 +14,7 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
-  size = var.vm_volume_size
+  size = var.vm_volume_size*1073741824
   pool = var.libvirt_pool
   format = "qcow2"
 }
@@ -23,7 +23,7 @@ resource "libvirt_volume" "os_image" {
 resource "libvirt_domain" "master" {
   count = var.vm_count
   name = "${var.hostname}-${count.index}"
-  memory = var.memoryMB
+  memory = var.memory*1024
   vcpu = var.cpu
 
   cpu = {

@@ -1,8 +1,8 @@
 # variables that can be overriden
 variable "hostname" { default = "bootstrap" }
-variable "memoryMB" { default = 1024*16 }
+variable "memory" { default = 16 }
 variable "cpu" { default = 4 }
-variable "vm_volume_size" { default = 1073741824*25 }
+variable "vm_volume_size" { default = 40 }
 variable "libvirt_network" { default = "ocp_auto" }
 variable "libvirt_pool" { default = "default" }
 
@@ -14,7 +14,7 @@ provider "libvirt" {
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
-  size = "${var.vm_volume_size}"
+  size = var.vm_volume_size*1073741824
   pool = var.libvirt_pool
   format = "qcow2"
 }
@@ -22,7 +22,7 @@ resource "libvirt_volume" "os_image" {
 # Create the machine
 resource "libvirt_domain" "bootstrap" {
   name = "${var.hostname}"
-  memory = var.memoryMB
+  memory = var.memory*1024
   vcpu = var.cpu
 
   disk {

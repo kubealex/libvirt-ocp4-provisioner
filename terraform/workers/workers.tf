@@ -1,13 +1,13 @@
 # variables that can be overriden
 variable "hostname" { default = "worker" }
-variable "memoryMB" { default = 1024*32 }
+variable "memory" { default = 32 }
 variable "cpu" { default = 10 }
 variable "vm_count" { default = 3 }
 variable "libvirt_network" { default = "ocp_auto" }
 variable "libvirt_pool" { default = "default" }
-variable "vm_volume_size" { default = 1073741824*20 }
-variable "vm_disk1_size" { default = 1073741824*10 }
-variable "vm_disk2_size" { default = 1073741824*150 }
+variable "vm_volume_size" { default = 20 }
+variable "ocs_disk1_size" { default = 10 }
+variable "ocs_disk2_size" { default = 150 }
 
 # instance the provider
 provider "libvirt" {
@@ -18,7 +18,7 @@ resource "libvirt_volume" "os_image" {
   count = var.vm_count
   name = "${var.hostname}-os_image-${count.index}"
   pool = var.libvirt_pool
-  size =  var.vm_volume_size
+  size =  var.vm_volume_size*1073741824
   format = "qcow2"
 }
 
@@ -26,7 +26,7 @@ resource "libvirt_volume" "storage1_image" {
   count= var.vm_count
   name = "${var.hostname}-storage_image-${count.index}"
   pool = var.libvirt_pool
-  size = var.vm_disk1_size
+  size = var.ocs_disk1_size*1073741824
   format = "qcow2"
 }
 
@@ -34,7 +34,7 @@ resource "libvirt_volume" "storage2_image" {
   count= var.vm_count
   name = "${var.hostname}-storage2_image-${count.index}"
   pool = var.libvirt_pool
-  size = var.vm_disk2_size
+  size = var.ocs_disk2_size*1073741824
   format = "qcow2"
 }
 
@@ -42,7 +42,7 @@ resource "libvirt_volume" "storage2_image" {
 resource "libvirt_domain" "worker" {
   count = var.vm_count
   name = "${var.hostname}-${count.index}"
-  memory = var.memoryMB
+  memory = var.memoryMB*1024
   vcpu = var.cpu
 
   cpu = {
@@ -67,9 +67,6 @@ resource "libvirt_domain" "worker" {
     dev = [ "hd", "network" ]
   }
 
-  # IMPORTANT
-  # Ubuntu can hang is a isa-serial is not present at boot time.
-  # If you find your CPU 100% and never is available this is why
   console {
     type        = "pty"
     target_port = "0"

@@ -88,24 +88,38 @@ Where **domain** is the dns domain assigned to the nodes and **cluster_name** is
       specs:
         bootstrap:
           vcpu: 4
-          mem: 16384
+          mem: 16
+          disk: 40
         masters:
           vcpu: 4
-          mem: 16384
+          mem: 16
         workers:
-          vcpu: 4
-          mem: 16384
+          vcpu: 2
+          mem: 8
+          disk: 40
             
     cluster:
       ocp_user: admin
       ocp_pass: openshift
-      pull_secret: ''
+      pullSecret: ''
+
+**mem** and **disk** are intended in GB
 
 The count of VMs is taken by the elements of the list, in this example, we got:
 
 - 3 master nodes with 4vcpu and 16G memory
-- 3 worker nodes with 4vcpu and 16G memory  
+- 3 worker nodes with 2vcpu and 8G memory  
 
-For testing purposes you can even run a very minimal 1m 1w cluster.
+Recommended values are:
+
+| Role | vCPU | RAM | Storage |
+|--|--|--|--|
+| bootstrap | 4 | 16G | 120G |
+| master | 4 | 16G | 120G |
+| worker | 2 | 8G | 120G |
+
+For testing purposes, minimum storage value is set at **40GB**.
+
+Pull Secret can be retrived easily at [https://github.com/dmacvicar/terraform-provider-libvirt](https://cloud.redhat.com/openshift/install/pull-secret)  
 
 HTPasswd provider is created after the installation, you can use ocp_user and ocp_pass to login!
