@@ -4,15 +4,7 @@
     - vars/cluster_vars.yml
     - vars/libvirt.yml
   tasks:
-    # Fail fast if there is any incoherence with nodes
-
-    - fail: 
-        msg: "Only ONE bootstrap node can be present"
-      when: cluster_nodes.host_list.bootstrap | count > 1
-
-    - fail: 
-        msg: "Please check the host_list variable in cluster_nodes"
-      when: cluster_nodes.host_list.masters | count <= 0 or cluster_nodes.host_list.workers | count <= 0
+    
 
     - terraform:
         force_init: true
@@ -22,7 +14,8 @@
           libvirt_network: "{{ libvirt.network.network_name }}"
           libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.bootstrap.vcpu }}"
-          memoryMB: "{{ cluster_nodes.specs.bootstrap.mem }}"
+          vm_volume_size: "{{ cluster_nodes.specs.bootstrap.disk }}"
+          memory: "{{ cluster_nodes.specs.bootstrap.mem }}"
         state: present
       register: output_bootstrap
 
@@ -34,7 +27,8 @@
           libvirt_network: "{{ libvirt.network.network_name }}"
           libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.masters.vcpu }}"
-          memoryMB: "{{ cluster_nodes.specs.masters.mem }}"
+          memory: "{{ cluster_nodes.specs.masters.mem }}"
+          vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
       register: output_masters
@@ -49,7 +43,8 @@
           libvirt_network: "{{ libvirt.network.network_name }}"
           libvirt_pool: "{{ libvirt.storage.pool_name }}"
           cpu: "{{ cluster_nodes.specs.workers.vcpu }}"
-          memoryMB: "{{ cluster_nodes.specs.workers.mem }}"
+          memory: "{{ cluster_nodes.specs.workers.mem }}"
+          vm_volume_size: "{{ cluster_nodes.specs.workers.disk }}"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
         state: present
       register: output_workers

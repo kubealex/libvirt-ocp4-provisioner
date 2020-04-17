@@ -3,12 +3,12 @@ variable "hostname" { default = "test" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
 variable "ipMode" { default = "static" } # dhcp is other valid type
-variable "memoryMB" { default = 1024*6 }
+variable "memory" { default = 6 }
 variable "cpu" { default = 2 }
 variable "iface" { default = "eth0" }
 variable "libvirt_network" { default = "ocp_auto" }
 variable "libvirt_pool" { default= "default" }
-variable "vm_volume_size" { default = 1073741824*20 }
+variable "vm_volume_size" { default = 20 }
 
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
@@ -29,7 +29,7 @@ provider "libvirt" {
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
-  pool = var.libvirt_pool
+  pool = var.libvirt_pool*1073741824
   source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
   format = "qcow2"
 }
@@ -38,7 +38,7 @@ resource "libvirt_volume" "os_image" {
 #resource "libvirt_volume" "storage_image" {
 #  name = "${var.hostname}-storage_image"
 #  pool = var.libvirt_pool
-#  size = var.vm_volume_size
+#  size = var.vm_volume_size*1073741824
 #  format = "qcow2"
 #}
 
@@ -80,7 +80,7 @@ data "template_file" "meta_data" {
 resource "libvirt_domain" "bastion" {
   # domain name in libvirt, not hostname
   name = "${var.hostname}-${var.network_data["hostIP"]}"
-  memory = var.memoryMB
+  memory = var.memory*1024
   vcpu = var.cpu
 
   disk {

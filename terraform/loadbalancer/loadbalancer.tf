@@ -3,7 +3,7 @@ variable "hostname" { default = "test" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
 variable "ipMode" { default = "static" } # dhcp is other valid type
-variable "memoryMB" { default = 1024*2 }
+variable "memory" { default = 1024*2 }
 variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
@@ -52,7 +52,6 @@ data "template_file" "user_data" {
 
 #Fix for centOS
 data "template_file" "meta_data" {
-#data "template_file" "network_config" {
   template = file("${path.module}/network_config.cfg")
   vars = {
     domain = "${var.cluster_name}.${var.domain}"
@@ -71,7 +70,7 @@ data "template_file" "meta_data" {
 resource "libvirt_domain" "infra-machine" {
   # domain name in libvirt, not hostname
   name = "${var.hostname}-${var.network_data["hostIP"]}"
-  memory = var.memoryMB
+  memory = var.memory*1024
   vcpu = var.cpu
 
   disk {
