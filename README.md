@@ -35,7 +35,7 @@ PXE is automatic, based on MAC binding to different OCP nodes role, so no need o
 
 
 ## Quickstart
-The playbook is meant to be ran on **localhost** so no inventory is needed.
+The playbook is meant to be ran against a vm_host, that can be localhost or many hosts, defined under **vm_host** group.
 
     ansible-playbook main.yml
 
