@@ -1,8 +1,9 @@
 
 # Openshift libvirt provisioning
 Welcome to the home of the project!
-This project has been inspired by the great work of @ValentinoUberti, that did a great job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt).
-I wanted to play around with terraform and port his great work to libvirt and so, here we are!
+This project has been inspired by @ValentinoUberti, who did a GREAT job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
+
+I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
 To give a quick overview, this project will allow you to provision a fully working OCP **stable** environment, consisting of:
 
@@ -33,9 +34,10 @@ PXE is automatic, based on MAC binding to different OCP nodes role, so no need o
   - pass: ocprocks  
   - ssh-key: generated during vm-provisioning and store in the project folder  
 
+The user is capable of logging via SSH too.  
 
 ## Quickstart
-The playbook is meant to be ran against a vm_host, that can be localhost or many hosts, defined under **vm_host** group.
+The playbook is meant to be ran against a/many local or remote host/s, defined under **vm_host** group, depending on how many clusters you want to configure at once.  
 
     ansible-playbook main.yml
 
@@ -45,7 +47,7 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 
     libvirt:                       
       storage:                     
-        pool_name: ocp4_vms        
+        pool_name: ocp4_vms
         pool_path: /var/lib/libvirt/images/ocp4
       network:                     
         network_name: ocp4         
@@ -55,18 +57,18 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 
 **vars/infra_nodes.yml**
 
+    domain: hetzner.lab
+    cluster_name: ocp4
     infra_nodes:
       host_list:
         bastion:
           ip: 192.168.100.4
         loadbalancer:
           ip: 192.168.100.5
-      domain: hetzner.lab
-      cluster_name: ocp4
-     
     dhcp:
       timezone: "Europe/Rome"
       ntp: 204.11.201.10
+
 Where **domain** is the dns domain assigned to the nodes and **cluster_name** is the name chosen for our OCP cluster installation.
 
 **vars/cluster_nodes.yml**
@@ -84,6 +86,9 @@ Where **domain** is the dns domain assigned to the nodes and **cluster_name** is
           - ip: 192.168.100.11
           - ip: 192.168.100.12
       specs:
+        bootstrap:
+          vcpu: 4
+          mem: 16384
         masters:
           vcpu: 4
           mem: 16384
@@ -91,8 +96,8 @@ Where **domain** is the dns domain assigned to the nodes and **cluster_name** is
           vcpu: 4
           mem: 16384
             
-	cluster:
-	  ocp_user: admin
+    cluster:
+      ocp_user: admin
       ocp_pass: openshift
       pull_secret: ''
 
@@ -100,5 +105,7 @@ The count of VMs is taken by the elements of the list, in this example, we got:
 
 - 3 master nodes with 4vcpu and 16G memory
 - 3 worker nodes with 4vcpu and 16G memory  
+
+For testing purposes you can even run a very minimal 1m 1w cluster.
 
 HTPasswd provider is created after the installation, you can use ocp_user and ocp_pass to login!

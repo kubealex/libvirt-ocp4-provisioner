@@ -15,14 +15,13 @@
           - bcrypt
       become: true
       
-
     - name: Creating yaml configuration for htpasswd identity provider
       template:
-        src: ../templates/htpasswd_provider.j2
+        src: templates/htpasswd_provider.j2
         dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
 
     - template:
-        src: ../templates/ocp_user_script.j2
+        src: templates/ocp_user_script.j2
         dest: /tmp/ocp_user.sh
         mode: +x
         
