@@ -3,9 +3,9 @@ cluster_name: ocp4
 infra_nodes:
   host_list:
     bastion:
-      ip: 192.168.100.4
+      - ip: 192.168.100.4
     loadbalancer:
-      ip: 192.168.100.5
+      - ip: 192.168.100.5
 
 dhcp:
   timezone: "Europe/Rome"

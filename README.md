@@ -62,9 +62,9 @@ You can quickly make it work by configuring the needed vars, but you can go stra
     infra_nodes:
       host_list:
         bastion:
-          ip: 192.168.100.4
+          - ip: 192.168.100.4
         loadbalancer:
-          ip: 192.168.100.5
+          - ip: 192.168.100.5
     dhcp:
       timezone: "Europe/Rome"
       ntp: 204.11.201.10
