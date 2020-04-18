@@ -60,7 +60,7 @@
     - name: Make libvirt network autostart
       virt_net:
         name: "{{ libvirt.network.network_name }}"
-				autostart: true
+        autostart: true
 
     - name: Start libvirt network
       virt_net:
