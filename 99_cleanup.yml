@@ -28,7 +28,7 @@
         name: "{{ libvirt.storage.pool_name }}"
         state: absent
 
-    - name: Delete gopath
+    - name: Delete all created paths
       file:
         path: "{{ item }}"
         state: absent
