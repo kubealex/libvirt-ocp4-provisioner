@@ -40,11 +40,13 @@
       file:
         path: ~/.terraform.d/plugins
         state: directory
+        mode: 744
 
     - name: Copy libvirt provider to plugins directory
       copy:
         src: "{{ gopath }}/bin/terraform-provider-libvirt"
         dest: ~/.terraform.d/plugins/
+        mode: 755
 
     - name: Ensure pool path exists
       file:
