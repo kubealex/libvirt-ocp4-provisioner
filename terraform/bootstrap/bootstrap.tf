@@ -21,7 +21,7 @@ resource "libvirt_volume" "os_image" {
 
 # Create the machine
 resource "libvirt_domain" "bootstrap" {
-  name = "${var.hostname}"
+  name = var.hostname
   memory = var.memory*1024
   vcpu = var.cpu
 

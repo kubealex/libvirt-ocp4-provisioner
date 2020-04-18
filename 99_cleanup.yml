@@ -1,18 +1,40 @@
 ---
-- name: Clean up haproxy config on loadbalancer
-  hosts: loadbalancer
-  become: true
+- name: Cleanup playbook
+  hosts: vm_host
+  vars_files:
+    - vars/libvirt.yml
+  vars:
+      gopath: "~/go"
   tasks:
-    - name: Remove bootstrap
-      lineinfile:
-        regexp: 'bootstrap'
+
+    - name: Destroy bootstrap VM
+      terraform:
+        project_path: "terraform/{{ item }}"
         state: absent
-        path: /etc/haproxy/haproxy.cfg
-      notify: restart haproxy
+      loop: 
+        - bootstrap
+        - bastion
+        - loadbalancer
+        - workers
+        - masters
 
+    - name: Remove libvirt network
+      virt_net:
+        name: "{{ libvirt.network.network_name }}"
+        state: absent
 
-  handlers: 
-    - name: restart haproxy
-      service:
-        name: haproxy
-        state: restarted
+    - name: Remove libvirt pool
+      virt_pool:
+        name: "{{ libvirt.storage.pool_name }}"
+        state: absent
+
+    - name: Delete gopath
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop: 
+        - ~/libvirt-provider
+        - ~/.terraform.d
+        - "{{ gopath }}"
+        - /usr/bin/terraform
+        - "{{ libvirt.storage.pool_path }}"

@@ -1,0 +1,30 @@
+---
+- name: Let's install OCP
+  hosts: bastion
+  tasks:
+    - debug:
+        msg: All VMs booted up, using the MAC-tailored pxeboot configuration
+
+    - name: Waiting for bootstrap to complete
+      command: openshift-install wait-for bootstrap-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      retries: 10
+      delay: 5
+      register: result
+      until: result.rc == 0
+
+    - name: Waiting for install to complete
+      command: openshift-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      retries: 10
+      delay: 5
+      register: result
+      until: result.rc == 0
+
+    - name: Removing csr cronjob
+      cron:
+        name: "Openshift csr approver"
+        state: absent
+
+    - name: Jedy
+      debug:
+        msg: May OCP will be with you
+ 
