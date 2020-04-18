@@ -56,9 +56,13 @@
         command: define
         name: "{{ libvirt.network.network_name }}"
         xml: '{{ lookup("template", "templates/libvirt_network.xml.j2") }}'
-        autostart: true
 
-    - name: Define libvirt network
+    - name: Make libvirt network autostart
+      virt_net:
+        name: "{{ libvirt.network.network_name }}"
+				autostart: true
+
+    - name: Start libvirt network
       virt_net:
         command: start
         name: "{{ libvirt.network.network_name }}"
@@ -69,9 +73,13 @@
         command: define
         name: "{{ libvirt.storage.pool_name }}"
         xml: '{{ lookup("template", "templates/libvirt_pool.xml.j2") }}'
+
+    - name: Make libvirt pool autostart
+      virt_pool:
+        name: "{{ libvirt.storage.pool_name }}"
         autostart: true
 
-    - name: Define libvirt pool
+    - name: Start libvirt pool
       virt_pool:
         command: start
         name: "{{ libvirt.storage.pool_name }}"

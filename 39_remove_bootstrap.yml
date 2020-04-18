@@ -1,0 +1,27 @@
+---
+- name: Clean up haproxy config on loadbalancer
+  hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Remove bootstrap from HAProxy
+      lineinfile:
+        regexp: 'bootstrap'
+        state: absent
+        path: /etc/haproxy/haproxy.cfg
+      notify: restart haproxy
+
+
+  handlers: 
+    - name: restart haproxy
+      service:
+        name: haproxy
+        state: restarted
+
+- name: Destroy bootstrap VM
+  hosts: vm_host
+  become: true
+  tasks:
+    - name: Destroy bootstrap VM
+      terraform:
+        project_path: "terraform/bootstrap"
+        state: absent    

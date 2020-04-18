@@ -1,0 +1,44 @@
+---
+- name: PXE boot vms
+  hosts: vm_host
+  become: true
+  tasks:
+    - name: Restart OCP VMs sequentially
+      block:
+        - name: Destroy bootstrap node
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['bootstrap'] }}"
+
+        - name: Destroy master nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['masters'] }}"
+
+        - name: Destroy worker nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: destroyed
+          loop: "{{ groups['workers'] }}"
+
+        - name: Restart bootstrap node
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['bootstrap'] }}"
+
+        - name: Restart master nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['masters'] }}"
+
+        - name: Restart worker nodes
+          virt:
+            name: "{{ hostvars[item].node_hostname }}"
+            state: running
+          loop: "{{ groups['workers'] }}"
+    - debug:
+        msg: All VMs are booting...

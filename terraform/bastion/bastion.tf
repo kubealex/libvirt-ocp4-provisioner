@@ -29,7 +29,7 @@ provider "libvirt" {
 # fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
-  pool = var.libvirt_pool*1073741824
+  pool = var.libvirt_pool
   source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2"
   format = "qcow2"
 }
@@ -44,7 +44,7 @@ resource "libvirt_volume" "os_image" {
 
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name = "${var.hostname}-commoninit-${var.network_data["hostIP"]}.iso"
+  name = "${var.hostname}-commoninit.iso"
   pool = var.libvirt_pool 
   user_data = data.template_file.user_data.rendered
   meta_data = data.template_file.meta_data.rendered
@@ -79,7 +79,7 @@ data "template_file" "meta_data" {
 # Create the machine
 resource "libvirt_domain" "bastion" {
   # domain name in libvirt, not hostname
-  name = "${var.hostname}-${var.network_data["hostIP"]}"
+  name = var.hostname
   memory = var.memory*1024
   vcpu = var.cpu
 

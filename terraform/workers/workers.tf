@@ -42,7 +42,7 @@ resource "libvirt_volume" "storage2_image" {
 resource "libvirt_domain" "worker" {
   count = var.vm_count
   name = "${var.hostname}-${count.index}"
-  memory = var.memoryMB*1024
+  memory = var.memory*1024
   vcpu = var.cpu
 
   cpu = {

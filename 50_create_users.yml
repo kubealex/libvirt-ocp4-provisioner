@@ -1,5 +1,7 @@
 - name: Create admin with cluster admin privileges
   hosts: bastion
+  vars_files:
+    vars/cluster_vars.yml
   tasks:
     
     - name: Ensuring httpd-tools is present
@@ -58,5 +60,5 @@
     - name: Try to login with admin
       command: > 
                /usr/local/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} 
-               https://api.{{ hostvars['bastion'].ocp_cluster }}:6443 --config {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
+               https://api.{{ hostvars['bastion'].ocp_domain }}:6443 --config {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
       retries: 10   
