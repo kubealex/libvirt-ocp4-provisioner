@@ -26,9 +26,9 @@
         state: started
         enabled: true
 
-#    - git:
-#        repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
-#        dest: ~/libvirt-provider
+    - git:
+        repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
+        dest: ~/libvirt-provider
 
     - name: Run 'install' target as root
       make:
