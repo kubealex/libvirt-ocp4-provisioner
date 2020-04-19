@@ -7,7 +7,7 @@ variable "memory" { default = 1024*2 }
 variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
-variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 variable "network_data" { 
   type = map

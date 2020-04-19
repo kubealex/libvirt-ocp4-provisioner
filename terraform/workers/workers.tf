@@ -3,11 +3,12 @@ variable "hostname" { default = "worker" }
 variable "memory" { default = 32 }
 variable "cpu" { default = 10 }
 variable "vm_count" { default = 3 }
-variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 variable "vm_volume_size" { default = 20 }
 variable "ocs_disk1_size" { default = 10 }
 variable "ocs_disk2_size" { default = 150 }
+variable "ocs_ready" { default = true }
 
 # instance the provider
 provider "libvirt" {
@@ -23,7 +24,7 @@ resource "libvirt_volume" "os_image" {
 }
 
 resource "libvirt_volume" "storage1_image" {
-  count= var.vm_count
+  count = var.ocs_ready ? var.vm_count : 0
   name = "${var.hostname}-storage_image-${count.index}"
   pool = var.libvirt_pool
   size = var.ocs_disk1_size*1073741824
@@ -31,7 +32,7 @@ resource "libvirt_volume" "storage1_image" {
 }
 
 resource "libvirt_volume" "storage2_image" {
-  count= var.vm_count
+  count = var.ocs_ready ? var.vm_count : 0
   name = "${var.hostname}-storage2_image-${count.index}"
   pool = var.libvirt_pool
   size = var.ocs_disk2_size*1073741824
@@ -53,10 +54,10 @@ resource "libvirt_domain" "worker" {
      volume_id = libvirt_volume.os_image[count.index].id
   }
   disk {
-     volume_id = libvirt_volume.storage1_image[count.index].id
+     volume_id = var.ocs_ready ? libvirt_volume.storage1_image[count.index].id : ""
   }
   disk  {
-     volume_id = libvirt_volume.storage2_image[count.index].id
+     volume_id = var.ocs_ready ? libvirt_volume.storage2_image[count.index].id : ""
   }
 
   network_interface {

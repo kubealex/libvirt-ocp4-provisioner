@@ -47,7 +47,7 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 
     libvirt:                       
       storage:                     
-        pool_name: ocp4_vms
+        pool_name: ocp4
         pool_path: /var/lib/libvirt/images/ocp4
       network:                     
         network_name: ocp4         
@@ -55,10 +55,14 @@ You can quickly make it work by configuring the needed vars, but you can go stra
         network_bridge: ocpbr1     
         network_mask: 255.255.255.0
 
+The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
+
+
 **vars/infra_nodes.yml**
 
     domain: hetzner.lab
     cluster_name: ocp4
+    nfs_registry: false
     infra_nodes:
       host_list:
         bastion:
@@ -70,6 +74,8 @@ You can quickly make it work by configuring the needed vars, but you can go stra
       ntp: 204.11.201.10
 
 Where **domain** is the dns domain assigned to the nodes and **cluster_name** is the name chosen for our OCP cluster installation.
+
+The variable **nfs_registry** is set to false by default. If set to true, it will deploy an additional 100Gi volume on **bastion** VM, create the PV and patch registry to use it in Managed mode.
 
 **vars/cluster_nodes.yml**
 
@@ -123,3 +129,10 @@ For testing purposes, minimum storage value is set at **40GB**.
 Pull Secret can be retrived easily at [https://github.com/dmacvicar/terraform-provider-libvirt](https://cloud.redhat.com/openshift/install/pull-secret)  
 
 HTPasswd provider is created after the installation, you can use ocp_user and ocp_pass to login!
+
+**DISCLAIMER**
+This project is for testing/lab only, it is not supported in any way by Red Hat nor endorsed.
+
+Feel free to suggest modifications/improvements.
+
+Alex

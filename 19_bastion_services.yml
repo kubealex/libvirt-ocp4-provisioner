@@ -69,5 +69,12 @@
         - dnsmasq
         - nginx
 
+    - name: Enable nfs if needed
+      service:
+        name: nfs-server
+        state: started
+        enabled: true
+      when: nfs_registry 
+
     - name: Rebooting bastion
       reboot:

@@ -13,3 +13,5 @@
 - import_playbook: 37_ocp_install.yml
 - import_playbook: 39_remove_bootstrap.yml
 - import_playbook: 50_create_users.yml
+- import_playbook: 40_deploy_nfs.yml
+- import_playbook: 41_patch_registry.yml
