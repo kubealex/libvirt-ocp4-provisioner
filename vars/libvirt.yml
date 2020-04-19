@@ -1,6 +1,6 @@
 libvirt:
   storage:
-    pool_name: ocp4_vms
+    pool_name: ocp4
     pool_path: /var/lib/libvirt/images/ocp4
   network:
     network_name: ocp4

@@ -1,3 +1,4 @@
+ocs_ready: false
 cluster_nodes:
   host_list:
     bootstrap:

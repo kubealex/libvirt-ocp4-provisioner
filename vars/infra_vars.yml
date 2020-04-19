@@ -1,5 +1,7 @@
 domain: hetzner.lab
 cluster_name: ocp4
+nfs_registry: false
+
 infra_nodes:
   host_list:
     bastion:

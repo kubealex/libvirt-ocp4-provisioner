@@ -4,7 +4,7 @@ variable "memory" { default = 16 }
 variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
 variable "vm_volume_size" { default = 40 }
-variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
 provider "libvirt" {

@@ -6,9 +6,10 @@ variable "ipMode" { default = "static" } # dhcp is other valid type
 variable "memory" { default = 6 }
 variable "cpu" { default = 2 }
 variable "iface" { default = "eth0" }
-variable "libvirt_network" { default = "ocp_auto" }
+variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default= "default" }
 variable "vm_volume_size" { default = 20 }
+variable "enable_nfs" { default = false }
 
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
@@ -35,12 +36,13 @@ resource "libvirt_volume" "os_image" {
 }
 
 # fetch the latest ubuntu release image from their mirrors
-#resource "libvirt_volume" "storage_image" {
-#  name = "${var.hostname}-storage_image"
-#  pool = var.libvirt_pool
-#  size = var.vm_volume_size*1073741824
-#  format = "qcow2"
-#}
+resource "libvirt_volume" "storage_image" {
+  count = var.enable_nfs ? 1 : 0
+  name = "${var.hostname}-storage_image"
+  pool = var.libvirt_pool
+  size = 100*1073741824
+  format = "qcow2"
+}
 
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
@@ -86,9 +88,9 @@ resource "libvirt_domain" "bastion" {
   disk {
      volume_id = libvirt_volume.os_image.id
   }
-#  disk  {
-#     volume_id = libvirt_volume.storage_image.id
-#  }
+  disk  {
+     volume_id = var.enable_nfs ? libvirt_volume.storage_image[0].id : ""
+  }
  
   network_interface {
        network_name = var.libvirt_network
