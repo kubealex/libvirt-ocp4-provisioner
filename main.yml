@@ -12,7 +12,4 @@
 - import_playbook: 35_pxeboot_vms.yml
 - import_playbook: 37_ocp_install.yml
 - import_playbook: 39_remove_bootstrap.yml
-#- import_playbook: 40_deploy_nfs.yml
-#- import_playbook: 41_patch_registry.yml
-#- import_playbook: 41_ocs_patch_registry.yml
 - import_playbook: 50_create_users.yml
