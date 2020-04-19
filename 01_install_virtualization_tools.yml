@@ -4,8 +4,6 @@
   become: true
   vars_files:
     - vars/libvirt.yml
-  vars:
-    gopath: "~/go"
   tasks:
 
     - name: Download and provision Terraform
