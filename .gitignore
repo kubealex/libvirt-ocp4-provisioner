@@ -4,3 +4,5 @@ vars/vars.yml
 test.yml
 .terraform
 roles
+40*.yml
+41*.yml
