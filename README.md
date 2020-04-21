@@ -126,7 +126,7 @@ Recommended values are:
 
 For testing purposes, minimum storage value is set at **40GB**.
 
-Pull Secret can be retrived easily at [https://github.com/dmacvicar/terraform-provider-libvirt](https://cloud.redhat.com/openshift/install/pull-secret)  
+Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
 HTPasswd provider is created after the installation, you can use ocp_user and ocp_pass to login!
 
