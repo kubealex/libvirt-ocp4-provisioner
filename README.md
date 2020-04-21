@@ -1,10 +1,10 @@
 
 # Openshift libvirt provisioning
 Welcome to the home of the project!
+This project has been inspired by @ValentinoUberti, who did a GREAT job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
 <img src=".images/libvirtIcon.png"
      alt="Markdown Monster icon"
-     style="float: left; margin-right: 10px;" /> This project has been inspired by @ValentinoUberti, who did a GREAT job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
-
+     style="float: left; margin-right: 10px;" />
 I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
 To give a quick overview, this project will allow you to provision a fully working OCP **stable** environment, consisting of:
