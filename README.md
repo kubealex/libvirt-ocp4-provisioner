@@ -1,5 +1,5 @@
 
-# Openshift libvirt provisioning
+![](.images/libvirticonshadow.png) # Openshift libvirt provisioning
 Welcome to the home of the project!
 This project has been inspired by @ValentinoUberti, who did a GREAT job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
 
