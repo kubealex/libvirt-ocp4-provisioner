@@ -1,7 +1,7 @@
 
 # libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
 Welcome to the home of the project!
-This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to deploy infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
+This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt (https://github.com/ValentinoUberti/openshift-ansible-ovirt) and preparing for cluster installation.  
 
 I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
