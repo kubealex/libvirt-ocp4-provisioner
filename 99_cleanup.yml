@@ -1,6 +1,7 @@
 ---
 - name: Cleanup playbook
   hosts: vm_host
+  become: true
   vars_files:
     - vars/libvirt.yml
   vars:

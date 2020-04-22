@@ -28,8 +28,8 @@
            
         - name: Fail fast if worker nodes don't meet minimum requirements
           fail:                                                                             
-            msg: "Bootstrap nodes must be provisioned with at least 8GB memory and 2vCPUs"
-          when: ( cluster_nodes.specs.workers.vcpu < 4 ) or ( cluster_nodes.specs.workers.mem < 16 ) or ( cluster_nodes.specs.workers.disk < 40 )
+            msg: "Worker nodes must be provisioned with at least 8GB memory and 2vCPUs"
+          when: ( cluster_nodes.specs.workers.vcpu < 2 ) or ( cluster_nodes.specs.workers.mem < 8 ) or ( cluster_nodes.specs.workers.disk < 40 )
 
         - name: Check for pullSecret variable and fail fast
           fail:
