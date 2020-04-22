@@ -9,6 +9,7 @@
 
     - name: Destroy bootstrap VM
       terraform:
+        force_init: true
         project_path: "terraform/{{ item }}"
         state: absent
       loop: 
