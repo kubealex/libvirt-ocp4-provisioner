@@ -2,13 +2,12 @@
 variable "hostname" { default = "test" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
-variable "ipMode" { default = "static" } # dhcp is other valid type
 variable "memory" { default = 1024*2 }
 variable "cpu" { default = 1 }
 variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
-variable "libvirt_network" { default = "ocp" }
-variable "libvirt_pool" { default = "default" }
+variable "libvirt_network" { default = "ocp4" }
+variable "libvirt_pool" { default = "ocp4" }
 variable "network_data" { 
   type = map
   default = {
@@ -61,7 +60,6 @@ data "template_file" "meta_data" {
     broadcast = var.network_data["broadcast"]
     network = var.network_data["network"]
     iface = var.iface
-    ipMode = var.ipMode
   }
 }
 

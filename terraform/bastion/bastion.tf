@@ -1,16 +1,15 @@
 # variables that can be overriden
-variable "hostname" { default = "test" }
+variable "hostname" { default = "bastion" }
 variable "domain" { default = "hetzner.lab" }
 variable "cluster_name" { default = "ocp4" }
-variable "ipMode" { default = "static" } # dhcp is other valid type
 variable "memory" { default = 6 }
 variable "cpu" { default = 2 }
 variable "iface" { default = "eth0" }
-variable "libvirt_network" { default = "ocp" }
-variable "libvirt_pool" { default= "default" }
+variable "libvirt_network" { default = "ocp4" }
+variable "libvirt_pool" { default= "ocp4" }
 variable "vm_volume_size" { default = 20 }
 variable "enable_nfs" { default = false }
-
+variable "nfs" { default = {} }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
   type = map
@@ -73,7 +72,6 @@ data "template_file" "meta_data" {
     network = var.network_data["network"]
     broadcast = var.network_data["broadcast"]
     iface = var.iface
-    ipMode = var.ipMode
   }
 }
 
@@ -88,9 +86,13 @@ resource "libvirt_domain" "bastion" {
   disk {
      volume_id = libvirt_volume.os_image.id
   }
-  disk  {
-     volume_id = var.enable_nfs ? libvirt_volume.storage_image[0].id : ""
-  }
+
+  dynamic "disk"  {
+     for_each = var.nfs
+     content {
+     volume_id = libvirt_volume.storage_image[0].id
+     }
+   }
  
   network_interface {
        network_name = var.libvirt_network

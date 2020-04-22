@@ -27,6 +27,7 @@
     - git:
         repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
         dest: ~/libvirt-provider
+        force: true
 
     - name: Run 'install' target as root
       make:
@@ -44,6 +45,7 @@
       copy:
         src: "{{ gopath }}/bin/terraform-provider-libvirt"
         dest: ~/.terraform.d/plugins/
+        remote_src: true
         mode: 755
 
     - name: Ensure pool path exists
