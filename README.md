@@ -24,7 +24,7 @@ It also takes care of preparing the host machine with needed packages, configuri
 - terraform 
 - libvirt-terraform-provider ( compiled and initialized based on [https://github.com/dmacvicar/terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
-PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP .4.3.10 stable up and running.
+PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP .4.3.latest stable up and running.
 
 ## **bastion** and **loadbalancer** VMs spec:
 
