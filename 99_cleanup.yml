@@ -1,7 +1,6 @@
 ---
 - name: Cleanup playbook
   hosts: vm_host
-  become: true
   vars_files:
     - vars/libvirt.yml
   vars:
@@ -13,7 +12,7 @@
         force_init: true
         project_path: "terraform/{{ item }}"
         state: absent
-      loop: 
+      loop:
         - bootstrap
         - bastion
         - loadbalancer
@@ -31,6 +30,7 @@
         state: absent
 
     - name: Delete all created paths
+      become: true
       file:
         path: "{{ item }}"
         state: absent
