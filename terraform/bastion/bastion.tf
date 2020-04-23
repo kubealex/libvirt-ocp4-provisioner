@@ -9,7 +9,7 @@ variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default= "ocp4" }
 variable "vm_volume_size" { default = 20 }
 variable "enable_nfs" { default = false }
-variable "nfs" { default = {} }
+variable "nfs" { default = { nfs_storage = "storage_image" } }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
   type = map
@@ -88,8 +88,9 @@ resource "libvirt_domain" "bastion" {
   }
 
   dynamic "disk"  {
-     for_each = var.nfs
+     for_each = var.enable_nfs ? var.nfs : {}
      content {
+     
      volume_id = libvirt_volume.storage_image[0].id
      }
    }

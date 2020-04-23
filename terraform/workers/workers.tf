@@ -8,7 +8,9 @@ variable "libvirt_pool" { default = "default" }
 variable "vm_volume_size" { default = 20 }
 variable "ocs_disk1_size" { default = 10 }
 variable "ocs_disk2_size" { default = 150 }
-variable "ocs_ready" { default = true }
+variable "ocs_ready" { default = false }
+variable "ocs_1" { default = { ocs_storage1 = true } }
+variable "ocs_2" { default = { ocs_storage2 = true } }
 
 # instance the provider
 provider "libvirt" {
@@ -53,12 +55,21 @@ resource "libvirt_domain" "worker" {
   disk {
      volume_id = libvirt_volume.os_image[count.index].id
   }
-  disk {
-     volume_id = var.ocs_ready ? libvirt_volume.storage1_image[count.index].id : ""
-  }
-  disk  {
-     volume_id = var.ocs_ready ? libvirt_volume.storage2_image[count.index].id : ""
-  }
+  dynamic "disk"  {
+     for_each = var.ocs_ready ? var.ocs_1 : {}
+     content {
+
+     volume_id = libvirt_volume.storage1_image[count.index].id
+     }
+   }
+
+  dynamic "disk"  {
+     for_each = var.ocs_ready ? var.ocs_2 : {}
+     content {
+
+     volume_id = libvirt_volume.storage2_image[count.index].id
+     }
+   }
 
   network_interface {
        network_name = var.libvirt_network
