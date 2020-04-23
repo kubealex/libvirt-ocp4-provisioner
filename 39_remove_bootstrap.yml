@@ -19,7 +19,6 @@
 
 - name: Destroy bootstrap VM
   hosts: vm_host
-  become: true
   tasks:
     - name: Destroy bootstrap VM
       terraform:

@@ -1,6 +1,5 @@
 - name: Test playbook
   hosts: vm_host
-  become: true
   vars_files:
     - vars/infra_vars.yml
     - vars/libvirt.yml
@@ -52,7 +51,6 @@
 - name: Check connection, rename connection and set facts
   hosts: bastion,loadbalancer
   gather_facts: no
-  become: true
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
       wait_for_connection: 
