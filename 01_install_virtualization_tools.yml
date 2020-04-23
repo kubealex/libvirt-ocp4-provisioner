@@ -1,7 +1,6 @@
 ---
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
-  become: true
   vars_files:
     - vars/libvirt.yml
   tasks:
@@ -17,12 +16,14 @@
       yum:
         name: "{{ virtualization_packages }}"
         state: latest
+      become: true
 
     - name: Virtualization services are enabled
       service:
         name: libvirtd
         state: started
         enabled: true
+      become: true
 
     - git:
         repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
@@ -33,7 +34,6 @@
       make:
         chdir: ~/libvirt-provider
         target: install
-      become: yes
 
     - name: Ensures terraform plugins directory exists
       file:

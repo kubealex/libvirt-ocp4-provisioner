@@ -1,5 +1,6 @@
 - name: Test playbook
   hosts: vm_host
+  become: true
   vars_files:
     - vars/infra_vars.yml
     - vars/libvirt.yml
