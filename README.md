@@ -32,7 +32,7 @@ PXE is automatic, based on MAC binding to different OCP nodes role, so no need o
 - cloud-init:   
   - user: ocpinstall  
   - pass: ocprocks  
-  - ssh-key: generated during vm-provisioning and store in the project folder  
+  - ssh-key: generated during vm-provisioning and stores in the project folder  
 
 The user is capable of logging via SSH too.  
 
@@ -99,6 +99,7 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
         masters:
           vcpu: 4
           mem: 16
+          disk: 40	  
         workers:
           vcpu: 2
           mem: 8
