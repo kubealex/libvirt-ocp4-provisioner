@@ -1,0 +1,8 @@
+#!/bin/bash
+export KUBECONFIG={{ workspace_directory.base_path }}/config/auth/kubeconfig
+{% for node in groups['workers'] %}
+{% if hostvars[node].ocp_role != 'worker' %}
+oc label node {{ hostvars[node].node_fqdn }} node-role.kubernetes.io/{{ hostvars[node].ocp_role }}=""
+oc label node {{ hostvars[node].node_fqdn }} node-role.kubernetes.io/worker-
+{% endif %}
+{% endfor %}

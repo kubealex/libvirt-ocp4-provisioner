@@ -1,0 +1,36 @@
+- name: Patch configs to use infra nodes
+  hosts: bastion
+  become: True
+  tasks:
+    - block:
+        - name: Copy templates
+          template: 
+            src: templates/{{ item }}.j2
+            dest: /tmp/{{ item }}.sh
+            mode: +x
+          loop:
+            - patch_ingress_selector
+            - patch_registry_selector
+
+        - name: Run scripts
+          command: /tmp/{{ item }}.sh 
+          loop:
+            - patch_ingress_selector
+            - patch_registry_selector
+
+        - name: Run scripts
+          file: 
+            path: /tmp/{{ item }}.sh
+            state: absent
+          loop:
+            - patch_ingress_selector
+            - patch_registry_selector
+
+        - name: Patch monitoring
+          copy:
+            src: files/patch_monitoring.yml
+            dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
+
+        - name: Creating persistent volume for registry
+          command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+      when: infra_present == true

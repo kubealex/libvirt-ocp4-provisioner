@@ -8,7 +8,7 @@ spec:
   accessModes:
   - ReadWriteMany
   nfs: 
-    path: /registry
-    server: 192.168.100.4 
+    path: /exports/registry
+    server: "{{ hostvars['bastion'].host_ip }}"
   persistentVolumeReclaimPolicy: Retain
   
