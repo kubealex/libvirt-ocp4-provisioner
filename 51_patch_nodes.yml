@@ -1,0 +1,47 @@
+---
+- name: Patch worker nodes
+  hosts: bastion
+  tasks:
+    - name: Set fact if patching is needed
+      set_fact:
+        infra_present: true
+      loop: "{{ groups['workers'] }}"
+      when: hostvars[item].ocp_role == 'infra'
+
+    - name: Set fact if patching is needed
+      set_fact:
+        app_present: true
+      loop: "{{ groups['workers'] }}"
+      when: hostvars[item].ocp_role == 'app'
+    
+    - block: 
+        - name: Label nodes
+          template: 
+            src: templates/label_nodes.j2
+            dest: /tmp/label_nodes.sh
+            mode: +x
+
+        - name: Applying patch
+          command: /tmp/label_nodes.sh
+
+        - name: Deleting temp files
+          file:
+            path: /tmp/label_nodes.sh
+            state: absent
+
+      when: app_present == true or infra_present==true
+
+    - block: 
+        - name: Set default nodeSelector
+          template:
+            src: templates/patch_default_selector.j2
+            dest: /tmp/patch_default_selector.sh
+            mode: +x
+        - name: Execute script 
+          command: /tmp/patch_default_selector.sh
+
+        - name: Delete script
+          file:
+            path: /tmp/patch_default_selector.sh
+            state: absent
+      when: app_present == true

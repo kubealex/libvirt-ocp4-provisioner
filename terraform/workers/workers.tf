@@ -1,10 +1,10 @@
 # variables that can be overriden
 variable "hostname" { default = "worker" }
 variable "memory" { default = 32 }
-variable "cpu" { default = 10 }
+variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
-variable "libvirt_network" { default = "ocp" }
-variable "libvirt_pool" { default = "default" }
+variable "libvirt_network" { default = "ocp4" }
+variable "libvirt_pool" { default = "ocp4" }
 variable "vm_volume_size" { default = 20 }
 variable "ocs_disk1_size" { default = 10 }
 variable "ocs_disk2_size" { default = 150 }
