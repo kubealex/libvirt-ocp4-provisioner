@@ -30,7 +30,6 @@
         state: absent
 
     - name: Delete all created paths
-      become: true
       file:
         path: "{{ item }}"
         state: absent
@@ -38,5 +37,12 @@
         - ~/libvirt-provider
         - ~/.terraform.d
         - "{{ gopath }}"
-        - /usr/bin/terraform
         - "{{ libvirt.storage.pool_path }}"
+
+    - name: Delete all created paths - root 
+      become: true
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/bin/terraform
