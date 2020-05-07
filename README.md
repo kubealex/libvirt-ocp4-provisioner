@@ -24,7 +24,7 @@ It also takes care of preparing the host machine with needed packages, configuri
 - terraform 
 - libvirt-terraform-provider ( compiled and initialized based on [https://github.com/dmacvicar/terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
-PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP .4.3.latest stable up and running.
+PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP **4.4.latest** stable up and running.
 
 ## **bastion** and **loadbalancer** VMs spec:
 
@@ -89,8 +89,11 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
           - ip: 192.168.100.9
         workers:
           - ip: 192.168.100.10
+            role: infra
           - ip: 192.168.100.11
+            role: app
           - ip: 192.168.100.12
+            role: worker
       specs:
         bootstrap:
           vcpu: 4
@@ -111,6 +114,8 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
       pullSecret: ''
 
 **mem** and **disk** are intended in GB
+
+The **role** for workers is intended for nodes labelling. Omitting labels sets them to their default value, **worker**
 
 The count of VMs is taken by the elements of the list, in this example, we got:
 
