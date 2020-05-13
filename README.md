@@ -91,9 +91,7 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
           - ip: 192.168.100.10
             role: infra
           - ip: 192.168.100.11
-            role: app
           - ip: 192.168.100.12
-            role: worker
       specs:
         bootstrap:
           vcpu: 4
