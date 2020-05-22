@@ -1,4 +1,13 @@
 ---
+- name: Remove cronjob on bastion for csr 
+  hosts: bastion
+  become: true
+  tasks:
+    - name: Removing csr cronjob
+      cron:
+        name: "Openshift csr approver"
+        state: absent
+
 - name: Clean up haproxy config on loadbalancer
   hosts: loadbalancer
   become: true
