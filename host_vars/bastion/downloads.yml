@@ -1,8 +1,8 @@
 skip_download: no
 downloads:
   ocp:
-#    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.4/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
+#    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.4/
     ocp_oc_cli: openshift-client-linux.tar.gz
     ocp_installer: openshift-install-linux.tar.gz
   rhcos:
