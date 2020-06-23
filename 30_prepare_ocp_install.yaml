@@ -28,7 +28,18 @@
       template:
         src: templates/install-config.j2
         dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
-      
+
+    - name: Create backup dir
+      file:
+        state: directory
+        path: /tmp/ocpinstall
+
+    - name: Backup install directory
+      copy:
+        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        dest: /tmp/ocpinstall
+        remote_src: true
+
     - name: Creating ignition manifest
       command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
 
@@ -38,8 +49,20 @@
         regexp: '  mastersSchedulable'
         line: '  mastersSchedulable: False'
 
+    - name: Backup install directory
+      copy:
+        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        dest: /tmp/ocpinstall
+        remote_src: true
+
     - name: Creating ignition files
       command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+
+    - name: Backup install directory
+      copy:
+        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        dest: /tmp/ocpinstall
+        remote_src: true
 
     - name: Copying ignition files to webserver
       copy:
