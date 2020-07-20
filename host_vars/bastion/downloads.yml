@@ -1,16 +1,11 @@
 skip_download: no
 downloads:
   ocp:
-#    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest-4.4/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
     ocp_oc_cli: openshift-client-linux.tar.gz
     ocp_installer: openshift-install-linux.tar.gz
   rhcos:
-#    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/ 
-#    initramfs: rhcos-4.3.8-x86_64-installer-initramfs.x86_64.img
-#    kernel: rhcos-4.3.8-x86_64-installer-kernel-x86_64
-#    coreos: rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
-    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.4/latest/
-    initramfs: rhcos-4.4.3-x86_64-installer-initramfs.x86_64.img
-    kernel: rhcos-4.4.3-x86_64-installer-kernel-x86_64
-    coreos: rhcos-4.4.3-x86_64-metal.x86_64.raw.gz
+    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/latest/
+    initramfs: rhcos-4.5.2-x86_64-installer-initramfs.x86_64.img
+    kernel: rhcos-4.5.2-x86_64-installer-kernel-x86_64
+    coreos: rhcos-4.5.2-x86_64-metal.x86_64.raw.gz
