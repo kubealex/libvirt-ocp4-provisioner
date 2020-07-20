@@ -1,3 +1,3 @@
 #!/bin/bash
 export KUBECONFIG={{ workspace_directory.base_path }}/config/auth/kubeconfig
-oc patch scheduler/cluster --type=merge -p '{"spec":{"defaultNodeSelector": "node-role.kubernetes.io/app="}}'
+oc patch scheduler/cluster --type=merge -p '{"spec":{"defaultNodeSelector": "node-role.kubernetes.io/worker="}}'

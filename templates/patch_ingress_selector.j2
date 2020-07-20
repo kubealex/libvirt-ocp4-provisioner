@@ -1,3 +1,5 @@
 #!/bin/bash
 export KUBECONFIG={{ workspace_directory.base_path }}/config/auth/kubeconfig
 /usr/local/bin/oc patch ingresscontroller/default --type=merge -p '{"spec":{"nodePlacement":{"nodeSelector":{"matchLabels":{"node-role.kubernetes.io/infra": ""}}}}}' -n openshift-ingress-operator
+/usr/local/bin/oc patch ingresscontroller/default -n openshift-ingress-operator --type=merge -p '{"spec":{"replicas": {{ groups['infra'] | count }} }}'
+

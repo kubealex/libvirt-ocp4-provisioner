@@ -2,20 +2,22 @@
 - name: Patch worker nodes
   hosts: bastion
   tasks:
-    - name: Set fact if patching is needed
+    - name: Set fact if infra patching is needed
       set_fact:
         infra_present: true
-      loop: "{{ groups['workers'] }}"
-      when: hostvars[item].ocp_role == 'infra'
+      when: (groups['infra'] | count > 0)
 
-    - name: Set fact if patching is needed
-      set_fact:
-        app_present: true
-      loop: "{{ groups['workers'] }}"
-      when: hostvars[item].ocp_role == 'app'
-    
     - block: 
-        - name: Label nodes
+
+        - name: Create machine config pool 
+          copy:
+            src: files/machineconfigpool.yml
+            dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
+
+        - name: Creating persistent volume for registry
+          command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+
+        - name: Copy label nodes script
           template: 
             src: templates/label_nodes.j2
             dest: /tmp/label_nodes.sh
@@ -29,9 +31,6 @@
             path: /tmp/label_nodes.sh
             state: absent
 
-      when: app_present == true or infra_present==true
-
-    - block: 
         - name: Set default nodeSelector
           template:
             src: templates/patch_default_selector.j2
@@ -44,4 +43,5 @@
           file:
             path: /tmp/patch_default_selector.sh
             state: absent
-      when: app_present == true
+
+      when: infra_present

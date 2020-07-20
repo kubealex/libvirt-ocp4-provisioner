@@ -19,11 +19,6 @@
       register: result
       until: result.rc == 0
 
-    - name: Removing csr cronjob
-      cron:
-        name: "Openshift csr approver"
-        state: absent
-
     - name: Jedy
       debug:
         msg: May OCP will be with you
