@@ -90,3 +90,11 @@
       loop: "{{ cluster_nodes.host_list.workers }}"
       loop_control:
         index_var: worker_idx
+
+    - name: Add infra workers to given group
+      add_host:
+        hostname: '{{ item }}'
+        groups:
+          - "infra"
+      loop: "{{ groups['workers'] }}"
+      when: hostvars[item].ocp_role == 'infra'
