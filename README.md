@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
 Welcome to the home of the project!
