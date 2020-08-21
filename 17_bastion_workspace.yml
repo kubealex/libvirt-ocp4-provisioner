@@ -43,7 +43,7 @@
       when: not (skip_download | bool)
       
     - name: Checking for openshift-install tool
-      command: openshift-install
+      command: openshift-install version
       register: output
       failed_when: output.rc !=0
 
