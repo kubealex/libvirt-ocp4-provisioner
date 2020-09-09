@@ -51,4 +51,4 @@
             name: nfs-server
             state: restarted
             enabled: true
-      when: nfs_registry
+      when: nfs_registry_enabled

@@ -74,7 +74,7 @@
         name: nfs-server
         state: started
         enabled: true
-      when: nfs_registry 
+      when: nfs_registry_enabled
 
     - name: Rebooting bastion
       reboot:
