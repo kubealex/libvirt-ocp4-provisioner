@@ -20,7 +20,7 @@
           parted:
             device: "{{ nfs_device }}"
             number: 1
-            part_end: 100GiB
+            part_end: "100%"
             state: present  
 
         - name: Create xfs filesystem on /dev/vdb1

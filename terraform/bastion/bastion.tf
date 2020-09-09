@@ -39,7 +39,7 @@ resource "libvirt_volume" "storage_image" {
   count = var.enable_nfs ? 1 : 0
   name = "${var.hostname}-storage_image"
   pool = var.libvirt_pool
-  size = 100*1073741824
+  size = 100*1080000000
   format = "qcow2"
 }
 

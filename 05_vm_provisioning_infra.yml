@@ -28,6 +28,7 @@
           libvirt_pool: "{{ libvirt.storage.pool_name }}"
           network_data: "{ hostIP = \"{{ item.value[0].ip }}\", broadcast= \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "{{ item.key }}"
+          enable_nfs: "{{ nfs_registry | default(false) }}"
         state: present
       register: output
       loop: "{{ infra_nodes.host_list|dict2items }}"
@@ -42,7 +43,7 @@
         domain: "{{ domain }}"
         cluster_name: "{{ cluster_name }}"
         ocp_domain: "{{ ocp_domain }}"
-        nfs_registry: "{{ nfs_registry }}"
+        nfs_registry_enabled: "{{ nfs_registry }}"
         timezone: "{{ dhcp.timezone }}"
         ntp_server: "{{ dhcp.ntp }}"
       loop: "{{ infra_nodes.host_list|dict2items }}"
