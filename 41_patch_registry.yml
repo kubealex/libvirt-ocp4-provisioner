@@ -28,4 +28,4 @@
               file:
                 path: /tmp/patch_registry.sh
                 state: absent
-      when: nfs_registry
+      when: nfs_registry_enabled
