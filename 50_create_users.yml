@@ -17,17 +17,18 @@
           - bcrypt
       become: true
       
-    - name: Creating yaml configuration for htpasswd identity provider
+    - name: Firing yaml configuration template for htpasswd identity provider
       template:
         src: templates/htpasswd_provider.j2
         dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
 
-    - template:
+    - name: Firing configuration script template for user creation:
+      template
         src: templates/ocp_user_script.j2
         dest: /tmp/ocp_user.sh
         mode: +x
         
-    - name: Creating oauth login url var
+    - name: Set OAuth login URL fact
       set_fact:
         auth_url: oauth-openshift.apps.{{ hostvars['bastion'].ocp_domain }}
                 
@@ -51,7 +52,7 @@
       command: update-ca-trust  
       become: true
       
-    - name: Creating htpasswd identiry and user
+    - name: Creating htpasswd identity and user
       command: /tmp/ocp_user.sh
 
     - name: Sleeping 120 seconds...

@@ -53,6 +53,7 @@ dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
 
 ## Masters end ##
 
+{% if not three_node %}
 ## Workers ##
 {% for node in groups['workers'] %}
 address=/{{ hostvars[node].node_fqdn }}/{{ hostvars[node].node_ip }}
@@ -61,6 +62,7 @@ dhcp-host={{ hostvars[node].node_mac }},{{  hostvars[node].node_ip }}
 {%endfor%}
 
 ## Workers end ##
+{%endif%}
 
 ## SRV records for etcd service. Priority must be 0 and Weight must be 10 ###
 

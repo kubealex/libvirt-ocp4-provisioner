@@ -17,7 +17,7 @@
         - name: Creating persistent volume for registry
           command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
 
-        - name: Copy label nodes script
+        - name: Copy script for node labeling
           template: 
             src: templates/label_nodes.j2
             dest: /tmp/label_nodes.sh
@@ -26,7 +26,7 @@
         - name: Applying patch
           command: /tmp/label_nodes.sh
 
-        - name: Deleting temp files
+        - name: Deleting label node script
           file:
             path: /tmp/label_nodes.sh
             state: absent
@@ -39,7 +39,7 @@
         - name: Execute script 
           command: /tmp/patch_default_selector.sh
 
-        - name: Delete script
+        - name: Delete node selector patch
           file:
             path: /tmp/patch_default_selector.sh
             state: absent

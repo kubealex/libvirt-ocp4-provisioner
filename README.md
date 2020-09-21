@@ -80,6 +80,7 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
 
 **vars/cluster_nodes.yml**
 
+    three_node: false
     cluster_nodes:
       host_list:
         bootstrap:
@@ -130,6 +131,8 @@ Recommended values are:
 | worker | 2 | 8G | 120G |
 
 For testing purposes, minimum storage value is set at **40GB**.
+
+**Added support for three node setup (3 masters with both master and worker node) intended for pure testing purposes**
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 

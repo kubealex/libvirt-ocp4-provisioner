@@ -2,6 +2,10 @@
   hosts: bastion
   gather_facts: no
   become: true
+  vars_files:
+    - vars/infra_vars.yml
+    - vars/cluster_vars.yml
+
   tasks:
     - name: Ensuring tftp boot directory exists
       file:

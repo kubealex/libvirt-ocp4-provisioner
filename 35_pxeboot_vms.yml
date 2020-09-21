@@ -2,6 +2,8 @@
 - name: PXE boot vms
   hosts: vm_host
   become: true
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
     - name: Restart OCP VMs sequentially
       block:
@@ -22,6 +24,7 @@
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['workers'] }}"
+          when: not three_node
 
         - name: Restart bootstrap node
           virt:
@@ -40,5 +43,6 @@
             name: "{{ hostvars[item].node_hostname }}"
             state: running
           loop: "{{ groups['workers'] }}"
+          when: not three_node
     - debug:
         msg: All VMs are booting...
