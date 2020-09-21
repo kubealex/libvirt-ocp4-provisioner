@@ -132,7 +132,7 @@ Recommended values are:
 
 For testing purposes, minimum storage value is set at **40GB**.
 
-**Added support for three node setup (3 masters with both master and worker node) intended for pure testing purposes**
+**Added support for three node setup (3 masters with both master and worker node role) intended for pure testing purposes**
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
