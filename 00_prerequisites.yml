@@ -11,7 +11,13 @@
         - fail: 
             msg: "Only ONE bootstrap node can be present"
           when: cluster_nodes.host_list.bootstrap | count > 1
-                
+
+        - fail:
+            msg: 'To provision NO workers, you must flag "three_node" varible to true in vars/cluster_vars.yml'
+          when: 
+            - ( cluster_nodes.host_list.workers | count <= 0 )
+            - not three_node
+  
         - fail: 
             msg: "Please check the host_list variable in cluster_nodes"
           when: ( cluster_nodes.host_list.masters | count <= 0 ) or ( cluster_nodes.host_list.workers | count <= 0 ) or ( cluster_nodes.host_list.bootstrap | count <= 0 )

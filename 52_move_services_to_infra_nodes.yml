@@ -3,10 +3,10 @@
   become: True
   tasks:
     - block:
-        - name: Copy templates
+        - name: Copy ingress and registry patcher templates
           template: 
-            src: templates/{{ item }}.j2
-            dest: /tmp/{{ item }}.sh
+            src: templates/{{ item }}.j2
+            dest: /tmp/{{ item }}.sh
             mode: +x
           loop:
             - patch_ingress_selector

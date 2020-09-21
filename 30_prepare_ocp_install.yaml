@@ -48,6 +48,7 @@
         path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable'
         line: '  mastersSchedulable: False'
+      when: not three_node
 
     - name: Backup install directory
       copy:

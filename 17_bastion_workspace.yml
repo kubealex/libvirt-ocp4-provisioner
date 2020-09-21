@@ -31,7 +31,7 @@
         - "{{ nginx_document_root }}/{{ nginx_workspace_dir }}"
       become: True
 
-    - name: Downloading installer and OCP cli
+    - name: Downloading Openshift installer and CLI
       unarchive:
         src: "{{ item }}"
         dest: /usr/local/bin

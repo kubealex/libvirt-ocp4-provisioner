@@ -1,3 +1,5 @@
+three_node: false
+
 cluster_nodes:
   host_list:
     bootstrap:
@@ -11,7 +13,6 @@ cluster_nodes:
         role: infra
       - ip: 192.168.100.11
       - ip: 192.168.100.12
-
   specs:
     bootstrap:
       vcpu: 4
@@ -25,6 +26,7 @@ cluster_nodes:
       vcpu: 2
       mem: 8
       disk: 40
+
 cluster:
   ocp_user: admin
   ocp_pass: openshift
