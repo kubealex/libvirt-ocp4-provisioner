@@ -1,47 +1,52 @@
 ---
 - name: Patch worker nodes
   hosts: bastion
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
-    - name: Set fact if infra patching is needed
-      set_fact:
-        infra_present: true
-      when: (groups['infra'] | count > 0)
+    - block:
+   
+      - name: Set fact if infra patching is needed
+        set_fact:
+          infra_present: true
+        when: (groups['infra'] | count > 0)
 
-    - block: 
+      - block: 
 
-        - name: Create machine config pool 
-          copy:
-            src: files/machineconfigpool.yml
-            dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
+          - name: Create machine config pool 
+            copy:
+              src: files/machineconfigpool.yml
+              dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
 
-        - name: Creating persistent volume for registry
-          command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+          - name: Creating persistent volume for registry
+            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
 
-        - name: Copy script for node labeling
-          template: 
-            src: templates/label_nodes.j2
-            dest: /tmp/label_nodes.sh
-            mode: +x
+          - name: Copy script for node labeling
+            template: 
+              src: templates/label_nodes.j2
+              dest: /tmp/label_nodes.sh
+              mode: +x
 
-        - name: Applying patch
-          command: /tmp/label_nodes.sh
+          - name: Applying patch
+            command: /tmp/label_nodes.sh
 
-        - name: Deleting label node script
-          file:
-            path: /tmp/label_nodes.sh
-            state: absent
+          - name: Deleting label node script
+            file:
+              path: /tmp/label_nodes.sh
+              state: absent
 
-        - name: Set default nodeSelector
-          template:
-            src: templates/patch_default_selector.j2
-            dest: /tmp/patch_default_selector.sh
-            mode: +x
-        - name: Execute script 
-          command: /tmp/patch_default_selector.sh
+          - name: Set default nodeSelector
+            template:
+              src: templates/patch_default_selector.j2
+              dest: /tmp/patch_default_selector.sh
+              mode: +x
+          - name: Execute script 
+            command: /tmp/patch_default_selector.sh
 
-        - name: Delete node selector patch
-          file:
-            path: /tmp/patch_default_selector.sh
-            state: absent
+          - name: Delete node selector patch
+            file:
+              path: /tmp/patch_default_selector.sh
+              state: absent
 
-      when: infra_present
+        when: infra_present
+      when: not three_node
