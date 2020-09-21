@@ -23,7 +23,7 @@
         dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
 
     - name: Firing configuration script template for user creation
-      template
+      template:
         src: templates/ocp_user_script.j2
         dest: /tmp/ocp_user.sh
         mode: +x
