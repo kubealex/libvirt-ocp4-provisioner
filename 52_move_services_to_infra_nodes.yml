@@ -1,36 +1,40 @@
 - name: Patch configs to use infra nodes
   hosts: bastion
   become: True
+  vars_files: 
+    - vars/cluster_vars.yml
   tasks:
     - block:
-        - name: Copy ingress and registry patcher templates
-          template: 
-            src: templates/{{ item }}.j2
-            dest: /tmp/{{ item }}.sh
-            mode: +x
-          loop:
-            - patch_ingress_selector
-            - patch_registry_selector
+      - block:
+          - name: Copy ingress and registry patcher templates
+            template: 
+              src: templates/{{ item }}.j2
+              dest: /tmp/{{ item }}.sh
+              mode: +x
+            loop:
+              - patch_ingress_selector
+              - patch_registry_selector
 
-        - name: Run scripts
-          command: /tmp/{{ item }}.sh 
-          loop:
-            - patch_ingress_selector
-            - patch_registry_selector
+          - name: Run scripts
+            command: /tmp/{{ item }}.sh 
+            loop:
+              - patch_ingress_selector
+              - patch_registry_selector
 
-        - name: Delete scripts
-          file: 
-            path: /tmp/{{ item }}.sh
-            state: absent
-          loop:
-            - patch_ingress_selector
-            - patch_registry_selector
+          - name: Delete scripts
+            file: 
+              path: /tmp/{{ item }}.sh
+              state: absent
+            loop:
+              - patch_ingress_selector
+              - patch_registry_selector
 
-        - name: Copy monitoring CM
-          copy:
-            src: files/patch_monitoring.yml
-            dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
+          - name: Copy monitoring CM
+            copy:
+              src: files/patch_monitoring.yml
+              dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
 
-        - name: Patch monitoring
-          command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
-      when: infra_present
+          - name: Patch monitoring
+            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+        when: infra_present
+      when: not three_node
