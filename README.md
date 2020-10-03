@@ -132,7 +132,7 @@ Recommended values are:
 
 For testing purposes, minimum storage value is set at **40GB**.
 
-**Added support for three node setup (3 masters with both master and worker node role) intended for pure testing purposes**
+**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var** 
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
