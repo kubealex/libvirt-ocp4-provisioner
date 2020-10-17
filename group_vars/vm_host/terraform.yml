@@ -1,0 +1,5 @@
+terraform_release_url: https://releases.hashicorp.com/terraform/0.13.4/terraform_0.13.4_linux_amd64.zip
+terraform_libvirt_provider_url: https://github.com/dmacvicar/terraform-provider-libvirt.git
+terraform_libivrt_provider_folder: ~/libvirt-provider
+terraform_plugin_dir:: ~/.local/share/terraform/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.2/linux_amd64
+terraform_home: ~/.terraform.d

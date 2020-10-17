@@ -5,19 +5,40 @@
     - vars/libvirt.yml
   tasks:
 
+    - name: Install needed packages
+      yum:
+        name: "{{ virtualization_packages.centos8 }}"
+        state: latest
+      become: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 8
+
+    - name: Install needed packages
+      yum:
+        name: "{{ virtualization_packages.centos7 }}"
+        state: latest
+      become: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 7
+
+    - name: Install needed packages
+      yum:
+        name: "{{ virtualization_packages.fedora }}"
+        state: latest
+      become: true
+      when:
+        - ansible_distribution == 'Fedora'
+
     - name: Download and provision Terraform
-      unarchive: 
-        src: https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+      unarchive:
+        src: "{{ terraform_release_url }}"
         dest: /usr/bin/
         mode: 755
         remote_src: yes
       become: true
 
-    - name: Install needed packages
-      yum:
-        name: "{{ virtualization_packages }}"
-        state: latest
-      become: true
 
     - name: Virtualization services are enabled
       service:
@@ -27,25 +48,25 @@
       become: true
 
     - git:
-        repo: https://github.com/dmacvicar/terraform-provider-libvirt.git
-        dest: ~/libvirt-provider
+        repo: "{{ terraform_libvirt_provider_url }}"
+        dest: "{{ terraform_libivrt_provider_folder }}"
         force: true
 
     - name: Run 'install' target on libivrt-provider
       make:
-        chdir: ~/libvirt-provider
+        chdir: "{{ terraform_libivrt_provider_folder }}"
         target: install
 
     - name: Ensures terraform plugins directory exists
       file:
-        path: ~/.terraform.d/plugins
+        path: "{{ terraform_plugin_dir }}"
         state: directory
         mode: 0744
 
     - name: Copy libvirt provider to plugins directory
       copy:
         src: "{{ gopath }}/bin/terraform-provider-libvirt"
-        dest: ~/.terraform.d/plugins/
+        dest: "{{ terraform_plugin_dir }}"
         remote_src: true
         mode: 0755
 
