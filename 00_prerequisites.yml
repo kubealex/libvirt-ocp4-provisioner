@@ -5,6 +5,19 @@
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
   tasks:
+
+    - name: Check if distribution is supported
+      fail:
+        msg: Your distribution is actually unsupported
+      when:
+        - ansible_distribution != 'CentOS'
+        - ansible_distribution_major_version | int < 7
+
+    - name: Check if distribution is supported
+      fail:
+        msg: Your distribution is actually unsupported
+      when:
+        - ansible_distribution != 'Fedora'    
     
     - name: Block of cluster checks
       block:
