@@ -34,8 +34,8 @@
         path: "{{ item }}"
         state: absent
       loop: 
-        - ~/libvirt-provider
-        - ~/.terraform.d
+        - "{{ terraform_libivrt_provider_folder }}"
+        - "{{ terraform_home }}"
         - "{{ gopath }}"
         - "{{ libvirt.storage.pool_path }}"
 

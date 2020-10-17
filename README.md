@@ -6,7 +6,7 @@ This project has been inspired by [@ValentinoUberti](https://github.com/Valentin
 
 I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
-To give a quick overview, this project will allow you to provision a fully working OCP **stable** environment, consisting of:
+To give a quick overview, this project will allow you to provision a **fully working** and **stable** OCP environment, consisting of:
 
 - Bastion machine provisioned with:
 	- dnsmasq (with SELinux module, compiled and activated) 
@@ -15,9 +15,9 @@ To give a quick overview, this project will allow you to provision a fully worki
 	- pxeboot
 - Loadbalancer machine provisioned with:
 	- haproxy
-- OCP Bootstrap machine
-- OCP Master(s) VM(s)
-- OCP Worker(s) VM(s)
+- OCP Bootstrap VM
+- OCP Master VM(s)
+- OCP Worker VM(s)
 
 It also takes care of preparing the host machine with needed packages, configuring:
 - dedicated libvirt network (fully customizable)
@@ -25,7 +25,7 @@ It also takes care of preparing the host machine with needed packages, configuri
 - terraform 
 - libvirt-terraform-provider ( compiled and initialized based on [https://github.com/dmacvicar/terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
-PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP **4.4.latest** stable up and running.
+PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP **4.5.latest** stable up and running.
 
 ## **bastion** and **loadbalancer** VMs spec:
 
@@ -132,7 +132,7 @@ Recommended values are:
 
 For testing purposes, minimum storage value is set at **40GB**.
 
-**Added support for three node setup (3 masters with both master and worker node role) intended for pure testing purposes**
+**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var** 
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
