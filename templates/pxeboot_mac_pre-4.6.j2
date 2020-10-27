@@ -1,0 +1,5 @@
+DEFAULT {{ hostvars[item].node_role }}
+  SAY Now booting the kernel from SYSLINUX...
+LABEL {{ hostvars[item].node_role }}
+  KERNEL {{ tftp_workspace_dir }}/{{ downloads.rhcos.kernel }}
+  APPEND rd.neednet=1 initrd=rhcos/{{ downloads.rhcos.initramfs }} console=tty0 coreos.inst=yes coreos.inst.install_dev=vda coreos.inst.ignition_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ hostvars[item].node_role }}.ign coreos.inst.image_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.coreos }} ip=dhcp

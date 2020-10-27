@@ -64,7 +64,9 @@
 
         - name: Download Red Hat CoreOS for bare metal
           get_url:
-            url:  "{{ downloads.rhcos.base_url + downloads.rhcos.coreos }}"
-            dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.coreos }}"
+            #url:  "{{ downloads.rhcos.base_url + downloads.rhcos.coreos }}"
+            url:  "{{ downloads.rhcos.base_url + downloads.rhcos.rootfs }}"
+            #dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.coreos }}"
+            dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.rootfs }}"
       when: not (skip_download | bool)
       become: true
