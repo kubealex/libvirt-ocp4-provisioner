@@ -1,13 +1,11 @@
 skip_download: no
 downloads:
   ocp:
-    #base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.1/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/
     ocp_oc_cli: openshift-client-linux.tar.gz
     ocp_installer: openshift-install-linux.tar.gz
   rhcos:
-    #base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/
-    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.6/latest/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/
     initramfs: rhcos-live-initramfs.x86_64.img
     kernel: rhcos-live-kernel-x86_64
     rootfs: rhcos-live-rootfs.x86_64.img
