@@ -19,21 +19,6 @@
       openssh_keypair:
         path: "id_rsa"
 
-#    - name: Deploy bastion and loadbalancer VMs with terraform
-#      terraform:
-#        force_init: true
-#        project_path: "terraform/{{ item.key }}"
-#        variables:
-#          libvirt_network: "{{ libvirt.network.network_name }}"
-#          libvirt_pool: "{{ libvirt.storage.pool_name }}"
-#          network_data: "{ hostIP = \"{{ item.value[0].ip }}\", broadcast= \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ item.value[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
-#          hostname: "{{ item.key }}"
-#          enable_nfs: "{{ nfs_registry | bool }}"
-#        state: present
-#      register: output
-#      loop: "{{ infra_nodes.host_list|dict2items }}"
-
-
     - name: Deploy bastion VM with terraform
       terraform:
         force_init: true
