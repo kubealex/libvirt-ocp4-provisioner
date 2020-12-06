@@ -1,4 +1,3 @@
-gopath: "~/go"
 libvirt:
   storage:
     pool_name: ocp4

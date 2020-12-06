@@ -3,8 +3,6 @@
   hosts: vm_host
   vars_files:
     - vars/libvirt.yml
-  vars:
-      gopath: "~/go"
   tasks:
 
     - name: Destroy bootstrap VM
