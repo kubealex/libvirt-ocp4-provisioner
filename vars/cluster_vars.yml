@@ -1,0 +1,35 @@
+three_node: false
+cluster_nodes:
+  host_list:
+    bootstrap:
+      - ip: 192.168.100.6
+    masters:
+      - ip: 192.168.100.7
+      - ip: 192.168.100.8
+      - ip: 192.168.100.9
+    workers:
+      - ip: 192.168.100.10
+        role: infra
+      - ip: 192.168.100.11
+        role: infra
+      - ip: 192.168.100.12
+        role: infra
+      - ip: 192.168.100.13
+      - ip: 192.168.100.14
+  specs:
+    bootstrap:
+      vcpu: 4
+      mem: 16
+      disk: 50
+    masters:
+      vcpu: 4
+      mem: 16
+      disk: 50
+    workers:
+      vcpu: 6
+      mem: 16
+      disk: 50
+cluster:
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ''
