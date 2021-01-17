@@ -3,6 +3,8 @@
   hosts: vm_host
   vars_files:
     - vars/libvirt.yml
+    - vars/infra_vars.yml
+  become: true
   tasks:
 
     - name: Destroy bootstrap VM
@@ -17,14 +19,14 @@
         - workers
         - masters
 
-    - name: Remove libvirt network
-      virt_net:
-        name: "{{ libvirt.network.network_name }}"
-        state: absent
-
-    - name: Remove libvirt pool
-      virt_pool:
-        name: "{{ libvirt.storage.pool_name }}"
+    - name: Use TF project to ensure pool and network are defined
+      terraform:
+        project_path: "terraform/libvirt-resources"
+        variables:
+          domain: "{{ domain }}"
+          network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
+          cluster_name: "{{ cluster_name }}"
+        force_init: true
         state: absent
 
     - name: Delete all created paths
@@ -34,13 +36,5 @@
       loop: 
         - "{{ terraform_libivrt_provider_folder }}"
         - "{{ terraform_home }}"
-        - "{{ gopath }}"
-        - "{{ libvirt.storage.pool_path }}"
-
-    - name: Delete all created paths - root 
-      become: true
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
+        - "{{ gopath }}/bin/terraform-provider-libvirt"
         - /usr/bin/terraform

@@ -3,5 +3,5 @@ debug.yml
 terraform.tfstate*
 vars/vars.yml
 test.yml
-.terraform
+.terraform*
 roles

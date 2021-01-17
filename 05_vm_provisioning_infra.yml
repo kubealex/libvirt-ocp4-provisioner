@@ -24,8 +24,8 @@
         force_init: true
         project_path: "terraform/bastion"
         variables:
-          libvirt_network: "{{ libvirt.network.network_name }}"
-          libvirt_pool: "{{ libvirt.storage.pool_name }}"
+          libvirt_network: "{{ cluster_name }}"
+          libvirt_pool: "{{ cluster_name }}"
           network_data: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "bastion"
           enable_nfs: "{{ nfs_registry | lower }}"
@@ -37,8 +37,8 @@
         force_init: true
         project_path: "terraform/loadbalancer"
         variables:
-          libvirt_network: "{{ libvirt.network.network_name }}"
-          libvirt_pool: "{{ libvirt.storage.pool_name }}"
+          libvirt_network: "{{ cluster_name }}"
+          libvirt_pool: "{{ cluster_name }}"
           network_data: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "loadbalancer"
         state: present

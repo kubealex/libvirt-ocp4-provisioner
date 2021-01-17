@@ -3,13 +3,14 @@
   hosts: vm_host
   vars_files:
     - vars/libvirt.yml
+    - vars/infra_vars.yml
+  become: true
   tasks:
 
     - name: Install needed packages
       yum:
         name: "{{ virtualization_packages.centos8 }}"
         state: latest
-      become: true
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 8
@@ -18,7 +19,6 @@
       yum:
         name: "{{ virtualization_packages.centos7 }}"
         state: latest
-      become: true
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 7
@@ -27,7 +27,6 @@
       yum:
         name: "{{ virtualization_packages.fedora }}"
         state: latest
-      become: true
       when:
         - ansible_distribution == 'Fedora'
 
@@ -37,15 +36,12 @@
         dest: /usr/bin/
         mode: 755
         remote_src: yes
-      become: true
-
 
     - name: Virtualization services are enabled
       service:
         name: libvirtd
         state: started
         enabled: true
-      become: true
 
     - git:
         repo: "{{ terraform_libvirt_provider_url }}"
@@ -70,42 +66,12 @@
         remote_src: true
         mode: 0755
 
-    - name: Ensure pool path exists
-      file:
-        path: "{{ libvirt.storage.pool_path }}"
-        state: directory
-      become: true
-
-    - name: Define libvirt network
-      virt_net:
-        command: define
-        name: "{{ libvirt.network.network_name }}"
-        xml: '{{ lookup("template", "templates/libvirt_network.xml.j2") }}'
-
-    - name: Make libvirt network autostart
-      virt_net:
-        name: "{{ libvirt.network.network_name }}"
-        autostart: true
-
-    - name: Start libvirt network
-      virt_net:
-        command: start
-        name: "{{ libvirt.network.network_name }}"
-        state: active
-
-    - name: Define libvirt pool
-      virt_pool:
-        command: define
-        name: "{{ libvirt.storage.pool_name }}"
-        xml: '{{ lookup("template", "templates/libvirt_pool.xml.j2") }}'
-
-    - name: Make libvirt pool autostart
-      virt_pool:
-        name: "{{ libvirt.storage.pool_name }}"
-        autostart: true
-
-    - name: Start libvirt pool
-      virt_pool:
-        command: start
-        name: "{{ libvirt.storage.pool_name }}"
-        state: active
+    - name: Use TF project to ensure pool and network are defined
+      terraform:
+        project_path: "terraform/libvirt-resources"
+        variables:
+          domain: "{{ domain }}"
+          network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
+          cluster_name: "{{ cluster_name }}"
+        force_init: true
+        state: present
