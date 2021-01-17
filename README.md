@@ -47,14 +47,9 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 **vars/libvirt.yml**
 
     libvirt:                       
-      storage:                     
-        pool_name: ocp4
-        pool_path: /var/lib/libvirt/images/ocp4
       network:                     
-        network_name: ocp4         
         network_gateway: 192.168.100.1
-        network_bridge: ocpbr1     
-        network_mask: 255.255.255.0
+	network_cidr: 192.168.100.0/24
 
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
