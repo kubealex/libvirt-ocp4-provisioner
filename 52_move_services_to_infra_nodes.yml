@@ -35,6 +35,6 @@
               dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
 
           - name: Patch monitoring
-            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --config={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
         when: infra_present
       when: not three_node

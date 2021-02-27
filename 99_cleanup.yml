@@ -7,7 +7,7 @@
   become: true
   tasks:
 
-    - name: Destroy bootstrap VM
+    - name: Destroy cluster VM
       terraform:
         force_init: true
         project_path: "terraform/{{ item }}"
@@ -19,7 +19,7 @@
         - workers
         - masters
 
-    - name: Use TF project to ensure pool and network are defined
+    - name: Use TF project to ensure pool and network are removed
       terraform:
         project_path: "terraform/libvirt-resources"
         variables:
