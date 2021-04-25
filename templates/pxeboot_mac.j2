@@ -1,5 +1,5 @@
 DEFAULT {{ hostvars[item].node_role }}
   SAY Now booting the kernel from SYSLINUX...
 LABEL {{ hostvars[item].node_role }}
-  KERNEL {{ tftp_workspace_dir }}/{{ downloads.rhcos.kernel }}
-  APPEND initrd=rhcos/{{ downloads.rhcos.initramfs }} coreos.live.rootfs_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.rootfs }} coreos.inst.install_dev=/dev/vda coreos.inst.ignition_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ hostvars[item].node_role }}.ign
+  KERNEL {{ tftp_workspace_dir }}/{{ hostvars['bastion'].rhcos_kernel }}
+  APPEND initrd=rhcos/{{ hostvars['bastion'].rhcos_initramfs }} coreos.live.rootfs_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ hostvars['bastion'].rhcos_os }} coreos.inst.install_dev=/dev/vda coreos.inst.ignition_url=http://{{ hostvars['bastion'].host_ip }}/{{ nginx_workspace_dir }}/{{ hostvars[item].node_role }}.ign

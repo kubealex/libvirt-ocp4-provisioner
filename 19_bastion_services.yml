@@ -40,23 +40,45 @@
         src: templates/dnsmasq.j2
         dest: /etc/dnsmasq.conf
 
-    - name: Firing pxe boot template
-      template:
-        src: templates/pxeboot_mac.j2
-        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-      loop: "{{ groups['masters'] }}"
+    - block:
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['masters'] }}"
 
-    - name: Firing pxe boot template
-      template:
-        src: templates/pxeboot_mac.j2
-        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-      loop: "{{ groups['bootstrap'] }}"
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['bootstrap'] }}"
 
-    - name: Firing pxe boot template
-      template:
-        src: templates/pxeboot_mac.j2
-        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-      loop: "{{ groups['workers'] }}"
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['workers'] }}"
+      when: hostvars['bastion'].version.1 | int >= 6
+
+    - block:
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac_pre-4.6.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['masters'] }}"
+
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac_pre-4.6.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['bootstrap'] }}"
+
+      - name: Firing pxe boot template
+        template:
+          src: templates/pxeboot_mac_pre-4.6.j2
+          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+        loop: "{{ groups['workers'] }}"
+      when: hostvars['bastion'].version.1 | int <= 5
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server
       command: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}" 

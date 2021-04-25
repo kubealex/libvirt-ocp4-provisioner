@@ -1,4 +1,5 @@
 three_node: false
+cluster_version: stable
 cluster_nodes:
   host_list:
     bootstrap:
@@ -9,9 +10,7 @@ cluster_nodes:
       - ip: 192.168.100.9
     workers:
       - ip: 192.168.100.10
-        role: infra
       - ip: 192.168.100.11
-      - ip: 192.168.100.12
   specs:
     bootstrap:
       vcpu: 4

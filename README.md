@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
+# WIP libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
 Welcome to the home of the project!
 This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt and preparing for cluster installation.  
 
@@ -25,7 +25,9 @@ It also takes care of preparing the host machine with needed packages, configuri
 - terraform 
 - libvirt-terraform-provider ( compiled and initialized based on [https://github.com/dmacvicar/terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
-PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP **4.5.latest** stable up and running.
+PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP up and running.
+
+The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 4.7.7) or taking one of the fixed releases (latest, candidate, fast, stable).
 
 ## **bastion** and **loadbalancer** VMs spec:
 
@@ -76,6 +78,7 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
 **vars/cluster_nodes.yml**
 
     three_node: false
+    cluster_version: stable
     cluster_nodes:
       host_list:
         bootstrap:
@@ -127,7 +130,7 @@ Recommended values are:
 
 For testing purposes, minimum storage value is set at **40GB**.
 
-**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var** 
+**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var ONLY FOR 4.6+** 
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
