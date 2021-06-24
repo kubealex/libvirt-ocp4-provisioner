@@ -31,7 +31,7 @@ The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 
 
 ## **bastion** and **loadbalancer** VMs spec:
 
-- OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8/x86_64/images/](https://cloud.centos.org/centos/8/x86_64/images/)  
+- OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)  
 - cloud-init:   
   - user: ocpinstall  
   - pass: ocprocks  
@@ -112,6 +112,8 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
       pullSecret: ''
 
 **mem** and **disk** are intended in GB
+
+**cluster_version** allows you to choose a particular version to be installed (i.e. 4.5.0, stable, latest)
 
 The **role** for workers is intended for nodes labelling. Omitting labels sets them to their default value, **worker**
 
