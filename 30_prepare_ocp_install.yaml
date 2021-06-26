@@ -43,12 +43,14 @@
     - name: Creating ignition manifest
       command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
 
-    - name: Setting master unchedulable
+    - name: Setting master unschedulable
       lineinfile:
         path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable'
         line: '  mastersSchedulable: False'
-      when: not three_node
+      when: 
+        - not three_node
+        - hostvars['bastion'].version.1 | int > 1
 
     - name: Backup install directory
       copy:
@@ -95,3 +97,18 @@
         minute: "1"
         job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present
+
+    - block:
+      - name: Creating registry operator patch
+        template:
+          src: templates/registry-patch-pre-4.3.j2
+          dest: "{{ workspace_directory.base_path }}/regpatch.sh"
+          mode: '0755'
+
+      - name: Installing registry operator patch cronjob
+        cron:
+          name: "Openshift image registry patcher"
+          minute: "1"
+          job: "{{ workspace_directory.base_path }}/regpatch.sh >> /tmp/bJob.log 2>&1"
+          state: present
+      when: hostvars['bastion'].version.1 | int <= 2

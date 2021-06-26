@@ -2,6 +2,8 @@
 - name: Creating a workspace on Bastion
   hosts: bastion 
   gather_facts: no
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
 
     - name: Erasing dnsmasq lease
@@ -38,10 +40,28 @@
         remote_src: yes
       become: True
       loop:
-        - "{{ downloads.ocp.base_url + downloads.ocp.ocp_oc_cli }}"
-        - "{{ downloads.ocp.base_url + downloads.ocp.ocp_installer }}"
-      when: not (skip_download | bool)
-      
+        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster_version + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_installer + '-' + cluster_version + '.tar.gz' }}"
+      when: 
+        - not (skip_download | bool) 
+        - cluster_version != "latest"
+        - cluster_version != "fast"
+        - cluster_version != "stable"
+        - cluster_version != "candidate"
+
+    - name: Downloading Openshift installer and CLI
+      unarchive:
+        src: "{{ item }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      loop:
+        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_installer + '.tar.gz' }}"
+      when:
+        - not (skip_download | bool)
+        - cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate"
+
     - name: Checking for openshift-install tool
       command: openshift-install version
       register: output
@@ -53,20 +73,210 @@
       failed_when: output.rc !=0
 
     - block:
-        - name: Download initramfs and kernel 
-          get_url:
-            url: "{{ downloads.rhcos.base_url + item }}"
-            dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
-          loop:
-            - "{{ downloads.rhcos.initramfs }}"
-            - "{{ downloads.rhcos.kernel }}"
-      
+        - name: Retrieve the minor version
+          set_fact: 
+            version: "{{ cluster_version.split('.') }}"
 
-        - name: Download Red Hat CoreOS for bare metal
-          get_url:
-            #url:  "{{ downloads.rhcos.base_url + downloads.rhcos.coreos }}"
-            url:  "{{ downloads.rhcos.base_url + downloads.rhcos.rootfs }}"
-            #dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.coreos }}"
-            dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.rootfs }}"
-      when: not (skip_download | bool)
+        - block:
+            - name: Download initramfs and kernel 
+              get_url:
+                url: "{{ downloads.rhcos.4_1.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_1.initramfs }}"
+                - "{{ downloads.rhcos.4_1.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_1.base_url + downloads.rhcos.4_1.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_1.coreos }}"
+      
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_1.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_1.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_1.coreos }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 1
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_2.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_2.initramfs }}"
+                - "{{ downloads.rhcos.4_2.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_2.base_url + downloads.rhcos.4_2.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_2.coreos }}"
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_2.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_2.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_2.coreos }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 2
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_3.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_3.initramfs }}"
+                - "{{ downloads.rhcos.4_3.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_3.base_url + downloads.rhcos.4_3.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_3.coreos }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_3.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_3.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_3.coreos }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 3
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_4.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_4.initramfs }}"
+                - "{{ downloads.rhcos.4_4.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_4.base_url + downloads.rhcos.4_4.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_4.coreos }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_4.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_4.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_4.coreos }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 4
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_5.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_5.initramfs }}"
+                - "{{ downloads.rhcos.4_5.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_5.base_url + downloads.rhcos.4_5.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_5.coreos }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_5.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_5.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_5.coreos }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 5
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_6.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_6.initramfs }}"
+                - "{{ downloads.rhcos.4_6.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_6.base_url + downloads.rhcos.4_6.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_6.rootfs }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_6.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_6.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_6.rootfs }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 6
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_7.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_7.initramfs }}"
+                - "{{ downloads.rhcos.4_7.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_7.base_url + downloads.rhcos.4_7.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_7.rootfs }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_7.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_7.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_7.rootfs }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 7
+      when: 
+        - not (skip_download | bool) 
+        - cluster_version != "latest"
+        - cluster_version != "fast"
+        - cluster_version != "stable"
+        - cluster_version != "candidate"
+      
       become: true
+
+    - block:
+      - name: Retrieve the minor version
+        set_fact:
+          version: 
+            0: 4
+            1: 99
+      - name: Download initramfs and kernel
+        get_url:
+          url: "{{ downloads.rhcos.stable.base_url + item }}"
+          dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+        loop:
+          - "{{ downloads.rhcos.stable.initramfs }}"
+          - "{{ downloads.rhcos.stable.kernel }}"
+
+      - name: Download Red Hat CoreOS for bare metal
+        get_url:
+          url:  "{{ downloads.rhcos.stable.base_url + downloads.rhcos.stable.rootfs }}"
+          dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.stable.rootfs }}"
+
+      - name: Set fact for files
+        set_fact:
+          rhcos_kernel: "{{ downloads.rhcos.stable.kernel }}"
+          rhcos_initramfs: "{{ downloads.rhcos.stable.initramfs }}"
+          rhcos_os: "{{ downloads.rhcos.stable.rootfs }}"
+      become: true
+      when: 
+        - not (skip_download | bool)
+        - cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate"

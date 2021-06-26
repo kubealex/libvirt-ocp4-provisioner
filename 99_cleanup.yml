@@ -29,12 +29,12 @@
         force_init: true
         state: absent
 
-    - name: Delete all created paths
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop: 
-        - "{{ terraform_libivrt_provider_folder }}"
-        - "{{ terraform_home }}"
-        - "{{ gopath }}/bin/terraform-provider-libvirt"
-        - /usr/bin/terraform
+#    - name: Delete all created paths
+#      file:
+#        path: "{{ item }}"
+#        state: absent
+#      loop: 
+#        - "{{ terraform_libivrt_provider_folder }}"
+#        - "{{ terraform_home }}"
+#        - "{{ gopath }}/bin/terraform-provider-libvirt"
+#        - /usr/bin/terraform

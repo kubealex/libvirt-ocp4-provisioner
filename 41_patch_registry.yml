@@ -14,18 +14,36 @@
 
             - name: Creating persistent volume for registry
               command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/pv_registry.yaml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            - block:
+              - name: Firing registry template patch
+                template:
+                  src: templates/patch_registry.j2
+                  dest: /tmp/patch_registry.sh
+                  mode: '0755'
+                
+              - name: Applying patch
+                command: /tmp/patch_registry.sh
 
-            - name: Firing registry template patch
-              template:
-                src: templates/patch_registry.j2
-                dest: /tmp/patch_registry.sh
-                mode: '0755'
-              
-            - name: Applying patch
-              command: /tmp/patch_registry.sh
+              - name: Deleting temp files
+                file:
+                  path: /tmp/patch_registry.sh
+                  state: absent
+              when: hostvars['bastion'].version.1 | int >= 3
 
-            - name: Deleting temp files
-              file:
-                path: /tmp/patch_registry.sh
-                state: absent
+            - block:
+              - name: Firing registry template patch
+                template:
+                  src: templates/patch_registry-pre4.3.j2
+                  dest: /tmp/patch_registry.sh
+                  mode: '0755'
+
+              - name: Applying patch
+                command: /tmp/patch_registry.sh
+
+              - name: Deleting temp files
+                file:
+                  path: /tmp/patch_registry.sh
+                  state: absent
+              when: hostvars['bastion'].version.1 | int <= 2
+
       when: nfs_registry_enabled
