@@ -6,7 +6,6 @@
     - vars/infra_vars.yml
   become: true
   tasks:
-
     - name: Install needed packages
       yum:
         name: "{{ virtualization_packages.centos8 }}"
@@ -42,29 +41,6 @@
         name: libvirtd
         state: started
         enabled: true
-
-    - git:
-        repo: "{{ terraform_libvirt_provider_url }}"
-        dest: "{{ terraform_libivrt_provider_folder }}"
-        force: true
-
-    - name: Run 'install' target on libivrt-provider
-      make:
-        chdir: "{{ terraform_libivrt_provider_folder }}"
-        target: install
-
-    - name: Ensures terraform plugins directory exists
-      file:
-        path: "{{ terraform_plugin_dir }}"
-        state: directory
-        mode: 0744
-
-    - name: Copy libvirt provider to plugins directory
-      copy:
-        src: "{{ gopath }}/bin/terraform-provider-libvirt"
-        dest: "{{ terraform_plugin_dir }}"
-        remote_src: true
-        mode: 0755
 
     - name: Use TF project to ensure pool and network are defined
       terraform:
