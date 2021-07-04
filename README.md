@@ -113,7 +113,7 @@ The variable **nfs_registry** is set to false by default. If set to true, it wil
 
 **mem** and **disk** are intended in GB
 
-**cluster_version** allows you to choose a particular version to be installed (i.e. 4.5.0, stable, latest)
+**cluster_version** allows you to choose a particular version to be installed (i.e. 4.5.0, stable)
 
 The **role** for workers is intended for nodes labelling. Omitting labels sets them to their default value, **worker**
 
