@@ -245,10 +245,7 @@
             - version.1 | int == 7
       when: 
         - not (skip_download | bool) 
-        - cluster_version != "latest"
-        - cluster_version != "fast"
         - cluster_version != "stable"
-        - cluster_version != "candidate"
       
       become: true
 
@@ -279,4 +276,4 @@
       become: true
       when: 
         - not (skip_download | bool)
-        - cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate"
+        - cluster_version == "stable"
