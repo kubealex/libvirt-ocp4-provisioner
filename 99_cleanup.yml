@@ -8,7 +8,7 @@
   tasks:
 
     - name: Destroy cluster VM
-      terraform:
+      community.general.terraform:
         force_init: true
         project_path: "terraform/{{ item }}"
         state: absent
@@ -20,7 +20,7 @@
         - masters
 
     - name: Use TF project to ensure pool and network are removed
-      terraform:
+      community.general.terraform:
         project_path: "terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"

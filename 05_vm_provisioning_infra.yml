@@ -20,7 +20,7 @@
         path: "id_rsa"
 
     - name: Deploy bastion VM with terraform
-      terraform:
+      community.general.terraform:
         force_init: true
         project_path: "terraform/bastion"
         variables:
@@ -35,7 +35,7 @@
       register: output_ba
 
     - name: Deploy loadbalancer VM
-      terraform:
+      community.general.terraform:
         force_init: true
         project_path: "terraform/loadbalancer"
         variables:
