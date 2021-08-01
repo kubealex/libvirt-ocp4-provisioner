@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# WIP libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
+# libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
 Welcome to the home of the project!
 This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt and preparing for cluster installation.  
 
@@ -27,7 +27,7 @@ It also takes care of preparing the host machine with needed packages, configuri
 
 PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP up and running.
 
-The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 4.7.7) or taking one of the fixed releases (latest, candidate, fast, stable).
+The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 4.7.7) or the latest stable release with "stable".
 
 ## **bastion** and **loadbalancer** VMs spec:
 
