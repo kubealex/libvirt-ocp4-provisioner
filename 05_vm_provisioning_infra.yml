@@ -1,6 +1,7 @@
 - name: Provisioning infrastructure VMs
   hosts: vm_host
   vars_files:
+    - vars/cluster_vars.yml
     - vars/infra_vars.yml
     - vars/libvirt.yml
   tasks:

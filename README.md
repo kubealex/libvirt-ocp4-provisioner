@@ -56,10 +56,9 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
 
-**vars/infra_nodes.yml**
+**vars/infra_vars.yml**
 
     domain: hetzner.lab
-    cluster_name: ocp4
     nfs_registry: false
     infra_nodes:
       host_list:
@@ -75,10 +74,11 @@ Where **domain** is the dns domain assigned to the nodes and **cluster_name** is
 
 The variable **nfs_registry** is set to false by default. If set to true, it will deploy an additional 100Gi volume on **bastion** VM, create the PV and patch registry to use it in Managed mode.
 
-**vars/cluster_nodes.yml**
+**vars/cluster_vars.yml**
 
     three_node: false
     cluster_version: stable
+    cluster_name: ocp4
     cluster_nodes:
       host_list:
         bootstrap:
