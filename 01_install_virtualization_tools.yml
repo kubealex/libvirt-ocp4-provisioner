@@ -4,6 +4,7 @@
   vars_files:
     - vars/libvirt.yml
     - vars/infra_vars.yml
+    - vars/cluster_vars.yml
   become: true
   tasks:
     - name: Install needed packages

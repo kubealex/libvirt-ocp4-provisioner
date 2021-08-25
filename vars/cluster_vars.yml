@@ -1,4 +1,5 @@
 three_node: false
+cluster_name: ocp4
 cluster_version: stable
 cluster_nodes:
   host_list:
