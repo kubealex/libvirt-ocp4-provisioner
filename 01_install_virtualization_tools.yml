@@ -44,7 +44,7 @@
         enabled: true
 
     - name: Use TF project to ensure pool and network are defined
-      terraform:
+      community.general.terraform:
         project_path: "terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"

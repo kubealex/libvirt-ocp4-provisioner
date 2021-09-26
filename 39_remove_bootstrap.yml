@@ -36,6 +36,6 @@
   hosts: vm_host
   tasks:
     - name: Destroy bootstrap VM
-      terraform:
+      community.general.terraform:
         project_path: "terraform/bootstrap"
         state: absent    
