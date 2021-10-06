@@ -136,7 +136,7 @@ For testing purposes, minimum storage value is set at **40GB**.
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
-HTPasswd provider is created after the installation, you can use ocp_user and ocp_pass to login!
+**HTPasswd** provider is created after the installation, you can use **ocp_user** and **ocp_pass** to login!
 
 **DISCLAIMER**
 This project is for testing/lab only, it is not supported in any way by Red Hat nor endorsed.
