@@ -20,9 +20,16 @@
 
     #https://access.redhat.com/discussions/1455033
 
-    - name: Setting bastion's IP as DNS for our interface
-      command: > 
-        nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
+    - name: Adding interface {{ host_interface }} to internal zone
+      community.general.nmcli:
+        conn_name: "{{ host_interface }}"
+        zone: internal
+        dns4: "{{ hostvars['bastion']['host_ip'] }}"
+        state: present
+
+#    - name: Setting bastion's IP as DNS for our interface
+#      command: > 
+#        nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
      
     - name: Refreshing {{ host_interface }}
       shell:  nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
