@@ -5,3 +5,4 @@ vars/vars.yml
 test.yml
 .terraform*
 roles
+vars/cluster_vars.yml.bak
