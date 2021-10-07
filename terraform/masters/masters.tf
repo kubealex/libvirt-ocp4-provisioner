@@ -26,7 +26,7 @@ resource "libvirt_domain" "master" {
   memory = var.memory*1024
   vcpu = var.cpu
 
-  cpu = {
+  cpu {
     mode = "host-passthrough"
   }
 
