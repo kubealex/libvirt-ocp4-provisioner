@@ -40,6 +40,11 @@ The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 
 The user is capable of logging via SSH too.  
 
 ## Quickstart
+
+First of all, you need to install required collections to get started:
+
+    ansible-galaxy collection install -r requirements.yml
+
 The playbook is meant to be ran against a/many local or remote host/s, defined under **vm_host** group, depending on how many clusters you want to configure at once.  
 
     ansible-playbook main.yml
