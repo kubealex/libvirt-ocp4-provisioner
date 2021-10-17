@@ -28,7 +28,7 @@
         name: "{{ virtualization_packages.fedora }}"
         state: latest
       when:
-        - ansible_distribution == 'Fedora'
+        - ansible_distribution == 'fedora'
 
     - name: Download and provision Terraform
       unarchive:
