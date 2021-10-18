@@ -31,8 +31,8 @@
     - name: Creating htpasswd identity and user
       command: /tmp/ocp_user.sh
 
-    - name: Sleeping 120 seconds...
-      command: sleep 120
+    - name: Sleeping 180 seconds...
+      command: sleep 180
 
     - name: Try to login with admin
       command: > 

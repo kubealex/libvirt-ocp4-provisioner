@@ -7,19 +7,19 @@
   tasks:
     - name: Restart OCP VMs sequentially
       block:
-        - name: Destroy bootstrap node
+        - name: Shutdown bootstrap node
           virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['bootstrap'] }}"
 
-        - name: Destroy master nodes
+        - name: Shutdown master nodes
           virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['masters'] }}"
 
-        - name: Destroy worker nodes
+        - name: Shutdown worker nodes
           virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
