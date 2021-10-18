@@ -243,6 +243,31 @@
           when:
             - version.0 | int == 4
             - version.1 | int == 7
+
+        - block:
+            - name: Download initramfs and kernel
+              get_url:
+                url: "{{ downloads.rhcos.4_8.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+              loop:
+                - "{{ downloads.rhcos.4_8.initramfs }}"
+                - "{{ downloads.rhcos.4_8.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              get_url:
+                url:  "{{ downloads.rhcos.4_8.base_url + downloads.rhcos.4_8.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_8.rootfs }}"
+
+            - name: Set fact for files
+              set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.4_8.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.4_8.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.4_8.rootfs }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 8
+
       when: 
         - not (skip_download | bool) 
         - cluster_version != "stable"
