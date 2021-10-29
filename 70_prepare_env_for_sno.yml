@@ -1,6 +1,10 @@
 ---
 - name: Play for preparing to OCP4 single-node setup
   hosts: vm_host
+  vars_files:
+    - vars/cluster_vars.yml
+    - vars/infra_vars.yml
+    - vars/libvirt.yml
   tasks:
     - name: Preparing workspace
       file:
@@ -11,7 +15,19 @@
       openssh_keypair:
         path: "~/.ssh/id_rsa_ocp"
 
-    - name: Downloading Openshift installer and CLI
+    - name: Downloading Openshift CLI
+      unarchive:
+        src: "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster_version + '.tar.gz' }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      when:
+        - cluster_version != "latest"
+        - cluster_version != "fast"
+        - cluster_version != "stable"
+        - cluster_version != "candidate"
+
+    - name: Downloading Openshift CLI
       unarchive:
         src: "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
         dest: /usr/local/bin
@@ -24,6 +40,12 @@
       register: output
       failed_when: output.rc !=0
 
+    - name: Download file with check (sha256)
+      get_url:
+        url: "{{ downloads.coreos.live_media }}" 
+        dest: "/var/lib/libvirt/images/{{ cluster_name }}/coreos.iso"
+      become: true
+
     - name: Provision OCP node with Terraform
       community.general.terraform:
         project_path: "terraform/sno"
@@ -32,11 +54,10 @@
           hostname: "master-sno"
           libvirt_network: "{{ cluster_name }}"
           libvirt_pool: "{{ cluster_name }}"
-          coreos_iso_path: "/var/lib/libvirt/images/{{ cluster_name }}" 
+          coreos_iso_path: "/var/lib/libvirt/images/{{ cluster_name }}/coreos.iso" 
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
-          vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
       register: output_masters
 
