@@ -1,0 +1,8 @@
+downloads:
+  ocp:
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/
+    ocp_oc_cli: openshift-client-linux
+  coreos:
+    installer: https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/v0.8.0-3/coreos-installer
+    live_media: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/rhcos-live.x86_64.iso
+    

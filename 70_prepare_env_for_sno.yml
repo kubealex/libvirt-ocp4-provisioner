@@ -1,0 +1,42 @@
+---
+- name: Play for preparing to OCP4 single-node setup
+  hosts: vm_host
+  tasks:
+    - name: Preparing workspace
+      file:
+        state: directory
+        path: "~/sno"
+
+    - name: Creating ssh keys if not exists
+      openssh_keypair:
+        path: "~/.ssh/id_rsa_ocp"
+
+    - name: Downloading Openshift installer and CLI
+      unarchive:
+        src: "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      when: cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate" 
+
+    - name: Checking for OCP cli tool
+      command: oc
+      register: output
+      failed_when: output.rc !=0
+
+    - name: Provision OCP node with Terraform
+      community.general.terraform:
+        project_path: "terraform/sno"
+        force_init: true
+        variables:
+          hostname: "master-sno"
+          libvirt_network: "{{ cluster_name }}"
+          libvirt_pool: "{{ cluster_name }}"
+          coreos_iso_path: "/var/lib/libvirt/images/{{ cluster_name }}" 
+          cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
+          memory: "{{ cluster_nodes.specs.sno.mem }}"
+          vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
+          vm_count: "{{ cluster_nodes.host_list.masters | count }}"
+        state: present
+      register: output_masters
+
