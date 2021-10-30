@@ -4,6 +4,7 @@ variable "memory" { default = 32 }
 variable "cpu" { default = 4 }
 variable "coreos_iso_path" { default = "" }
 variable "vm_volume_size" { default = 40 }
+variable "vm_net_ip" { default = "192.168.100.7" }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
@@ -38,6 +39,7 @@ resource "libvirt_domain" "master" {
 
   network_interface {
        network_name = var.libvirt_network
+       addresses = [ "${var.vm_net_ip}" ] 
   }
 
   boot_device {
