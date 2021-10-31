@@ -6,5 +6,5 @@ downloads:
     installer: https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/v0.8.0-3/coreos-installer
     live_media: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-live.x86_64.iso
 workspace_directory:
-  base_path: ~/sno    
+  base_path: "{{ ansible_env.HOME }}/sno"
   config_dir: config

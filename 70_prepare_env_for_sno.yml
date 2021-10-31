@@ -74,15 +74,11 @@
       copy:
         src: files/localdns.conf
         dest: /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
-      notify:
-        - Restart net-services
 
     - name: Configure NetworkManager for libvirt network
       template:
         src: templates/libvirt_dnsmasq.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf"
-      notify:
-        - Restart net-services
 
     - name: Copy pull secret to a file
       copy: 
@@ -125,6 +121,15 @@
       copy: 
         src: "{{ workspace_directory.base_path }}/coreos.iso"
         dest: /var/lib/libvirt/images/{{ cluster_name }}/coreos.iso
+
+    - name: Restart net-services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - NetworkManager
+        - dnsmasq
+        - libvirtd
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
@@ -178,13 +183,3 @@
 
     - name: Sleeping 180 seconds...
       command: sleep 180
-
-  handlers:
-    - name: Restart net-services
-      service:
-        name: "{{ item }}"
-        state: restarted
-      loop:
-        - NetworkManager
-        - dnsmasq
-        - libvirtd
