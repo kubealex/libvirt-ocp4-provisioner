@@ -9,7 +9,7 @@
     - name: Preparing workspace
       file:
         state: directory
-        path: "~/sno"
+        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
 
     - name: Creating ssh keys if not exists
       openssh_keypair:
@@ -50,7 +50,7 @@
     - name: Download coreOS ISO and save it locally
       get_url:
         url: "{{ downloads.coreos.live_media }}" 
-        dest: "/var/lib/libvirt/images/{{ cluster_name }}/coreos.iso"
+        dest: "{{ workspace_directory.base_path }}/coreos.iso"
       become: true
 
     - name: Download coreOS-installer and save it locally
@@ -70,32 +70,32 @@
         path: /etc/NetworkManager/dnsmasq.d
         state: directory
 
-#    - name: Configure NetworkManager for local DNS
-#      copy:
-#        src: files/localdns.conf
-#        dest: /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
-#      notify:
-#        - Restart NetworkManager
+    - name: Configure NetworkManager for local DNS
+      copy:
+        src: files/localdns.conf
+        dest: /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
+      notify:
+        - Restart net-services
 
     - name: Configure NetworkManager for libvirt network
       template:
         src: templates/libvirt_dnsmasq.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf"
       notify:
-        - Restart NetworkManager
+        - Restart net-services
 
     - name: Copy pull secret to a file
       copy: 
         content: "{{ cluster.pullSecret }}"
-        dest: ~/sno/pull-secret
+        dest: "{{ workspace_directory.base_path }}/pull-secret"
 
     - name: Extract openshift-baremetal-install from release image
-      shell: "oc adm release extract --registry-config ~/sno/pull-secret --command=openshift-baremetal-install
- --to ~/sno/openshift-baremetal-install {{ release_image }}"
+      shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/pull-secret --command=openshift-baremetal-install
+ --to {{ workspace_directory.base_path }}/openshift-baremetal-install {{ release_image }}"
 
     - name: Move openshift installer to PATH
       copy:
-        src: ~/sno/openshift-baremetal-install/openshift-baremetal-install
+        src: "{{ workspace_directory.base_path }}/openshift-baremetal-install/openshift-baremetal-install"
         dest: /usr/local/bin/openshift-baremetal-install
         remote_src: true
         mode: +x
@@ -111,15 +111,20 @@
     - name: Firing up install-config.yaml
       template:
         src: templates/install-config-sno.j2
-        dest: "~/sno/install-config.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
 
     - name: Generate ignition config
-      shell: openshift-baremetal-install --dir ~/sno/ create single-node-ignition-config
+      shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
       become: true
 
     - name: Patch live ISO with generate ignition file
-      shell: coreos-installer iso ignition embed -fi ~/sno/bootstrap-in-place-for-live-iso.ign /var/lib/libvirt/images/{{ cluster_name }}/coreos.iso
+      shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/coreos.iso
       become: true
+
+    - name: Move coreos image in libvirt pool directory
+      copy: 
+        src: "{{ workspace_directory.base_path }}/coreos.iso"
+        dest: /var/lib/libvirt/images/{{ cluster_name }}/coreos.iso
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
@@ -129,11 +134,11 @@
           hostname: "master-sno"
           libvirt_network: "{{ cluster_name }}"
           libvirt_pool: "{{ cluster_name }}"
-          vm_net_ip: "{{ cluster_nodes.host_list.masters[0].ip }}"
+          vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
           coreos_iso_path: "/var/lib/libvirt/images/{{ cluster_name }}/coreos.iso"
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
-          vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
+          vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
         state: present
       register: output_masters
 
@@ -142,10 +147,44 @@
         var: output_masters
 
     - name: Start Openshift install
-      shell: openshift-baremetal-install wait-for install-complete --dir ~/sno
+      shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+
+    - name: Ensuring httpd-tools is present
+      package:
+        name: httpd-tools
+        state: present
+      become: true
+
+    - name: Ensuring passlib is present
+      pip:
+        name:
+          - passlib
+          - bcrypt
+      become: true
+
+    - name: Firing yaml configuration template for htpasswd identity provider
+      template:
+        src: templates/htpasswd_provider.j2
+        dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
+
+    - name: Firing configuration script template for user creation
+      template:
+        src: templates/ocp_user_script.j2
+        dest: /tmp/ocp_user.sh
+        mode: +x
+
+    - name: Creating htpasswd identity and user
+      command: /tmp/ocp_user.sh
+
+    - name: Sleeping 180 seconds...
+      command: sleep 180
 
   handlers:
-    - name: Restart NetworkManager
+    - name: Restart net-services
       service:
-        name: NetworkManager
+        name: "{{ item }}"
         state: restarted
+      loop:
+        - NetworkManager
+        - dnsmasq
+        - libvirtd

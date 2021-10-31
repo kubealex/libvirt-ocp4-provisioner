@@ -1,8 +1,11 @@
-three_node: false
-cluster_name: ocp4
+single_node: true
+three_node: true
 cluster_version: stable
+cluster_name: ocp4
 cluster_nodes:
   host_list:
+    sno:
+      ip: 192.168.100.7
     bootstrap:
       - ip: 192.168.100.6
     masters:
@@ -13,6 +16,10 @@ cluster_nodes:
       - ip: 192.168.100.10
       - ip: 192.168.100.11
   specs:
+    sno:
+      vcpu: 4
+      mem: 32
+      disk: 60
     bootstrap:
       vcpu: 4
       mem: 16
@@ -23,7 +30,7 @@ cluster_nodes:
       disk: 40	  
     workers:
       vcpu: 2
-      mem: 8
+      mem: 16 
       disk: 40
         
 cluster:

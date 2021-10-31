@@ -4,7 +4,7 @@ metadata:
   name: {{ cluster_name }}
 networking:
   networkType: OVNKubernetes
-  machineCIDR: 192.168.100.0/24
+  machineCIDR: {{ libvirt.network.network_cidr }}
 compute:
 - name: worker
   replicas: 0
