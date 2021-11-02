@@ -2,7 +2,7 @@
 - name: Play for preparing to OCP4 single-node setup
   hosts: vm_host
   vars_files:
-    - vars/cluster_vars.yml
+    - vars/sno_vars.yml
     - vars/infra_vars.yml
     - vars/libvirt.yml
   tasks:
@@ -120,7 +120,7 @@
     - name: Move coreos image in libvirt pool directory
       copy: 
         src: "{{ workspace_directory.base_path }}/coreos.iso"
-        dest: /var/lib/libvirt/images/{{ cluster_name }}/coreos.iso
+        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster_name }}/coreos.iso"
 
     - name: Restart net-services
       service:
@@ -140,7 +140,7 @@
           libvirt_network: "{{ cluster_name }}"
           libvirt_pool: "{{ cluster_name }}"
           vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
-          coreos_iso_path: "/var/lib/libvirt/images/{{ cluster_name }}/coreos.iso"
+          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster_name }}/coreos.iso"
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"

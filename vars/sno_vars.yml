@@ -1,0 +1,17 @@
+cluster_version: stable
+cluster_name: ocp4
+cluster_nodes:
+  host_list:
+    sno:
+      ip: 192.168.100.7
+  specs:
+    sno:
+      vcpu: 4
+      mem: 32
+      disk: 60
+
+cluster:
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ''
+
