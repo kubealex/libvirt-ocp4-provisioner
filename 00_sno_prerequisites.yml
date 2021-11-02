@@ -2,7 +2,7 @@
 - name: This play ensures prerequisites are satisfied before installing
   hosts: vm_host
   vars_files:
-    - vars/cluster_vars.yml
+    - vars/sno_vars.yml
   tasks:
 
     - name: Check if distribution is supported

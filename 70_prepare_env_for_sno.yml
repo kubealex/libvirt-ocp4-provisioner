@@ -77,7 +77,7 @@
 
     - name: Configure NetworkManager for libvirt network
       template:
-        src: templates/libvirt_dnsmasq.j2
+        src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf"
 
     - name: Copy pull secret to a file
