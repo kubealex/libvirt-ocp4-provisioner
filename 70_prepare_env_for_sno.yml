@@ -64,21 +64,25 @@
       file:
         path: /etc/NetworkManager/conf.d
         state: directory
+      become: true
 
     - name: Ensure NM dnsmasq directory exists
       file:
         path: /etc/NetworkManager/dnsmasq.d
         state: directory
+      become: true
 
     - name: Configure NetworkManager for local DNS
       copy:
         src: files/localdns.conf
         dest: /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
+      become: true
 
     - name: Configure NetworkManager for libvirt network
       template:
         src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf"
+      become: true
 
     - name: Copy pull secret to a file
       copy: 
@@ -95,6 +99,7 @@
         dest: /usr/local/bin/openshift-baremetal-install
         remote_src: true
         mode: +x
+      become: true
 
     - name: Getting ssh public key
       slurp:
@@ -121,6 +126,7 @@
       copy: 
         src: "{{ workspace_directory.base_path }}/coreos.iso"
         dest: "{{ libvirt.pool.pool_dir }}/{{ cluster_name }}/coreos.iso"
+      become: true
 
     - name: Restart net-services
       service:
@@ -130,6 +136,7 @@
         - NetworkManager
         - dnsmasq
         - libvirtd
+      become: true
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
@@ -145,11 +152,8 @@
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
         state: present
+      become: true
       register: output_masters
-
-    - name: Print MAC of SNO master
-      debug: 
-        var: output_masters
 
     - name: Start Openshift install
       shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
