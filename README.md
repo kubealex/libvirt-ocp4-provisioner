@@ -29,6 +29,7 @@ PXE is automatic, based on MAC binding to different OCP nodes role, so no need o
 
 The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 4.7.7) or the latest stable release with "stable".
 
+Now support for **Single Node Openshift - SNO** has been added!
 ## **bastion** and **loadbalancer** VMs spec:
 
 - OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)  
@@ -41,15 +42,24 @@ The user is capable of logging via SSH too.
 
 ## Quickstart
 
+
 First of all, you need to install required collections to get started:
 
     ansible-galaxy collection install -r requirements.yml
 
-The playbook is meant to be ran against a/many local or remote host/s, defined under **vm_host** group, depending on how many clusters you want to configure at once.  
+The playbook is meant to be ran against a/many local or remote host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.  
+
+### HA Clusters
 
     ansible-playbook main.yml
 
+### Single Node Openshift (SNO)
+
+    ansible-playbook main-sno.yml
+
 You can quickly make it work by configuring the needed vars, but you can go straight with the defaults!
+
+## Common vars
 
 **vars/libvirt.yml**
 
@@ -60,6 +70,7 @@ You can quickly make it work by configuring the needed vars, but you can go stra
 
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
+## HA Configuration vars
 
 **vars/infra_vars.yml**
 
@@ -138,6 +149,25 @@ Recommended values are:
 For testing purposes, minimum storage value is set at **40GB**.
 
 **The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var ONLY FOR 4.6+** 
+
+## Single Node Openshift vars
+
+**vars/cluster_vars.yml**
+
+    cluster_name: ocp4
+    cluster_nodes:
+      host_list:
+        bootstrap:
+	  ip: 192.168.100.7
+      specs:
+        sno:
+          vcpu: 8
+          mem: 32
+          disk: 120            
+    cluster:
+      ocp_user: admin
+      ocp_pass: openshift
+      pullSecret: ''
 
 Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
