@@ -84,14 +84,29 @@
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
       become: true
 
+    - name: Take care of systemd-resolved on F33 and Ubuntu hosts
+      block:
+        - name: Ensure systemd-resolved config dir is present
+          file:
+            path: /etc/systemd/resolved.conf.d/
+            state: directory
+
+        - name: Enable localdns if systemd-resolved is present
+          template:
+            src: systemd-resolved.j2
+            dest: /etc/systemd/resolved.conf.d/{{ cluster }}-local-kube.conf
+          notify:
+            - Restart systemd-resolved
+      become: true
+      when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33) 
+
     - name: Copy pull secret to a file
       copy: 
         content: "{{ cluster.pullSecret }}"
         dest: "{{ workspace_directory.base_path }}/pull-secret"
 
     - name: Extract openshift-baremetal-install from release image
-      shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/pull-secret --command=openshift-baremetal-install
- --to {{ workspace_directory.base_path }}/openshift-baremetal-install {{ release_image }}"
+      shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/openshift-baremetal-install {{ release_image }}"
 
     - name: Move openshift installer to PATH
       copy:
