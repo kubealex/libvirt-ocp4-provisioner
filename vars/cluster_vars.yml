@@ -1,7 +1,11 @@
-single_node: true
 three_node: true
-cluster_version: stable
-cluster_name: ocp4
+domain: hetzner.lab
+cluster:
+  name: ocp4
+  version: stable
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ''
 cluster_nodes:
   host_list:
     sno:
@@ -16,10 +20,6 @@ cluster_nodes:
       - ip: 192.168.100.10
       - ip: 192.168.100.11
   specs:
-    sno:
-      vcpu: 4
-      mem: 32
-      disk: 60
     bootstrap:
       vcpu: 4
       mem: 16
@@ -32,8 +32,3 @@ cluster_nodes:
       vcpu: 2
       mem: 16 
       disk: 40
-        
-cluster:
-  ocp_user: admin
-  ocp_pass: openshift
-  pullSecret: ''

@@ -9,7 +9,7 @@ controlPlane:
   name: master 
   replicas: {{ cluster_nodes.host_list.masters | count }}
 metadata:
-  name: {{ hostvars['bastion'].cluster_name }}
+  name: {{ hostvars['bastion'].cluster.name }}
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14 

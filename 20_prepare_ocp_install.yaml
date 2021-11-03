@@ -4,7 +4,6 @@
   vars_files:
     - vars/cluster_vars.yml
   tasks:
-   
     - name: Removing config directory
       file:
         path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"

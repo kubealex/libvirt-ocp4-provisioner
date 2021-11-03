@@ -27,7 +27,7 @@
         variables:
           domain: "{{ domain }}"
           network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
-          cluster_name: "{{ cluster_name }}"
+          cluster_name: "{{ cluster.name }}"
         force_init: true
         state: absent
 
@@ -39,5 +39,5 @@
         - /usr/bin/terraform
         - /usr/local/bin/openshift-baremetal-install
         - "{{ workspace_directory.base_path }}"
-        - /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
-        - /etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf
+        - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
+        - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf

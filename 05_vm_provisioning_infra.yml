@@ -7,7 +7,7 @@
   tasks:
 
     - set_fact:
-        ocp_domain: "{{ cluster_name }}.{{ domain }}"
+        ocp_domain: "{{ cluster.name }}.{{ domain }}"
 
     - name: Ensure to clean known_hosts
       known_hosts:
@@ -25,12 +25,12 @@
         force_init: true
         project_path: "terraform/bastion"
         variables:
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           network_data: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "bastion"
           domain: "{{ domain }}"
-          cluster_name: "{{ cluster_name }}"
+          cluster_name: "{{ cluster.name }}"
           enable_nfs: "{{ nfs_registry | lower }}"
         state: present
       register: output_ba
@@ -40,12 +40,12 @@
         force_init: true
         project_path: "terraform/loadbalancer"
         variables:
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           network_data: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
           hostname: "loadbalancer"
           domain: "{{ domain }}"
-          cluster_name: "{{ cluster_name }}"
+          cluster_name: "{{ cluster.name }}"
         state: present
       register: output_lb
 
@@ -57,7 +57,7 @@
         ansible_user: ocpinstall
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
         domain: "{{ domain }}"
-        cluster_name: "{{ cluster_name }}"
+        cluster_name: "{{ cluster.name }}"
         ocp_domain: "{{ ocp_domain }}"
         nfs_registry_enabled: "{{ nfs_registry }}"
         timezone: "{{ dhcp.timezone }}"

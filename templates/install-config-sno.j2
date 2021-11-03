@@ -1,7 +1,7 @@
 apiVersion: v1beta4
 baseDomain: {{ domain }}
 metadata:
-  name: {{ cluster_name }}
+  name: {{ cluster.name }}
 networking:
   networkType: OVNKubernetes
   machineCIDR: {{ libvirt.network.network_cidr }}

@@ -13,10 +13,10 @@
 
     - name: Creating ssh keys if not exists
       openssh_keypair:
-        path: "~/.ssh/id_rsa_{{ cluster_name }}"
+        path: "~/.ssh/id_rsa_{{ cluster.name }}"
 
     - name: Retrieve image for current version
-      shell: "curl -s {{ downloads.ocp.base_url + cluster_version + '/release.txt' }} | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
+      shell: "curl -s {{ downloads.ocp.base_url + cluster.version + '/release.txt' }} | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
       register: version
 
     - set_fact:
@@ -24,23 +24,23 @@
 
     - name: Downloading Openshift CLI
       unarchive:
-        src: "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster_version + '.tar.gz' }}"
+        src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster.version + '.tar.gz' }}"
         dest: /usr/local/bin
         remote_src: yes
       become: True
       when:
-        - cluster_version != "latest"
-        - cluster_version != "fast"
-        - cluster_version != "stable"
-        - cluster_version != "candidate"
+        - cluster.version != "latest"
+        - cluster.version != "fast"
+        - cluster.version != "stable"
+        - cluster.version != "candidate"
 
     - name: Downloading Openshift CLI
       unarchive:
-        src: "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
+        src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
         dest: /usr/local/bin
         remote_src: yes
       become: True
-      when: cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate" 
+      when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate" 
 
     - name: Checking for OCP cli tool
       command: oc
@@ -75,13 +75,13 @@
     - name: Configure NetworkManager for local DNS
       copy:
         src: files/localdns.conf
-        dest: /etc/NetworkManager/conf.d/{{ cluster_name }}-localdns.conf
+        dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
       become: true
 
     - name: Configure NetworkManager for libvirt network
       template:
         src: templates/libvirt_dnsmasq_sno.j2
-        dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster_name }}-libvirt_dnsmasq.conf"
+        dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
       become: true
 
     - name: Copy pull secret to a file
@@ -103,7 +103,7 @@
 
     - name: Getting ssh public key
       slurp:
-        src: "~/.ssh/id_rsa_{{ cluster_name }}.pub"
+        src: "~/.ssh/id_rsa_{{ cluster.name }}.pub"
       register: key
 
     - set_fact:
@@ -125,7 +125,7 @@
     - name: Move coreos image in libvirt pool directory
       copy: 
         src: "{{ workspace_directory.base_path }}/coreos.iso"
-        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster_name }}/coreos.iso"
+        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
       become: true
 
     - name: Restart net-services
@@ -144,10 +144,10 @@
         force_init: true
         variables:
           hostname: "master-sno"
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
-          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster_name }}/coreos.iso"
+          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
@@ -187,3 +187,7 @@
 
     - name: Sleeping 180 seconds...
       command: sleep 180
+
+    - name: Your cluster is ready
+      debug: 
+        msg: "Cluster setup finished, grab your kubeconfig in {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth or log in the console at the address: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }} with the credentials you chose"

@@ -1,4 +1,3 @@
-domain: hetzner.lab
 nfs_registry: false
 
 infra_nodes:

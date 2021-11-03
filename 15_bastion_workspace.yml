@@ -40,14 +40,14 @@
         remote_src: yes
       become: True
       loop:
-        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster_version + '.tar.gz' }}"
-        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_installer + '-' + cluster_version + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster.version + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_installer + '-' + cluster.version + '.tar.gz' }}"
       when: 
         - not (skip_download | bool) 
-        - cluster_version != "latest"
-        - cluster_version != "fast"
-        - cluster_version != "stable"
-        - cluster_version != "candidate"
+        - cluster.version != "latest"
+        - cluster.version != "fast"
+        - cluster.version != "stable"
+        - cluster.version != "candidate"
 
     - name: Downloading Openshift installer and CLI
       unarchive:
@@ -56,11 +56,11 @@
         remote_src: yes
       become: True
       loop:
-        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
-        - "{{ downloads.ocp.base_url + cluster_version + '/' + downloads.ocp.ocp_installer + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_installer + '.tar.gz' }}"
       when:
         - not (skip_download | bool)
-        - cluster_version == "latest" or cluster_version == "fast" or cluster_version == "stable" or cluster_version == "candidate"
+        - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
     - name: Checking for openshift-install tool
       command: openshift-install version
@@ -75,7 +75,7 @@
     - block:
         - name: Retrieve the minor version
           set_fact: 
-            version: "{{ cluster_version.split('.') }}"
+            version: "{{ cluster.version.split('.') }}"
 
         - block:
             - name: Download initramfs and kernel 
@@ -270,7 +270,7 @@
 
       when: 
         - not (skip_download | bool) 
-        - cluster_version != "stable"
+        - cluster.version != "stable"
       
       become: true
 
@@ -301,4 +301,4 @@
       become: true
       when: 
         - not (skip_download | bool)
-        - cluster_version == "stable"
+        - cluster.version == "stable"
