@@ -94,7 +94,7 @@
         - name: Enable localdns if systemd-resolved is present
           template:
             src: systemd-resolved.j2
-            dest: /etc/systemd/resolved.conf.d/{{ cluster }}-local-kube.conf
+            dest: /etc/systemd/resolved.conf.d/{{ cluster.name }}-local.conf
           notify:
             - Restart systemd-resolved
       become: true
