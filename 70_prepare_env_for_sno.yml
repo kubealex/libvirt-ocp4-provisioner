@@ -51,7 +51,6 @@
       get_url:
         url: "{{ downloads.coreos.live_media }}" 
         dest: "{{ workspace_directory.base_path }}/coreos.iso"
-      become: true
 
     - name: Download coreOS-installer and save it locally
       get_url:
