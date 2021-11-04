@@ -113,8 +113,6 @@
             dest: /etc/resolv.conf
             state: link
             force: true
-
-          
       become: true
       when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33) 
 
