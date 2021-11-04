@@ -149,11 +149,9 @@
 
     - name: Generate ignition config
       shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
-      become: true
 
     - name: Patch live ISO with generate ignition file
       shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/coreos.iso
-      become: true
 
     - name: Move coreos image in libvirt pool directory
       copy: 
