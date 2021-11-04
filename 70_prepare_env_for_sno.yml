@@ -100,6 +100,20 @@
           service:
             name: systemd-resolved
             state: restarted
+   
+        - name: Backup resolv.conf for further debug
+          copy:
+            src: /etc/resolv.conf
+            dest: /etc/resolv.conf.bak
+            remote_src: true
+
+        - name: Ensure systemd-resolved config dir is present
+          file:
+            src: /run/systemd/resolve/resolv.conf
+            dest: /etc/resolv.conf
+            state: link
+            force: true
+
           
       become: true
       when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33) 
