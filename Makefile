@@ -9,10 +9,10 @@ help:
 setup:
 	@ansible-galaxy collection install -r requirements.yml
 .PHONY: create-ha
-create:
+create-ha:
 	@ansible-playbook main.yml
 .PHONY: create-sno
-create:
+create-sno:
 	@ansible-playbook main-sno.yml -vv
 .PHONY: destroy
 destroy:
