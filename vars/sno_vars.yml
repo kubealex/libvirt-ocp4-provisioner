@@ -1,0 +1,16 @@
+domain: hetzner.lab
+cluster:
+  version: stable
+  name: ocp4
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ''
+cluster_nodes:
+  host_list:
+    sno:
+      ip: 192.168.100.7
+  specs:
+    sno:
+      vcpu: 4
+      mem: 32
+      disk: 60

@@ -1,0 +1,33 @@
+---
+- name: This play ensures prerequisites are satisfied before installing
+  hosts: vm_host
+  vars_files:
+    - vars/sno_vars.yml
+  tasks:
+
+    - name: Check if distribution is supported
+      fail:
+        msg: Your distribution is actually unsupported
+      when:
+        - ansible_distribution != 'CentOS'
+        - ansible_distribution != 'Fedora'    
+    
+    - name: Block of cluster checks
+      block:
+        - fail: 
+            msg: "Only ONE bootstrap node can be present"
+          when: cluster_nodes.host_list.sno | count > 1
+
+        - fail: 
+            msg: "Please check the host_list variable in cluster_nodes"
+          when: ( cluster_nodes.host_list.sno | count <= 0 ) 
+      
+        - name: Fail fast if bootstrap node doesn't meet minimum requirements
+          fail:
+            msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 40GB storage and 4vCPUs"
+          when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
+        
+        - name: Check for pullSecret variable and fail fast
+          fail:
+            msg: "Check the pullSecret var in files/vars.yaml"
+          when: (cluster.pullSecret is undefined) or (cluster.pullSecret | length < 1)

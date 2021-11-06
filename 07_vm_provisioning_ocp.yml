@@ -11,8 +11,8 @@
         project_path: "terraform/bootstrap"
         variables:
           hostname: "bootstrap"
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           cpu: "{{ cluster_nodes.specs.bootstrap.vcpu }}"
           vm_volume_size: "{{ cluster_nodes.specs.bootstrap.disk }}"
           memory: "{{ cluster_nodes.specs.bootstrap.mem }}"
@@ -25,8 +25,8 @@
         force_init: true
         variables:
           hostname: "master"
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           cpu: "{{ cluster_nodes.specs.masters.vcpu }}"
           memory: "{{ cluster_nodes.specs.masters.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
@@ -40,8 +40,8 @@
         force_init: true
         variables:
           hostname: "worker"
-          libvirt_network: "{{ cluster_name }}"
-          libvirt_pool: "{{ cluster_name }}"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
           cpu: "{{ cluster_nodes.specs.workers.vcpu }}"
           memory: "{{ cluster_nodes.specs.workers.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.workers.disk }}"

@@ -4,6 +4,7 @@
   vars_files:
     - vars/libvirt.yml
     - vars/infra_vars.yml
+    - vars/cluster_vars.yml
   become: true
   tasks:
 
@@ -18,6 +19,7 @@
         - loadbalancer
         - workers
         - masters
+        - sno
 
     - name: Use TF project to ensure pool and network are removed
       community.general.terraform:
@@ -25,7 +27,7 @@
         variables:
           domain: "{{ domain }}"
           network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
-          cluster_name: "{{ cluster_name }}"
+          cluster_name: "{{ cluster.name }}"
         force_init: true
         state: absent
 
@@ -35,3 +37,7 @@
         state: absent
       loop: 
         - /usr/bin/terraform
+        - /usr/local/bin/openshift-baremetal-install
+        - "{{ workspace_directory.base_path }}"
+        - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
+        - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf

@@ -1,0 +1,221 @@
+---
+- name: Play for preparing to OCP4 single-node setup
+  hosts: vm_host
+  vars_files:
+    - vars/sno_vars.yml
+    - vars/infra_vars.yml
+    - vars/libvirt.yml
+  tasks:
+    - name: Preparing workspace
+      file:
+        state: directory
+        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+
+    - name: Creating ssh keys if not exists
+      openssh_keypair:
+        path: "~/.ssh/id_rsa_{{ cluster.name }}"
+
+    - name: Retrieve image for current version
+      shell: "curl -s {{ downloads.ocp.base_url + cluster.version + '/release.txt' }} | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
+      register: version
+
+    - set_fact:
+        release_image: "{{ version.stdout }}"
+
+    - name: Downloading Openshift CLI
+      unarchive:
+        src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster.version + '.tar.gz' }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      when:
+        - cluster.version != "latest"
+        - cluster.version != "fast"
+        - cluster.version != "stable"
+        - cluster.version != "candidate"
+
+    - name: Downloading Openshift CLI
+      unarchive:
+        src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
+        dest: /usr/local/bin
+        remote_src: yes
+      become: True
+      when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate" 
+
+    - name: Checking for OCP cli tool
+      command: oc
+      register: output
+      failed_when: output.rc !=0
+
+    - name: Download coreOS ISO and save it locally
+      get_url:
+        url: "{{ downloads.coreos.live_media }}" 
+        dest: "{{ workspace_directory.base_path }}/coreos.iso"
+
+    - name: Download coreOS-installer and save it locally
+      get_url:
+        url: "{{ downloads.coreos.installer }}"
+        dest: /usr/local/bin/coreos-installer
+        mode: +x
+      become: true
+
+    - name: Ensure NM configuration directory exists
+      file:
+        path: /etc/NetworkManager/conf.d
+        state: directory
+      become: true
+
+    - name: Ensure NM dnsmasq directory exists
+      file:
+        path: /etc/NetworkManager/dnsmasq.d
+        state: directory
+      become: true
+
+    - name: Configure NetworkManager for local DNS
+      copy:
+        src: files/localdns.conf
+        dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
+      become: true
+
+    - name: Configure NetworkManager for libvirt network
+      template:
+        src: templates/libvirt_dnsmasq_sno.j2
+        dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
+      become: true
+
+    - name: Take care of systemd-resolved on F33 and Ubuntu hosts
+      block:
+        - name: Ensure systemd-resolved config dir is present
+          file:
+            path: /etc/systemd/resolved.conf.d/
+            state: directory
+
+        - name: Enable localdns if systemd-resolved is present
+          template:
+            src: systemd-resolved.j2
+            dest: /etc/systemd/resolved.conf.d/{{ cluster.name }}-local.conf
+
+        - name: Restart systemd-resolved
+          service:
+            name: systemd-resolved
+            state: restarted
+   
+        - name: Backup resolv.conf for further debug
+          copy:
+            src: /etc/resolv.conf
+            dest: /etc/resolv.conf.bak
+            remote_src: true
+
+        - name: Ensure systemd-resolved config dir is present
+          file:
+            src: /run/systemd/resolve/resolv.conf
+            dest: /etc/resolv.conf
+            state: link
+            force: true
+      become: true
+      when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33) 
+
+    - name: Copy pull secret to a file
+      copy: 
+        content: "{{ cluster.pullSecret }}"
+        dest: "{{ workspace_directory.base_path }}/pull-secret"
+
+    - name: Extract openshift-baremetal-install from release image
+      shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/openshift-baremetal-install {{ release_image }}"
+
+    - name: Move openshift installer to PATH
+      copy:
+        src: "{{ workspace_directory.base_path }}/openshift-baremetal-install/openshift-baremetal-install"
+        dest: /usr/local/bin/openshift-baremetal-install
+        remote_src: true
+        mode: +x
+      become: true
+
+    - name: Getting ssh public key
+      slurp:
+        src: "~/.ssh/id_rsa_{{ cluster.name }}.pub"
+      register: key
+
+    - set_fact:
+        sshKey: "{{ key['content'] | b64decode }}"
+
+    - name: Firing up install-config.yaml
+      template:
+        src: templates/install-config-sno.j2
+        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+
+    - name: Generate ignition config
+      shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
+
+    - name: Patch live ISO with generate ignition file
+      shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/coreos.iso
+
+    - name: Move coreos image in libvirt pool directory
+      copy: 
+        src: "{{ workspace_directory.base_path }}/coreos.iso"
+        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+      become: true
+
+    - name: Restart net-services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - NetworkManager
+        - dnsmasq
+        - libvirtd
+      become: true
+
+    - name: Provision OCP node with Terraform
+      community.general.terraform:
+        project_path: "terraform/sno"
+        force_init: true
+        variables:
+          hostname: "master-sno"
+          libvirt_network: "{{ cluster.name }}"
+          libvirt_pool: "{{ cluster.name }}"
+          vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
+          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+          cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
+          memory: "{{ cluster_nodes.specs.sno.mem }}"
+          vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
+        state: present
+      become: true
+      register: output_masters
+
+    - name: Start Openshift install
+      shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+
+    - name: Ensuring httpd-tools is present
+      package:
+        name: httpd-tools
+        state: present
+      become: true
+
+    - name: Ensuring passlib is present
+      pip:
+        name:
+          - passlib
+          - bcrypt
+      become: true
+
+    - name: Firing yaml configuration template for htpasswd identity provider
+      template:
+        src: templates/htpasswd_provider.j2
+        dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
+
+    - name: Firing configuration script template for user creation
+      template:
+        src: templates/ocp_user_script.j2
+        dest: /tmp/ocp_user.sh
+        mode: +x
+
+    - name: Creating htpasswd identity and user
+      command: /tmp/ocp_user.sh
+
+    - name: Sleeping 180 seconds...
+      command: sleep 180
+
+    - name: Your cluster is ready
+      debug: 
+        msg: "Cluster setup finished, grab your kubeconfig in {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth or log in the console at the address: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }} with the credentials you chose"
