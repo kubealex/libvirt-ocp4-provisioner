@@ -14,6 +14,6 @@ cluster_nodes:
       vcpu: 4
       mem: 32
       disk: 60
-storage:
-  local_storage_enabled: true
-  local_storage_block_size: 50
+local_storage:
+  enabled: true
+  volume_size: 50
