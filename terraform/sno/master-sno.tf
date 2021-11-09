@@ -21,7 +21,6 @@ resource "libvirt_volume" "os_image" {
 }
 
 resource "libvirt_volume" "local_disk" {
-  count = var.vm_count
   name = "${var.hostname}-local_disk"
   pool = var.libvirt_pool
   size = var.local_volume_size*1073741824
@@ -43,7 +42,7 @@ resource "libvirt_domain" "master" {
   }
 
   disk {
-     volume_id = libvirt_volume.local_disk_disk.id
+     volume_id = libvirt_volume.local_disk.id
   }
 
   disk {
