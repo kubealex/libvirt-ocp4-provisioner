@@ -5,6 +5,7 @@ variable "cpu" { default = 4 }
 variable "coreos_iso_path" { default = "" }
 variable "vm_volume_size" { default = 40 }
 variable "vm_net_ip" { default = "192.168.100.7" }
+variable "local_volume_size" { default = 50 }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
@@ -16,6 +17,13 @@ resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   size = var.vm_volume_size*1073741824
   pool = var.libvirt_pool
+  format = "qcow2"
+}
+
+resource "libvirt_volume" "local_disk" {
+  name = "${var.hostname}-local_disk"
+  pool = var.libvirt_pool
+  size = var.local_volume_size*1073741824
   format = "qcow2"
 }
 
@@ -31,6 +39,10 @@ resource "libvirt_domain" "master" {
 
   disk {
        volume_id = libvirt_volume.os_image.id
+  }
+
+  disk {
+     volume_id = libvirt_volume.local_disk.id
   }
 
   disk {
