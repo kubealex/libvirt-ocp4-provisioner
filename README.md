@@ -169,6 +169,12 @@ For testing purposes, minimum storage value is set at **40GB**.
           vcpu: 8
           mem: 32
           disk: 120            
+    local_storage:
+      enabled: true
+      volume_size: 50
+
+
+**local_storage** field can be used to provision an additional disk to the VM in order to provision volumes using, for instance, rook-ceph or local storage operator.
 
 In both cases, Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
 
