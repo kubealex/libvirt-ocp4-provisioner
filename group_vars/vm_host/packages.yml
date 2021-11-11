@@ -1,4 +1,18 @@
 virtualization_packages:
+
+  rhel: 
+    - unzip
+    - git
+    - gcc
+    - make
+    - python3-lxml
+    - python3-netaddr
+    - python3-libvirt
+    - libvirt-devel
+    - libvirt
+    - qemu-kvm
+    - virt-install
+    - virt-manager
   centos7:
     - git
     - unzip 

@@ -12,6 +12,7 @@
       when:
         - ansible_distribution != 'CentOS'
         - ansible_distribution != 'Fedora'    
+        - ansible_distribution != 'RedHat'
     
     - name: Block of cluster checks
       block:
