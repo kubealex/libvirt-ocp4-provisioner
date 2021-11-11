@@ -6,6 +6,14 @@
     - vars/cluster_vars.yml
   become: true
   tasks:
+
+    - name: Install needed packages
+      yum:
+        name: "{{ virtualization_packages.rhel }}"
+        state: latest
+      when:
+        - ansible_distribution == 'RedHat'
+
     - name: Install needed packages
       yum:
         name: "{{ virtualization_packages.centos8 }}"
