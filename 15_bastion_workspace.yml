@@ -80,22 +80,22 @@
         - block:
             - name: Download initramfs and kernel 
               get_url:
-                url: "{{ downloads.rhcos.4_1.base_url + item }}"
+                url: "{{ downloads.rhcos.41.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_1.initramfs }}"
-                - "{{ downloads.rhcos.4_1.kernel }}"
+                - "{{ downloads.rhcos.41.initramfs }}"
+                - "{{ downloads.rhcos.41.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_1.base_url + downloads.rhcos.4_1.coreos }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_1.coreos }}"
+                url:  "{{ downloads.rhcos.41.base_url + downloads.rhcos.41.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.41.coreos }}"
       
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_1.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_1.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_1.coreos }}"
+                rhcos_kernel: "{{ downloads.rhcos.41.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.41.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.41.coreos }}"
 
           when:
             - version.0 | int == 4
@@ -104,21 +104,21 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_2.base_url + item }}"
+                url: "{{ downloads.rhcos.42.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_2.initramfs }}"
-                - "{{ downloads.rhcos.4_2.kernel }}"
+                - "{{ downloads.rhcos.42.initramfs }}"
+                - "{{ downloads.rhcos.42.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_2.base_url + downloads.rhcos.4_2.coreos }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_2.coreos }}"
+                url:  "{{ downloads.rhcos.42.base_url + downloads.rhcos.42.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.42.coreos }}"
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_2.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_2.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_2.coreos }}"
+                rhcos_kernel: "{{ downloads.rhcos.42.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.42.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.42.coreos }}"
 
           when:
             - version.0 | int == 4
@@ -127,22 +127,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_3.base_url + item }}"
+                url: "{{ downloads.rhcos.43.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_3.initramfs }}"
-                - "{{ downloads.rhcos.4_3.kernel }}"
+                - "{{ downloads.rhcos.43.initramfs }}"
+                - "{{ downloads.rhcos.43.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_3.base_url + downloads.rhcos.4_3.coreos }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_3.coreos }}"
+                url:  "{{ downloads.rhcos.43.base_url + downloads.rhcos.43.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.43.coreos }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_3.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_3.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_3.coreos }}"
+                rhcos_kernel: "{{ downloads.rhcos.43.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.43.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.43.coreos }}"
 
           when:
             - version.0 | int == 4
@@ -151,22 +151,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_4.base_url + item }}"
+                url: "{{ downloads.rhcos.44.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_4.initramfs }}"
-                - "{{ downloads.rhcos.4_4.kernel }}"
+                - "{{ downloads.rhcos.44.initramfs }}"
+                - "{{ downloads.rhcos.44.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_4.base_url + downloads.rhcos.4_4.coreos }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_4.coreos }}"
+                url:  "{{ downloads.rhcos.44.base_url + downloads.rhcos.44.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.44.coreos }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_4.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_4.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_4.coreos }}"
+                rhcos_kernel: "{{ downloads.rhcos.44.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.44.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.44.coreos }}"
 
           when:
             - version.0 | int == 4
@@ -175,22 +175,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_5.base_url + item }}"
+                url: "{{ downloads.rhcos.45.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_5.initramfs }}"
-                - "{{ downloads.rhcos.4_5.kernel }}"
+                - "{{ downloads.rhcos.45.initramfs }}"
+                - "{{ downloads.rhcos.45.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_5.base_url + downloads.rhcos.4_5.coreos }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_5.coreos }}"
+                url:  "{{ downloads.rhcos.45.base_url + downloads.rhcos.45.coreos }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.45.coreos }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_5.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_5.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_5.coreos }}"
+                rhcos_kernel: "{{ downloads.rhcos.45.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.45.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.45.coreos }}"
 
           when:
             - version.0 | int == 4
@@ -199,22 +199,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_6.base_url + item }}"
+                url: "{{ downloads.rhcos.46.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_6.initramfs }}"
-                - "{{ downloads.rhcos.4_6.kernel }}"
+                - "{{ downloads.rhcos.46.initramfs }}"
+                - "{{ downloads.rhcos.46.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_6.base_url + downloads.rhcos.4_6.rootfs }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_6.rootfs }}"
+                url:  "{{ downloads.rhcos.46.base_url + downloads.rhcos.46.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.46.rootfs }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_6.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_6.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_6.rootfs }}"
+                rhcos_kernel: "{{ downloads.rhcos.46.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.46.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.46.rootfs }}"
 
           when:
             - version.0 | int == 4
@@ -223,22 +223,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_7.base_url + item }}"
+                url: "{{ downloads.rhcos.47.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_7.initramfs }}"
-                - "{{ downloads.rhcos.4_7.kernel }}"
+                - "{{ downloads.rhcos.47.initramfs }}"
+                - "{{ downloads.rhcos.47.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_7.base_url + downloads.rhcos.4_7.rootfs }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_7.rootfs }}"
+                url:  "{{ downloads.rhcos.47.base_url + downloads.rhcos.47.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.47.rootfs }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_7.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_7.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_7.rootfs }}"
+                rhcos_kernel: "{{ downloads.rhcos.47.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.47.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.47.rootfs }}"
 
           when:
             - version.0 | int == 4
@@ -247,22 +247,22 @@
         - block:
             - name: Download initramfs and kernel
               get_url:
-                url: "{{ downloads.rhcos.4_8.base_url + item }}"
+                url: "{{ downloads.rhcos.48.base_url + item }}"
                 dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
               loop:
-                - "{{ downloads.rhcos.4_8.initramfs }}"
-                - "{{ downloads.rhcos.4_8.kernel }}"
+                - "{{ downloads.rhcos.48.initramfs }}"
+                - "{{ downloads.rhcos.48.kernel }}"
 
             - name: Download Red Hat CoreOS for bare metal
               get_url:
-                url:  "{{ downloads.rhcos.4_8.base_url + downloads.rhcos.4_8.rootfs }}"
-                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.4_8.rootfs }}"
+                url:  "{{ downloads.rhcos.48.base_url + downloads.rhcos.48.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.48.rootfs }}"
 
             - name: Set fact for files
               set_fact:
-                rhcos_kernel: "{{ downloads.rhcos.4_8.kernel }}"
-                rhcos_initramfs: "{{ downloads.rhcos.4_8.initramfs }}"
-                rhcos_os: "{{ downloads.rhcos.4_8.rootfs }}"
+                rhcos_kernel: "{{ downloads.rhcos.48.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.48.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.48.rootfs }}"
 
           when:
             - version.0 | int == 4
