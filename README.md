@@ -47,7 +47,7 @@ First of all, you need to install required collections to get started:
 
     ansible-galaxy collection install -r requirements.yml
 
-The playbook is meant to be ran against a/many local or remote host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.  
+The playbook is meant to run against local host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.  
 
 ### HA Clusters
 
