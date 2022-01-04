@@ -26,7 +26,7 @@
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           fail:
             msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 40GB storage and 4vCPUs"
-          when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
+          when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 16 ) or ( cluster_nodes.specs.sno.disk < 40 )
         
         - name: Check for pullSecret variable and fail fast
           fail:
