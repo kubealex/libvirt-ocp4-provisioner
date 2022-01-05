@@ -16,16 +16,16 @@
     - name: Block of cluster checks
       block:
         - fail: 
-            msg: "Only ONE bootstrap node can be present"
-          when: cluster_nodes.host_list.sno | count > 1
+            msg: "Only ONE node can be present"
+          when: cluster_nodes.host_list.sno | count == 1
 
         - fail: 
-            msg: "Please check the host_list variable in cluster_nodes"
+            msg: "Please check the host_list variable in cluster_nodes, one node must be present"
           when: ( cluster_nodes.host_list.sno | count <= 0 ) 
       
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           fail:
-            msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 40GB storage and 4vCPUs"
+            msg: "Bootstrap nodes must be provisioned with at least 32GB memory, 40GB storage and 4vCPUs"
           when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
         
         - name: Check for pullSecret variable and fail fast
