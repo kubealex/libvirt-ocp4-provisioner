@@ -17,7 +17,7 @@
       block:
         - fail: 
             msg: "Only ONE node can be present"
-          when: cluster_nodes.host_list.sno | count == 1
+          when: ( cluster_nodes.host_list.sno | count != 1 )
 
         - fail: 
             msg: "Please check the host_list variable in cluster_nodes, one node must be present"
