@@ -93,11 +93,11 @@ resource "libvirt_domain" "worker" {
 }
 
 terraform {
- required_version = ">= 0.13"
+ required_version = ">= 1.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.11"
+      version = "0.6.12"
     }
   }
 }
