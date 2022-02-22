@@ -50,6 +50,11 @@ downloads:
       initramfs: rhcos-live-initramfs.x86_64.img
       kernel: rhcos-live-kernel-x86_64
       rootfs: rhcos-live-rootfs.x86_64.img
+    410:
+      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.10/latest/
+      initramfs: rhcos-live-initramfs.x86_64.img
+      kernel: rhcos-live-kernel-x86_64
+      rootfs: rhcos-live-rootfs.x86_64.img
     stable:
       base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/
       initramfs: rhcos-live-initramfs.x86_64.img
