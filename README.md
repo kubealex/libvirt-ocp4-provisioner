@@ -66,7 +66,7 @@ You can quickly make it work by configuring the needed vars, but you can go stra
     libvirt:                       
       network:                     
         network_gateway: 192.168.100.1
-	      network_cidr: 192.168.100.0/24
+	network_cidr: 192.168.100.0/24
 
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
