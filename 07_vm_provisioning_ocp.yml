@@ -51,7 +51,7 @@
       when: not three_node
  
     - name: Add bootstrap node and set vars
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'bootstrap'
         node_hostname: 'bootstrap'
         node_mac: "{{ output_bootstrap.outputs.macs.value[0]|lower }}"
@@ -64,7 +64,7 @@
       loop: "{{ cluster_nodes.host_list.bootstrap }}"
 
     - name: Add masters to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'master-{{ master_idx }}'
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
@@ -82,7 +82,7 @@
       when: not three_node
 
     - name: Add masters to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'master-{{ master_idx }}'
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
@@ -101,7 +101,7 @@
       when: three_node
 
     - name: Add workers to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'worker-{{ worker_idx }}'
         node_hostname: 'worker-{{ worker_idx }}'
         node_mac: "{{ output_workers.outputs.macs.value[worker_idx]|lower }}"
@@ -119,7 +119,7 @@
     
     - block:
       - name: Add infra nodes to correct group and set facts
-        add_host:
+        ansible.builtin.add_host:
           hostname: '{{ item }}'
           groups:
             - "infra"

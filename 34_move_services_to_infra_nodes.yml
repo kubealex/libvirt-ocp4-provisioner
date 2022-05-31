@@ -7,7 +7,7 @@
     - block:
       - block:
           - name: Copy ingress and registry patcher templates
-            template: 
+            ansible.builtin.template: 
               src: templates/{{ item }}.j2
               dest: /tmp/{{ item }}.sh
               mode: +x
@@ -16,13 +16,13 @@
               - patch_registry_selector
 
           - name: Run scripts
-            command: /tmp/{{ item }}.sh 
+            ansible.builtin.command: /tmp/{{ item }}.sh 
             loop:
               - patch_ingress_selector
               - patch_registry_selector
 
           - name: Delete scripts
-            file: 
+            ansible.builtin.file: 
               path: /tmp/{{ item }}.sh
               state: absent
             loop:
@@ -30,11 +30,11 @@
               - patch_registry_selector
 
           - name: Copy monitoring CM
-            copy:
+            ansible.builtin.copy:
               src: files/patch_monitoring.yml
               dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
 
           - name: Patch monitoring
-            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            ansible.builtin.command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
         when: infra_present
       when: not three_node

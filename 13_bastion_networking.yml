@@ -5,18 +5,15 @@
   tasks:
     
     - name: Checking Bastion internal network interfaces
-      fail: 
+      ansible.builtin.fail: 
         msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
       when: host_interface not in ansible_facts.interfaces
 
     - name: Ensure firewalld is enabled and running
-      service:
+      ansible.builtin.service:
         name: firewalld
         state: started
-        enabled: true
-
-#    - name: Adding interface {{ host_interface }} to internal zone
-#      command: nmcli con mod {{ host_interface }} connection.zone internal     
+        enabled: true  
 
     - name: Adding interface {{ host_interface }} to internal zone
       community.general.nmcli:
@@ -48,6 +45,6 @@
       loop: "{{ ports }}"
 
     - name: Reload Bastion firewalld service
-      service:
+      ansible.builtin.service:
         name: firewalld
         state: restarted 

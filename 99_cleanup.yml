@@ -32,7 +32,7 @@
         state: absent
 
     - name: Delete all created paths
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop: 

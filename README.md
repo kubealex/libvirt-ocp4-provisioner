@@ -74,7 +74,6 @@ The kind of network created is a simple NAT configuration, without DHCP since it
 
 **vars/infra_vars.yml**
 
-    nfs_registry: false
     infra_nodes:
       host_list:
         bastion:
@@ -84,8 +83,6 @@ The kind of network created is a simple NAT configuration, without DHCP since it
     dhcp:
       timezone: "Europe/Rome"
       ntp: 204.11.201.10
-
-The variable **nfs_registry** is set to false by default. If set to true, it will deploy an additional 100Gi volume on **bastion** VM, create the PV and patch registry to use it in Managed mode.
 
 **vars/cluster_vars.yml**
 

@@ -6,18 +6,18 @@
     - vars/libvirt.yml
   tasks:
 
-    - set_fact:
+    - ansible.builtin.set_fact:
         ocp_domain: "{{ cluster.name }}.{{ domain }}"
 
     - name: Ensure to clean known_hosts
-      known_hosts:
+      ansible.builtin.known_hosts:
         host: "{{ item.value[0].ip }}" 
         path: ~/.ssh/known_hosts
         state: absent
       loop: "{{ infra_nodes.host_list|dict2items }}"
 
     - name: Create ssh keypair
-      openssh_keypair:
+      community.crypto.openssh_keypair:
         path: "id_rsa"
 
     - name: Deploy bastion VM with terraform
@@ -50,7 +50,7 @@
       register: output_lb
 
     - name: Add bastion and loadbalancer to in-memory inventory
-      add_host:
+      ansible.builtin.add_host:
         hostname: '{{ item.key }}'
         ansible_host: '{{ item.value[0].ip }}'
         ansible_ssh_private_key_file: "id_rsa"
@@ -70,21 +70,21 @@
   gather_facts: no
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
-      wait_for_connection: 
+      ansible.builtin.wait_for_connection: 
         timeout: 120
         delay: 0
-    - ping:
+    - ansible.builtin.ping:
 
-    - setup:
+    - ansible.builtin.setup:
       register: machine_facts
 
-    - set_fact:
+    - ansible.builtin.set_fact:
         host_ip: "{{ machine_facts.ansible_facts.ansible_default_ipv4.address }}"
         host_interface: "{{ machine_facts.ansible_facts.ansible_default_ipv4.interface }}"
         host_mac: "{{ machine_facts.ansible_facts.ansible_default_ipv4.macaddress }}"
         host_fqdn: "{{ machine_facts.ansible_facts.ansible_fqdn }}"
     
-    - set_fact: 
+    - ansible.builtin.set_fact: 
         host_api_fqdn: "api.{{ ocp_domain }}"
         host_api_int_fqdn: "api-int.{{ ocp_domain }}"
         host_apps_fqdn: "apps.{{ ocp_domain }}"  

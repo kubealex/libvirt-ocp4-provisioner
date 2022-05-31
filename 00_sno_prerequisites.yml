@@ -6,7 +6,7 @@
   tasks:
 
     - name: Check if distribution is supported
-      fail:
+      ansible.builtin.fail:
         msg: Your distribution is actually unsupported
       when:
         - ansible_distribution != 'CentOS'
@@ -15,20 +15,20 @@
     
     - name: Block of cluster checks
       block:
-        - fail: 
+        - ansible.builtin.fail: 
             msg: "Only ONE node can be present"
           when: ( cluster_nodes.host_list.sno | count != 1 )
 
-        - fail: 
+        - ansible.builtin.fail: 
             msg: "Please check the host_list variable in cluster_nodes, one node must be present"
           when: ( cluster_nodes.host_list.sno | count <= 0 ) 
       
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
-          fail:
+          ansible.builtin.fail:
             msg: "Bootstrap nodes must be provisioned with at least 32GB memory, 40GB storage and 4vCPUs"
           when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
         
         - name: Check for pullSecret variable and fail fast
-          fail:
+          ansible.builtin.fail:
             msg: "Check the pullSecret var in files/vars.yaml"
           when: (cluster.pullSecret is undefined) or (cluster.pullSecret | length < 1)

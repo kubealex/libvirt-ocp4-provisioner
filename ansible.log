@@ -1,0 +1,517 @@
+2022-05-31 15:16:40,783 p=44194 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_prerequisites.yml
+2022-05-31 15:17:51,173 p=44355 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'ansible.builltin.fail'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_prerequisites.yml': line 19, column 11, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+      block:
+        - ansible.builltin.fail:
+          ^ here
+
+2022-05-31 15:17:57,712 p=44375 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'ansible.builltin.fail'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_prerequisites.yml': line 23, column 11, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+        - ansible.builltin.fail:
+          ^ here
+
+2022-05-31 15:18:05,938 p=44400 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_prerequisites.yml
+2022-05-31 15:18:12,517 p=44416 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_sno_prerequisites.yml
+2022-05-31 15:18:21,234 p=44442 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_sno_prerequisites.yml
+2022-05-31 15:18:43,628 p=44508 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/00_sno_prerequisites.yml
+2022-05-31 15:18:46,561 p=44523 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/01_install_virtualization_tools.yml
+2022-05-31 15:19:05,042 p=44559 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/01_install_virtualization_tools.yml
+2022-05-31 15:19:10,272 p=44616 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/01_install_virtualization_tools.yml
+2022-05-31 15:19:16,707 p=44639 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/01_install_virtualization_tools.yml
+2022-05-31 15:19:19,144 p=44653 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:19,144 p=44653 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:19,145 p=44653 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:23,321 p=44670 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:23,322 p=44670 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:23,323 p=44670 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:32,068 p=44696 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:32,069 p=44696 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:32,069 p=44696 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:37,678 p=44712 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:37,679 p=44712 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:37,679 p=44712 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:43,793 p=44773 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:43,793 p=44773 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:43,794 p=44773 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:48,743 p=44793 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:48,743 p=44793 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:48,744 p=44793 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:52,974 p=44811 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:19:52,974 p=44811 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:19:52,975 p=44811 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/05_vm_provisioning_infra.yml
+2022-05-31 15:19:54,372 p=44819 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/07_vm_provisioning_ocp.yml
+2022-05-31 15:20:04,509 p=44843 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/07_vm_provisioning_ocp.yml
+2022-05-31 15:20:07,460 p=44859 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/07_vm_provisioning_ocp.yml
+2022-05-31 15:20:33,012 p=44893 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:20:33,013 p=44893 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:20:33,014 p=44893 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/10_infra_packages.yml
+2022-05-31 15:21:00,757 p=44932 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:00,758 p=44932 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:21:00,758 p=44932 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/10_infra_packages.yml
+2022-05-31 15:21:07,148 p=44951 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:07,148 p=44951 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/13_bastion_networking.yml
+2022-05-31 15:21:10,023 p=44970 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:10,023 p=44970 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/13_bastion_networking.yml
+2022-05-31 15:21:13,086 p=44986 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:13,086 p=44986 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/13_bastion_networking.yml
+2022-05-31 15:21:22,563 p=45011 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:22,563 p=45011 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/13_bastion_networking.yml
+2022-05-31 15:21:25,864 p=45029 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:25,865 p=45029 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/13_bastion_networking.yml
+2022-05-31 15:21:26,995 p=45037 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:26,997 p=45037 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:35,856 p=45063 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:35,858 p=45063 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:37,654 p=45078 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:37,657 p=45078 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:39,766 p=45086 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:39,768 p=45086 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:44,498 p=45116 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:44,500 p=45116 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:47,447 p=45125 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:47,450 p=45125 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:52,252 p=45140 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:52,254 p=45140 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:21:56,315 p=45155 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:21:56,317 p=45155 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:22:03,249 p=45181 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:22:03,250 p=45181 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:22:05,726 p=45190 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:22:05,727 p=45190 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:22:09,029 p=45206 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:22:09,030 p=45206 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:22:38,553 p=45277 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:22:38,555 p=45277 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:22:39,622 p=45299 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:22:39,624 p=45299 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:23:14,467 p=45377 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:23:14,469 p=45377 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:23:29,800 p=45399 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:23:29,802 p=45399 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:23:33,637 p=45420 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:23:33,639 p=45420 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:23:42,838 p=45458 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:23:42,840 p=45458 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:24:27,635 p=45528 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:24:27,636 p=45528 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/19_lb_services.yml
+2022-05-31 15:24:39,129 p=45557 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:24:39,129 p=45557 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/19_lb_services.yml
+2022-05-31 15:24:54,987 p=45610 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:24:54,987 p=45610 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/19_lb_services.yml
+2022-05-31 15:24:57,778 p=45625 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:24:57,779 p=45625 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/19_lb_services.yml
+2022-05-31 15:24:59,358 p=45634 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:24:59,359 p=45634 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/19_lb_services.yml
+2022-05-31 15:25:30,114 p=45826 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:25:30,117 p=45826 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/15_bastion_workspace.yml
+2022-05-31 15:25:35,976 p=45847 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:25:35,978 p=45847 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/17_bastion_services.yml
+2022-05-31 15:25:41,942 p=45889 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/25_pxeboot_vms.yml
+2022-05-31 15:26:06,514 p=45935 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/25_pxeboot_vms.yml
+2022-05-31 15:26:08,427 p=45957 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:26:08,428 p=45957 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/27_ocp_install.yml
+2022-05-31 15:26:22,410 p=45982 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:26:22,411 p=45982 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/27_ocp_install.yml
+2022-05-31 15:26:24,781 p=46001 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:26:24,781 p=46001 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:26:24,783 p=46001 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/29_remove_bootstrap.yml
+2022-05-31 15:26:37,877 p=46020 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:26:37,878 p=46020 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:26:37,878 p=46020 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/29_remove_bootstrap.yml
+2022-05-31 15:27:11,393 p=46070 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:27:11,394 p=46070 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:27:11,394 p=46070 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/29_remove_bootstrap.yml
+2022-05-31 15:27:14,549 p=46085 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:27:14,550 p=46085 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: loadbalancer
+
+2022-05-31 15:27:14,551 p=46085 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/29_remove_bootstrap.yml
+2022-05-31 15:27:17,825 p=46100 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:27:17,827 p=46100 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:27:23,613 p=46125 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:27:23,616 p=46125 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:27:29,626 p=46165 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:27:29,628 p=46165 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:28:08,681 p=46202 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:28:08,683 p=46202 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:28:27,473 p=46273 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:28:27,474 p=46273 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:28:34,606 p=46302 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:28:34,607 p=46302 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:28:38,097 p=46317 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:28:38,099 p=46317 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/30_create_users.yml
+2022-05-31 15:28:40,403 p=46340 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:28:40,403 p=46340 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/31_deploy_nfs.yml
+2022-05-31 15:29:27,913 p=46433 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:29:27,913 p=46433 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/31_deploy_nfs.yml
+2022-05-31 15:29:32,027 p=46453 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:29:32,029 p=46453 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/32_patch_registry.yml
+2022-05-31 15:30:00,786 p=46531 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:00,788 p=46531 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:05,420 p=46550 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:05,421 p=46550 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:09,373 p=46566 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:09,375 p=46566 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:11,002 p=46577 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:11,003 p=46577 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:13,298 p=46590 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:13,301 p=46590 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:14,645 p=46597 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:14,646 p=46597 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:19,158 p=46611 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:19,160 p=46611 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/33_patch_nodes.yml
+2022-05-31 15:30:21,167 p=46618 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:21,169 p=46618 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/34_move_services_to_infra_nodes.yml
+2022-05-31 15:30:23,500 p=46638 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:23,502 p=46638 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/34_move_services_to_infra_nodes.yml
+2022-05-31 15:30:26,604 p=46657 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:26,606 p=46657 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/34_move_services_to_infra_nodes.yml
+2022-05-31 15:30:28,779 p=46670 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:28,781 p=46670 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/34_move_services_to_infra_nodes.yml
+2022-05-31 15:30:30,048 p=46682 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:30:30,050 p=46682 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/34_move_services_to_infra_nodes.yml
+2022-05-31 15:30:31,562 p=46689 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:30:38,009 p=46713 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:30:44,275 p=46746 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:31:06,388 p=46763 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:31:09,349 p=46776 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:31:13,240 p=46789 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:31:14,846 p=46802 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:27,633 p=46860 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:31,728 p=46873 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:33,411 p=46880 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:35,559 p=46893 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:36,927 p=46900 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:39,481 p=46913 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:41,712 p=46942 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:43,313 p=46949 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:45,517 p=46987 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:46,475 p=46997 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:48,405 p=47004 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:50,520 p=47017 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:31:57,156 p=47035 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:04,392 p=47062 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:07,008 p=47077 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:11,598 p=47094 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:15,208 p=47102 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:18,595 p=47119 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:25,224 p=47139 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:36,080 p=47153 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:38,664 p=47166 u=alerossi n=ansible | ERROR! couldn't resolve module/action 'fansible.builtin.ile'. This often indicates a misspelling, missing collection, or incorrect module path.
+
+The error appears to be in '/home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml': line 68, column 7, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+
+    - name: Ensure NM dnsmasq directory exists
+      ^ here
+
+2022-05-31 15:32:40,061 p=47173 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/99_cleanup.yml
+2022-05-31 15:32:44,206 p=47214 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/99_cleanup.yml
+2022-05-31 15:33:16,104 p=47300 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/70_setup_sno_cluster.yml
+2022-05-31 15:35:31,128 p=47810 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:35:31,130 p=47810 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/20_prepare_ocp_install.yml
+2022-05-31 15:36:30,575 p=47877 u=alerossi n=ansible | [WARNING]: Could not match supplied host pattern, ignoring: bastion
+
+2022-05-31 15:36:30,576 p=47877 u=alerossi n=ansible | playbook: /home/alerossi/gitrepos/libvirt-ocp4-provisioner/20_prepare_ocp_install.yml

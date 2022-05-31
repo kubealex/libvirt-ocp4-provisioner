@@ -8,14 +8,14 @@
   tasks:
 
     - name: Install needed packages
-      yum:
+      ansible.builtin.yum:
         name: "{{ virtualization_packages.rhel }}"
         state: latest
       when:
         - ansible_distribution == 'RedHat'
 
     - name: Install needed packages
-      yum:
+      ansible.builtin.yum:
         name: "{{ virtualization_packages.centos8 }}"
         state: latest
       when:
@@ -23,7 +23,7 @@
         - ansible_distribution_major_version | int == 8
 
     - name: Install needed packages
-      yum:
+      ansible.builtin.yum:
         name: "{{ virtualization_packages.centos7 }}"
         state: latest
       when:
@@ -31,21 +31,21 @@
         - ansible_distribution_major_version | int == 7
 
     - name: Install needed packages
-      yum:
+      ansible.builtin.yum:
         name: "{{ virtualization_packages.fedora }}"
         state: latest
       when:
         - ansible_distribution == 'Fedora'
 
     - name: Download and provision Terraform
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ terraform_release_url }}"
         dest: /usr/bin/
         mode: 755
         remote_src: yes
 
     - name: Virtualization services are enabled
-      service:
+      ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true

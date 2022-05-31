@@ -8,41 +8,41 @@
     - name: Restart OCP VMs sequentially
       block:
         - name: Shutdown bootstrap node
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['bootstrap'] }}"
 
         - name: Shutdown master nodes
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['masters'] }}"
 
         - name: Shutdown worker nodes
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: destroyed
           loop: "{{ groups['workers'] }}"
           when: not three_node
 
         - name: Restart bootstrap node
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: running
           loop: "{{ groups['bootstrap'] }}"
 
         - name: Restart master nodes
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: running
           loop: "{{ groups['masters'] }}"
 
         - name: Restart worker nodes
-          virt:
+          community.libvirt.virt:
             name: "{{ hostvars[item].node_hostname }}"
             state: running
           loop: "{{ groups['workers'] }}"
           when: not three_node
-    - debug:
+    - ansible.builtin.debug:
         msg: All VMs are booting...

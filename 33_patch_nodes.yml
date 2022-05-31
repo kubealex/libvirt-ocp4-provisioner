@@ -7,48 +7,48 @@
     - block:
    
       - name: Set fact if infra patching is needed
-        set_fact:
+        ansible.builtin.set_fact:
           infra_present: false
 
       - name: Set fact if infra patching is needed
-        set_fact:
+        ansible.builtin.set_fact:
           infra_present: true
         when: "'infra' in groups"
 
       - block: 
 
           - name: Create machine config pool 
-            copy:
+            ansible.builtin.copy:
               src: files/machineconfigpool.yml
               dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
 
           - name: Creating machine config pool for infra nodes
-            command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            ansible.builtin.command: /usr/local/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
 
           - name: Copy script for node labeling
-            template: 
+            ansible.builtin.template: 
               src: templates/label_nodes.j2
               dest: /tmp/label_nodes.sh
               mode: +x
 
           - name: Applying patch
-            command: /tmp/label_nodes.sh
+            ansible.builtin.command: /tmp/label_nodes.sh
 
           - name: Deleting label node script
-            file:
+            ansible.builtin.file:
               path: /tmp/label_nodes.sh
               state: absent
 
           - name: Set default nodeSelector
-            template:
+            ansible.builtin.template:
               src: templates/patch_default_selector.j2
               dest: /tmp/patch_default_selector.sh
               mode: +x
           - name: Execute script 
-            command: /tmp/patch_default_selector.sh
+            ansible.builtin.command: /tmp/patch_default_selector.sh
 
           - name: Delete node selector patch
-            file:
+            ansible.builtin.file:
               path: /tmp/patch_default_selector.sh
               state: absent
 

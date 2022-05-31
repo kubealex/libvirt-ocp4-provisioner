@@ -5,12 +5,12 @@
   tasks:
     
     - name: Checking internal network interfaces
-      fail: 
+      ansible.builtin.fail: 
         msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
       when: host_interface not in ansible_facts.interfaces
 
     - name: enable firewalld
-      service:
+      ansible.builtin.service:
         name: "{{ item }}"
         enabled: true
         state: started
@@ -28,11 +28,10 @@
         state: present
 
     - name: Setting bastion's IP as DNS for our interface
-      command: > 
-        nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
+      ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
      
     - name: Refreshing {{ host_interface }}
-      shell:  nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
     - name: Adding interface {{ host_interface }} to firewall internal zone  
       ansible.posix.firewalld:
@@ -58,23 +57,23 @@
       loop: "{{ internal_zone_port }}"
 
     - name: Reload firewalld service
-      service:
+      ansible.builtin.service:
         name: firewalld
         state: restarted 
               
     - name: Enabling selinux boolean for haproxy
-      seboolean:
+      ansible.builtin.seboolean:
         name: haproxy_connect_any
         state: yes
         persistent: yes 
 
     - name: Firing haproxy template
-      template:
+      ansible.builtin.template:
         src: templates/haproxy.j2
         dest: /etc/haproxy/haproxy.cfg
 
     - name: Reload haproxy service
-      service:
+      ansible.builtin.service:
         name: haproxy
         state: restarted
         enabled: true
