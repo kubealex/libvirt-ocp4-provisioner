@@ -1,6 +1,6 @@
 ## External dns ##
 
-server={{ hostvars['bastion']['host_ip'] | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
+server={{ hostvars['bastion']['host_ip'] | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('net') | ansible.utils.ipmath(1) }}
 
 ## External dns end ##
 
@@ -85,11 +85,11 @@ dhcp-boot=pxelinux.0
 dhcp-option=101,"{{ hostvars['bastion'].timezone }}"
 domain={{ hostvars['bastion'].ocp_domain }}
 interface={{ hostvars['bastion'].host_interface }}
-dhcp-option={{ hostvars['bastion'].host_interface }},3,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('net') | ipmath(1) }}
-dhcp-option=option:netmask,{{ hostvars['bastion'].host_ip | ipsubnet(24) | ipaddr('netmask') }}
+dhcp-option={{ hostvars['bastion'].host_interface }},3,{{ hostvars['bastion'].host_ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('net') | ansible.utils.ipmath(1) }}
+dhcp-option=option:netmask,{{ hostvars['bastion'].host_ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('netmask') }}
 dhcp-option=option:dns-server,{{ hostvars['bastion'].host_ip }}
 dhcp-option=option:ntp-server,{{ hostvars['bastion'].ntp_server }}
-dhcp-range={{ hostvars['bastion'].host_interface }},{{ hostvars['bastion'].host_ip | ipmath(1) }},{{ hostvars['bastion'].host_ip | ipsubnet(24)  | ipaddr('last_usable') }},12h
+dhcp-range={{ hostvars['bastion'].host_interface }},{{ hostvars['bastion'].host_ip | ansible.utils.ipmath(1) }},{{ hostvars['bastion'].host_ip | ansible.utils.ipsubnet(24)  | ansible.utils.ipaddr('last_usable') }},12h
 
 ## DHCP end ##
 
