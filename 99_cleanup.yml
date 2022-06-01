@@ -13,6 +13,8 @@
         force_init: true
         project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
         state: absent
+        variables:
+          key_path: "{{ playbook_dir }}"
       loop:
         - bootstrap
         - bastion
