@@ -8,12 +8,6 @@
         name: "Openshift csr approver"
         state: absent
 
-    - name: Removing csr cronjob
-      ansible.builtin.cron:
-        name: "Openshift image registry patcher"
-        state: absent
-      when: hostvars['bastion'].version.1 | int <= 2
-
 - name: Clean up haproxy config on loadbalancer
   hosts: loadbalancer
   become: true
@@ -37,5 +31,5 @@
   tasks:
     - name: Destroy bootstrap VM
       community.general.terraform:
-        project_path: "terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
         state: absent    
