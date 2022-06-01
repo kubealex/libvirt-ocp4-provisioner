@@ -154,6 +154,7 @@
       ansible.builtin.copy: 
         src: "{{ workspace_directory.base_path }}/coreos.iso"
         dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+        remote_src: true
       become: true
 
     - name: Restart net-services
