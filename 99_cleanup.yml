@@ -8,7 +8,7 @@
   become: true
   tasks:
 
-    - name: Destroy cluster VM
+    - name: Destroy support VM
       community.general.terraform:
         force_init: true
         project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
@@ -16,12 +16,20 @@
         variables:
           key_path: "{{ playbook_dir }}"
       loop:
-        - bootstrap
         - bastion
         - loadbalancer
+
+    - name: Destroy cluster VM
+      community.general.terraform:
+        force_init: true
+        project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
+        state: absent
+      loop:
+        - bootstrap
         - workers
         - masters
         - sno
+
 
     - name: Use TF project to ensure pool and network are removed
       community.general.terraform:
