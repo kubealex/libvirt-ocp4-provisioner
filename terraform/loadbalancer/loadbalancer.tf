@@ -8,7 +8,7 @@ variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default = "ocp4" }
-variable "key_path" { default = "../.." }
+variable "sshKey" { default = "" }
 variable "network_data" { 
   type = map
   default = {

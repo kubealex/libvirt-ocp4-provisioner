@@ -18,7 +18,15 @@
 
     - name: Create ssh keypair
       community.crypto.openssh_keypair:
-        path: "id_rsa"
+        path: "~/.ssh/id_rsa_ocp_setup"
+
+    - name: Getting ssh public key
+      slurp:
+        src: ~/.ssh/id_rsa_ocp_setup.pub
+      register: service_key
+
+    - set_fact:
+        sshServiceKey: "{{ service_key['content'] | b64decode }}"
 
     - name: Deploy bastion VM with terraform
       community.general.terraform:
@@ -31,7 +39,7 @@
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          enable_nfs: "{{ nfs_registry | lower }}"
+          sshKey: "{{ sshServiceKey }}"
         state: present
       register: output_ba
 
@@ -46,6 +54,7 @@
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
+          sshKey: "{{ sshServiceKey }}"
         state: present
       register: output_lb
 

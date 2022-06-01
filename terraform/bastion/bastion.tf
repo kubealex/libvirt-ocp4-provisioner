@@ -10,7 +10,7 @@ variable "libvirt_pool" { default= "ocp4" }
 variable "vm_volume_size" { default = 20 }
 variable "enable_nfs" { default = false }
 variable "nfs" { default = { nfs_storage = "storage_image" } }
-variable "key_path" { default = "../.." }
+variable "sshKey" { default = "" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
   type = map
