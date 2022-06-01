@@ -6,9 +6,9 @@
     - name: Creating workspace
       ansible.builtin.file:
         state: directory
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}" 
+        path: "{{ workspace_directory.base_path }}" 
 
     - name: Copy terraform files on host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
-        dest: "{{ workspace_directory.base_path }}/terraform"
+        dest: "{{ workspace_directory.base_path }}/"
