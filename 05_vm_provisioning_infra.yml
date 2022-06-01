@@ -31,7 +31,7 @@
     - name: Deploy bastion VM with terraform
       community.general.terraform:
         force_init: true
-        project_path: "terraform/bastion"
+        project_path: "{{ workspace_directory.base_path }}/terraform/bastion"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
@@ -41,12 +41,13 @@
           cluster_name: "{{ cluster.name }}"
           sshKey: "{{ sshServiceKey }}"
         state: present
+      become: true
       register: output_ba
 
     - name: Deploy loadbalancer VM
       community.general.terraform:
         force_init: true
-        project_path: "terraform/loadbalancer"
+        project_path: "{{ workspace_directory.base_path }}/terraform/loadbalancer"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
@@ -56,6 +57,7 @@
           cluster_name: "{{ cluster.name }}"
           sshKey: "{{ sshServiceKey }}"
         state: present
+      become: true
       register: output_lb
 
     - name: Add bastion and loadbalancer to in-memory inventory

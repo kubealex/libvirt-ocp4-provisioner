@@ -8,7 +8,7 @@
     - name: Provision bootstrap node with Terraform
       community.general.terraform:
         force_init: true
-        project_path: "terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
         variables:
           hostname: "bootstrap"
           libvirt_network: "{{ cluster.name }}"
@@ -17,11 +17,12 @@
           vm_volume_size: "{{ cluster_nodes.specs.bootstrap.disk }}"
           memory: "{{ cluster_nodes.specs.bootstrap.mem }}"
         state: present
+      become: true
       register: output_bootstrap
 
     - name: Provision master nodes with Terraform
       community.general.terraform:
-        project_path: "terraform/masters"
+        project_path: "{{ workspace_directory.base_path }}/terraform/masters"
         force_init: true
         variables:
           hostname: "master"
@@ -32,11 +33,12 @@
           vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
+      become: true
       register: output_masters
 
     - name: Provision worker nodes with Terraform
       community.general.terraform:
-        project_path: "terraform/workers"
+        project_path: "{{ workspace_directory.base_path }}/terraform/workers"
         force_init: true
         variables:
           hostname: "worker"
@@ -47,6 +49,7 @@
           vm_volume_size: "{{ cluster_nodes.specs.workers.disk }}"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
         state: present
+      become: true
       register: output_workers
       when: not three_node
  
