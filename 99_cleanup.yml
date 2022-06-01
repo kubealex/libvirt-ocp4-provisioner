@@ -14,7 +14,7 @@
         project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
         state: absent
         variables:
-          key_path: "{{ playbook_dir }}"
+          sshKey: "{{ playbook_dir }}"
       loop:
         - bastion
         - loadbalancer
