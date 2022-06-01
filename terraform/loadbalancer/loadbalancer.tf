@@ -47,7 +47,7 @@ data "template_file" "user_data" {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
     fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
     iface = var.iface
-    key_path = var.key_path
+    sshKey = var.sshKey
   }
 }
 
