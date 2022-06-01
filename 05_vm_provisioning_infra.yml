@@ -44,14 +44,6 @@
       become: true
       register: output_ba
 
-    - name: debug
-      ansible.builtin.debug:
-        msg: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
-
-    - name: sleep
-      ansible.builtin.pause:
-        seconds: 180
-
     - name: Deploy loadbalancer VM
       community.general.terraform:
         force_init: true
@@ -67,14 +59,6 @@
         state: present
       become: true
       register: output_lb
-
-    - name: debug
-      ansible.builtin.debug:
-        msg: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
-
-    - name: sleep
-      ansible.builtin.pause:
-        seconds: 180
 
     - name: Add bastion and loadbalancer to in-memory inventory
       ansible.builtin.add_host:

@@ -9,6 +9,9 @@
         msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
       when: host_interface not in ansible_facts.interfaces
 
+    - name: Adding interface {{ host_interface }} to internal zone
+      command: nmcli con mod {{ host_interface }} connection.zone internal && nmcli con mod {{ host_interface }} ipv4.dns {{ hostvars['bastion']['host_ip'] }}
+
     - name: enable firewalld
       ansible.builtin.service:
         name: "{{ item }}"
@@ -20,12 +23,13 @@
 
     #https://access.redhat.com/discussions/1455033
 
-    - name: Adding interface {{ host_interface }} to internal zone
-      community.general.nmcli:
-        conn_name: "{{ host_interface }}"
-        zone: internal
-        dns4: "{{ hostvars['bastion']['host_ip'] }}"
-        state: present
+    # - name: Adding interface {{ host_interface }} to internal zone
+    #   community.general.nmcli:
+    #     conn_name: "{{ host_interface }}"
+    #     zone: internal
+    #     dns4: "{{ hostvars['bastion']['host_ip'] }}"
+    #     gw4: 
+    #     state: present
 
     - name: Setting bastion's IP as DNS for our interface
       ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}

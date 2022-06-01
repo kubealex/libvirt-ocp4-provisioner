@@ -15,11 +15,13 @@
         state: started
         enabled: true  
 
+    # - name: Adding interface {{ host_interface }} to internal zone
+    #   community.general.nmcli:
+    #     conn_name: "{{ host_interface }}"
+    #     zone: internal
+    #     state: present
     - name: Adding interface {{ host_interface }} to internal zone
-      community.general.nmcli:
-        conn_name: "{{ host_interface }}"
-        zone: internal
-        state: present
+      command: nmcli con mod {{ host_interface }} connection.zone internal  
 
     - name: Adding Bastion interface {{ host_interface }} to firewall internal zone  
       ansible.posix.firewalld:
