@@ -59,4 +59,5 @@
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: present
+      delegate_to: "{{ inventory_hostname }}"
       become: true
