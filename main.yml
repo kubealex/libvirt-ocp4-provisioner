@@ -8,8 +8,8 @@
 - import_playbook: 13_bastion_networking.yml
 - import_playbook: 15_bastion_workspace.yml
 - import_playbook: 17_bastion_services.yml
-- import_playbook: 19_lb_services.yaml
-- import_playbook: 20_prepare_ocp_install.yaml
+- import_playbook: 19_lb_services.yml
+- import_playbook: 20_prepare_ocp_install.yml
 - import_playbook: 25_pxeboot_vms.yml
 - import_playbook: 27_ocp_install.yml
 - import_playbook: 29_remove_bootstrap.yml
