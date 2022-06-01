@@ -1,5 +1,3 @@
-nfs_registry: false
-
 infra_nodes:
   host_list:
     bastion:

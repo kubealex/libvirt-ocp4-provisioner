@@ -70,7 +70,6 @@
         domain: "{{ domain }}"
         cluster_name: "{{ cluster.name }}"
         ocp_domain: "{{ ocp_domain }}"
-        nfs_registry_enabled: "{{ nfs_registry }}"
         timezone: "{{ dhcp.timezone }}"
         ntp_server: "{{ dhcp.ntp }}"
       loop: "{{ infra_nodes.host_list|dict2items }}"
