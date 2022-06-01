@@ -59,3 +59,4 @@
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: present
+      become: true
