@@ -35,7 +35,7 @@
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
-          network_data: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
+          network_data: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
@@ -51,7 +51,7 @@
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
-          network_data: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') | ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ipsubnet(24) | ipaddr('network') }}\" }"
+          network_data: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
