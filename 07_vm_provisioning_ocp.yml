@@ -56,7 +56,7 @@
         node_hostname: 'bootstrap'
         node_mac: "{{ output_bootstrap.outputs.macs.value[0]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "bootstrap"
         node_fqdn: bootstrap.{{ ocp_domain }}
         groups:
@@ -71,7 +71,7 @@
         etcd_ip: '{{ item.ip }}'
         node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
         node_fqdn: master-{{ master_idx }}.{{ ocp_domain }} 
         groups:
@@ -89,7 +89,7 @@
         etcd_ip: '{{ item.ip }}'
         node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
         node_fqdn: master-{{ master_idx }}.{{ ocp_domain }}
         groups:
@@ -106,7 +106,7 @@
         node_hostname: 'worker-{{ worker_idx }}'
         node_mac: "{{ output_workers.outputs.macs.value[worker_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "worker"
         ocp_role: "{{ item.role | default('worker') }}"
         node_fqdn: worker-{{ worker_idx }}.{{ ocp_domain }}
