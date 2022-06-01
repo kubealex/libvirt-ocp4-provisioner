@@ -52,7 +52,7 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"
           network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
