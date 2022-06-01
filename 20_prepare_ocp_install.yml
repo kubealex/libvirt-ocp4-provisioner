@@ -93,6 +93,5 @@
     - name: Installing csr cronjob
       ansible.builtin.cron:
         name: "Openshift csr approver"
-        minute: "1"
         job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present
