@@ -1,2 +1,0 @@
-registry_nfs_export: /exports/registry
-nfs_device: /dev/vdb

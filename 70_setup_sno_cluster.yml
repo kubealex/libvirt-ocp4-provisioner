@@ -168,7 +168,7 @@
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
-        project_path: "terraform/sno"
+        project_path: "{{ workspace_directory.base_path }}/terraform/sno"
         force_init: true
         variables:
           hostname: "master-sno"
@@ -186,7 +186,7 @@
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
-        project_path: "terraform/sno"
+        project_path: "{{ workspace_directory.base_path }}/terraform/sno"
         force_init: true
         variables:
           hostname: "master-sno"

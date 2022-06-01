@@ -1,4 +1,5 @@
 ---
 - import_playbook: 00_sno_prerequisites.yml
-- import_playbook: 01_install_virtualization_tools.yml
+- import_playbook: 02_setup_working_directory.yml
+- import_playbook: 01_sno_install_virtualization_tools.yml
 - import_playbook: 70_setup_sno_cluster.yml
