@@ -13,6 +13,6 @@
 - import_playbook: 25_pxeboot_vms.yml
 - import_playbook: 27_ocp_install.yml
 - import_playbook: 29_remove_bootstrap.yml
-- import_playbook: 30_create_users.ymla
+- import_playbook: 30_create_users.yml
 - import_playbook: 33_patch_nodes.yml
 - import_playbook: 34_move_services_to_infra_nodes.yml
