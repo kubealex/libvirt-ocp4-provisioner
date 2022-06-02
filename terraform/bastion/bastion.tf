@@ -8,8 +8,7 @@ variable "iface" { default = "eth0" }
 variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default= "ocp4" }
 variable "vm_volume_size" { default = 20 }
-variable "enable_nfs" { default = false }
-variable "nfs" { default = { nfs_storage = "storage_image" } }
+variable "sshKey" { default = "" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "network_data" { 
   type = map
@@ -30,16 +29,7 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   pool = var.libvirt_pool
-  source = "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2"
-  format = "qcow2"
-}
-
-# fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "storage_image" {
-  count = var.enable_nfs ? 1 : 0
-  name = "${var.hostname}-storage_image"
-  pool = var.libvirt_pool
-  size = 100*1080000000
+  source = "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20220125.1.x86_64.qcow2"
   format = "qcow2"
 }
 
@@ -58,6 +48,7 @@ data "template_file" "user_data" {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
     fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
     iface = "${var.iface}"
+    sshKey = var.sshKey
   }
 }
 
@@ -86,14 +77,6 @@ resource "libvirt_domain" "bastion" {
   disk {
      volume_id = libvirt_volume.os_image.id
   }
-
-  dynamic "disk"  {
-     for_each = var.enable_nfs ? var.nfs : {}
-     content {
-     
-     volume_id = libvirt_volume.storage_image[0].id
-     }
-   }
  
   network_interface {
        network_name = var.libvirt_network

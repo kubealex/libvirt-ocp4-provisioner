@@ -8,22 +8,32 @@
   become: true
   tasks:
 
+    - name: Destroy support VM
+      community.general.terraform:
+        force_init: true
+        project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
+        state: absent
+        variables:
+          sshKey: "{{ playbook_dir }}"
+      loop:
+        - bastion
+        - loadbalancer
+
     - name: Destroy cluster VM
       community.general.terraform:
         force_init: true
-        project_path: "terraform/{{ item }}"
+        project_path: "{{ workspace_directory.base_path }}/terraform/{{ item }}"
         state: absent
       loop:
         - bootstrap
-        - bastion
-        - loadbalancer
         - workers
         - masters
         - sno
 
+
     - name: Use TF project to ensure pool and network are removed
       community.general.terraform:
-        project_path: "terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"
           network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
@@ -32,7 +42,7 @@
         state: absent
 
     - name: Delete all created paths
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop: 

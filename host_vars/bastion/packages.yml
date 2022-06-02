@@ -3,7 +3,6 @@ packages:
     - syslinux
     - dnsmasq-2.80-10.fc31.x86_64
     - nginx
-    - nfs-utils
     - cronie
     - cronie-anacron
     - python-netaddr
@@ -14,7 +13,6 @@ packages:
     - syslinux
     - dnsmasq
     - nginx
-    - nfs-utils
     - cronie
     - cronie-anacron
     - tar

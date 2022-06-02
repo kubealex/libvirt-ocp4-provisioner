@@ -1,5 +1,6 @@
 ---
 - import_playbook: 00_prerequisites.yml
+- import_playbook: 02_setup_working_directory.yml
 - import_playbook: 01_install_virtualization_tools.yml
 - import_playbook: 05_vm_provisioning_infra.yml
 - import_playbook: 07_vm_provisioning_ocp.yml
@@ -7,13 +8,11 @@
 - import_playbook: 13_bastion_networking.yml
 - import_playbook: 15_bastion_workspace.yml
 - import_playbook: 17_bastion_services.yml
-- import_playbook: 19_lb_services.yaml
-- import_playbook: 20_prepare_ocp_install.yaml
+- import_playbook: 19_lb_services.yml
+- import_playbook: 20_prepare_ocp_install.yml
 - import_playbook: 25_pxeboot_vms.yml
 - import_playbook: 27_ocp_install.yml
 - import_playbook: 29_remove_bootstrap.yml
 - import_playbook: 30_create_users.yml
-- import_playbook: 31_deploy_nfs.yml
-- import_playbook: 32_patch_registry.yml
 - import_playbook: 33_patch_nodes.yml
 - import_playbook: 34_move_services_to_infra_nodes.yml

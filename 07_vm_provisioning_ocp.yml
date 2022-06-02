@@ -8,7 +8,7 @@
     - name: Provision bootstrap node with Terraform
       community.general.terraform:
         force_init: true
-        project_path: "terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
         variables:
           hostname: "bootstrap"
           libvirt_network: "{{ cluster.name }}"
@@ -17,11 +17,12 @@
           vm_volume_size: "{{ cluster_nodes.specs.bootstrap.disk }}"
           memory: "{{ cluster_nodes.specs.bootstrap.mem }}"
         state: present
+      become: true
       register: output_bootstrap
 
     - name: Provision master nodes with Terraform
       community.general.terraform:
-        project_path: "terraform/masters"
+        project_path: "{{ workspace_directory.base_path }}/terraform/masters"
         force_init: true
         variables:
           hostname: "master"
@@ -32,11 +33,12 @@
           vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
         state: present
+      become: true
       register: output_masters
 
     - name: Provision worker nodes with Terraform
       community.general.terraform:
-        project_path: "terraform/workers"
+        project_path: "{{ workspace_directory.base_path }}/terraform/workers"
         force_init: true
         variables:
           hostname: "worker"
@@ -47,16 +49,17 @@
           vm_volume_size: "{{ cluster_nodes.specs.workers.disk }}"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
         state: present
+      become: true
       register: output_workers
       when: not three_node
  
     - name: Add bootstrap node and set vars
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'bootstrap'
         node_hostname: 'bootstrap'
         node_mac: "{{ output_bootstrap.outputs.macs.value[0]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "bootstrap"
         node_fqdn: bootstrap.{{ ocp_domain }}
         groups:
@@ -64,14 +67,14 @@
       loop: "{{ cluster_nodes.host_list.bootstrap }}"
 
     - name: Add masters to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'master-{{ master_idx }}'
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
         etcd_ip: '{{ item.ip }}'
         node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
         node_fqdn: master-{{ master_idx }}.{{ ocp_domain }} 
         groups:
@@ -82,14 +85,14 @@
       when: not three_node
 
     - name: Add masters to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'master-{{ master_idx }}'
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
         etcd_ip: '{{ item.ip }}'
         node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
         node_fqdn: master-{{ master_idx }}.{{ ocp_domain }}
         groups:
@@ -101,12 +104,12 @@
       when: three_node
 
     - name: Add workers to correct group and set facts
-      add_host:
+      ansible.builtin.add_host:
         hostname: 'worker-{{ worker_idx }}'
         node_hostname: 'worker-{{ worker_idx }}'
         node_mac: "{{ output_workers.outputs.macs.value[worker_idx]|lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "worker"
         ocp_role: "{{ item.role | default('worker') }}"
         node_fqdn: worker-{{ worker_idx }}.{{ ocp_domain }}
@@ -119,7 +122,7 @@
     
     - block:
       - name: Add infra nodes to correct group and set facts
-        add_host:
+        ansible.builtin.add_host:
           hostname: '{{ item }}'
           groups:
             - "infra"

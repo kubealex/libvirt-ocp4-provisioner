@@ -5,13 +5,13 @@
   tasks:
      
     - name: Installing required packages for Bastion Vm (Fedora)
-      package:
+      ansible.builtin.yum:
         name: "{{ packages.fedora }}"
         state: present
       when: ansible_distribution == "Fedora"
 
     - name: Installing required packages for Bastion Vm (Centos 8)
-      package:
+      ansible.builtin.yum:
         name: "{{ packages.centos }}"
         state: present
       when: ansible_distribution == "CentOS"
@@ -23,6 +23,6 @@
   tasks:
 
     - name: Installing required packages
-      package:
+      ansible.builtin.yum:
         name: "{{ packages }}"
         state: present

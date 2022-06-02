@@ -1,0 +1,14 @@
+---
+- name: This play installs needed tools to provision infrastructure VMs
+  hosts: vm_host
+  tasks:
+
+    - name: Creating workspace
+      ansible.builtin.file:
+        state: directory
+        path: "{{ workspace_directory.base_path }}" 
+
+    - name: Copy terraform files on host
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/terraform"
+        dest: "{{ workspace_directory.base_path }}/"

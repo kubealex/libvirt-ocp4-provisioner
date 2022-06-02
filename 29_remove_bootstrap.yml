@@ -4,22 +4,16 @@
   become: true
   tasks:
     - name: Removing csr cronjob
-      cron:
+      ansible.builtin.cron:
         name: "Openshift csr approver"
         state: absent
-
-    - name: Removing csr cronjob
-      cron:
-        name: "Openshift image registry patcher"
-        state: absent
-      when: hostvars['bastion'].version.1 | int <= 2
 
 - name: Clean up haproxy config on loadbalancer
   hosts: loadbalancer
   become: true
   tasks:
     - name: Remove bootstrap from HAProxy
-      lineinfile:
+      ansible.builtin.lineinfile:
         regexp: 'bootstrap'
         state: absent
         path: /etc/haproxy/haproxy.cfg
@@ -28,7 +22,7 @@
 
   handlers: 
     - name: restart haproxy
-      service:
+      ansible.builtin.service:
         name: haproxy
         state: restarted
 
@@ -37,5 +31,5 @@
   tasks:
     - name: Destroy bootstrap VM
       community.general.terraform:
-        project_path: "terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
         state: absent    

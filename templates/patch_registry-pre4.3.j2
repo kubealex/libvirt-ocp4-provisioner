@@ -1,2 +1,0 @@
-#!/bin/bash
-/usr/local/bin/oc patch configs.imageregistry.operator.openshift.io cluster  --type=json -p '[{"op": "replace", "path": "/spec/storage","value":{"pvc":{"claim":""}}}]' --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
