@@ -50,6 +50,12 @@
         state: started
         enabled: true
 
+
+    - name: Ensuring passlib is present
+      ansible.builtin.pip:
+        name: libvirt
+      become: true
+
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
         project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
