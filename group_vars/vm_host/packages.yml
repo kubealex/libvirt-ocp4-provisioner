@@ -8,19 +8,7 @@ virtualization_packages:
     - python3-lxml
     - python3-netaddr
     - python3-libvirt
-    - libvirt-devel
-    - libvirt
-    - qemu-kvm
-    - virt-install
-    - virt-manager
-  centos7:
-    - git
-    - unzip 
-    - gcc
-    - make
-    - python-lxml
-    - python-netaddr
-    - python-libvirt
+    - python3-devel    
     - libvirt-devel
     - libvirt
     - qemu-kvm
@@ -34,6 +22,7 @@ virtualization_packages:
     - python3-lxml
     - python3-netaddr
     - python3-libvirt
+    - python3-libvirt    
     - libvirt-devel
     - libvirt
     - qemu-kvm
@@ -47,6 +36,7 @@ virtualization_packages:
     - python3-lxml
     - python3-netaddr
     - python3-libvirt
+    - python3-libvirt    
     - libvirt-devel
     - libvirt
     - qemu-kvm
