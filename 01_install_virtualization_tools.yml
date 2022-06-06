@@ -53,7 +53,7 @@
 
     - name: Ensuring passlib is present
       ansible.builtin.pip:
-        name: libvirt
+        name: libvirt-python
       become: true
 
     - name: Use TF project to ensure pool and network are defined
