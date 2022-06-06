@@ -1,6 +1,7 @@
 ---
 - name: Play for preparing to OCP4 single-node setup
   hosts: vm_host
+  become: true
   vars_files:
     - vars/sno_vars.yml
     - vars/infra_vars.yml
@@ -25,9 +26,8 @@
     - name: Downloading Openshift CLI
       ansible.builtin.unarchive:
         src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster.version + '.tar.gz' }}"
-        dest: /usr/local/bin
+        dest: /usr/bin
         remote_src: yes
-      become: True
       when:
         - cluster.version != "latest"
         - cluster.version != "fast"
@@ -37,9 +37,8 @@
     - name: Downloading Openshift CLI
       ansible.builtin.unarchive:
         src: "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
-        dest: /usr/local/bin
+        dest: /usr/bin
         remote_src: yes
-      become: True
       when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate" 
 
     - name: Checking for OCP cli tool
@@ -55,33 +54,33 @@
     - name: Download coreOS-installer and save it locally
       ansible.builtin.get_url:
         url: "{{ downloads.coreos.installer }}"
-        dest: /usr/local/bin/coreos-installer
+        dest: /usr/bin/coreos-installer
         mode: +x
-      become: true
+
 
     - name: Ensure NM configuration directory exists
       ansible.builtin.file:
         path: /etc/NetworkManager/conf.d
         state: directory
-      become: true
+
 
     - name: Ensure NM dnsmasq directory exists
       ansible.builtin.file:
         path: /etc/NetworkManager/dnsmasq.d
         state: directory
-      become: true
+
 
     - name: Configure NetworkManager for local DNS
       ansible.builtin.copy:
         src: files/localdns.conf
         dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
-      become: true
+
 
     - name: Configure NetworkManager for libvirt network
       ansible.builtin.template:
         src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
-      become: true
+
 
     - name: Take care of systemd-resolved on F33 and Ubuntu hosts
       block:
@@ -112,7 +111,7 @@
             dest: /etc/resolv.conf
             state: link
             force: true
-      become: true
+
       when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33) 
 
     - name: Copy pull secret to a file
@@ -126,10 +125,10 @@
     - name: Move openshift installer to PATH
       ansible.builtin.copy:
         src: "{{ workspace_directory.base_path }}/openshift-baremetal-install/openshift-baremetal-install"
-        dest: /usr/local/bin/openshift-baremetal-install
+        dest: /usr/bin/openshift-baremetal-install
         remote_src: true
         mode: +x
-      become: true
+
 
     - name: Getting ssh public key
       ansible.builtin.slurp:
@@ -155,7 +154,7 @@
         src: "{{ workspace_directory.base_path }}/coreos.iso"
         dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
         remote_src: true
-      become: true
+
 
     - name: Restart net-services
       ansible.builtin.service:
@@ -165,7 +164,7 @@
         - NetworkManager
         - dnsmasq
         - libvirtd
-      become: true
+
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
@@ -181,7 +180,7 @@
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
         state: present
-      become: true
+
       register: output_sno
       when: not local_storage.enabled
 
@@ -200,7 +199,7 @@
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
           local_volume_size: "{{ local_storage.volume_size }}"
         state: present
-      become: true
+
       register: output_sno_local
       when: local_storage.enabled
 
@@ -211,14 +210,14 @@
       ansible.builtin.yum:
         name: httpd-tools
         state: present
-      become: true
+
 
     - name: Ensuring passlib is present
       ansible.builtin.pip:
         name:
           - passlib
           - bcrypt
-      become: true
+
 
     - name: Firing yaml configuration template for htpasswd identity provider
       ansible.builtin.template:

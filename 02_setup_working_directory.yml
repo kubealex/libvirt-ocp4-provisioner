@@ -1,6 +1,7 @@
 ---
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
+  become: true
   tasks:
 
     - name: Creating workspace
