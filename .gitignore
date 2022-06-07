@@ -1,9 +1,6 @@
 id_rsa*
-debug.yml
+*.log
 terraform.tfstate*
-vars/vars.yml
-test.yml
 .terraform*
-roles
-vars/cluster_vars.yml.bak
 ansible.log
+context
