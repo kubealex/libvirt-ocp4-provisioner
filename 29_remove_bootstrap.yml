@@ -33,3 +33,4 @@
       community.general.terraform:
         project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
         state: absent    
+      become: true
