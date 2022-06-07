@@ -5,8 +5,9 @@
     - vars/libvirt.yml
     - vars/infra_vars.yml
     - vars/cluster_vars.yml
-  become: true
   tasks:
+    - ansible.builtin.set_fact:
+        home_dir: "{{ ansible_env.HOME }}"
 
     - name: Destroy support VM
       community.general.terraform:
@@ -18,6 +19,7 @@
       loop:
         - bastion
         - loadbalancer
+      become: true
 
     - name: Destroy cluster VM
       community.general.terraform:
@@ -29,7 +31,7 @@
         - workers
         - masters
         - sno
-
+      become: true
 
     - name: Use TF project to ensure pool and network are removed
       community.general.terraform:
@@ -40,6 +42,7 @@
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: absent
+      become: true
 
     - name: Delete all created paths
       ansible.builtin.file:
@@ -51,3 +54,4 @@
         - "{{ workspace_directory.base_path }}"
         - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
         - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf
+      become: true

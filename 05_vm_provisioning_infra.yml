@@ -15,18 +15,7 @@
         path: ~/.ssh/known_hosts
         state: absent
       loop: "{{ infra_nodes.host_list|dict2items }}"
-
-    - name: Create ssh keypair
-      community.crypto.openssh_keypair:
-        path: "~/.ssh/id_rsa_ocp_setup"
-
-    - name: Getting ssh public key
-      slurp:
-        src: ~/.ssh/id_rsa_ocp_setup.pub
-      register: service_key
-
-    - set_fact:
-        sshServiceKey: "{{ service_key['content'] | b64decode }}"
+      delegate_to: localhost
 
     - name: Deploy bastion VM with terraform
       community.general.terraform:
@@ -39,7 +28,7 @@
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKey }}"
+          sshKey: "{{ sshServiceKeyPub }}"
         state: present
       become: true
       register: output_ba
@@ -55,7 +44,7 @@
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKey }}"
+          sshKey: "{{ sshServiceKeyPub }}"
         state: present
       become: true
       register: output_lb
@@ -64,7 +53,7 @@
       ansible.builtin.add_host:
         hostname: '{{ item.key }}'
         ansible_host: '{{ item.value[0].ip }}'
-        ansible_ssh_private_key_file: "~/.ssh/id_rsa_ocp_setup"
+        ansible_ssh_private_key_file: "{{ playbook_dir }}/id_rsa_ocp_setup"
         ansible_user: ocpinstall
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
         domain: "{{ domain }}"
@@ -73,6 +62,7 @@
         timezone: "{{ dhcp.timezone }}"
         ntp_server: "{{ dhcp.ntp }}"
       loop: "{{ infra_nodes.host_list|dict2items }}"
+      delegate_to: localhost
 
 
 - name: Check connection to infra VMs and set facts

@@ -1,8 +1,9 @@
 ---
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
-  become: true
   tasks:
+    - ansible.builtin.set_fact:
+        home_dir: "{{ ansible_env.HOME }}"
 
     - name: Creating workspace
       ansible.builtin.file:
@@ -13,3 +14,30 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
         dest: "{{ workspace_directory.base_path }}/"
+
+    - name: Create ssh keypair
+      community.crypto.openssh_keypair:
+        path: "{{ playbook_dir }}/id_rsa_ocp_setup"
+      delegate_to: localhost
+
+    - name: Copy SSH keys in working directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/{{ item }}"
+        dest: "{{ workspace_directory.base_path }}/{{ item }}"
+      loop:
+        - id_rsa_ocp_setup
+        - id_rsa_ocp_setup.pub
+
+    - name: Getting ssh private key
+      ansible.builtin.slurp:
+        src: "{{ workspace_directory.base_path }}/id_rsa_ocp_setup"
+      register: service_key
+
+    - name: Getting ssh public key
+      ansible.builtin.slurp:
+        src: "{{ workspace_directory.base_path }}/id_rsa_ocp_setup.pub"
+      register: service_key_pub
+
+    - ansible.builtin.set_fact:
+        sshServiceKey: "{{ service_key['content'] | b64decode }}"
+        sshServiceKeyPub: "{{ service_key_pub['content'] | b64decode }}"

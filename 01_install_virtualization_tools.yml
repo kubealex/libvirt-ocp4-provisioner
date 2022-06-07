@@ -51,7 +51,7 @@
         enabled: true
 
 
-    - name: Ensuring passlib is present
+    - name: Ensuring libvirt module is present
       ansible.builtin.pip:
         name: libvirt-python
       become: true

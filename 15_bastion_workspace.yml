@@ -20,7 +20,7 @@
         - "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
         - "~/.ssh"
 
-    - name: Creating ssh keys if not exists
+    - name: Creating ssh keys if it doens not exist
       community.crypto.openssh_keypair:
         path: "~/.ssh/id_rsa"
 
