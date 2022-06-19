@@ -36,7 +36,7 @@
     - name: Downloading Openshift installer and CLI
       ansible.builtin.unarchive:
         src: "{{ item }}"
-        dest: /usr/local/bin
+        dest: /usr/bin
         remote_src: yes
       become: True
       loop:
@@ -52,7 +52,7 @@
     - name: Downloading Openshift installer and CLI
       ansible.builtin.unarchive:
         src: "{{ item }}"
-        dest: /usr/local/bin
+        dest: /usr/bin
         remote_src: yes
       become: True
       loop:
