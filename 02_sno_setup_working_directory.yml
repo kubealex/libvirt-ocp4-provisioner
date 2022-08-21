@@ -2,7 +2,7 @@
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
   vars_files:
-    - cluster_vars.yml
+    - sno_vars.yml
   tasks:
     - ansible.builtin.set_fact:
         home_dir: "{{ ansible_env.HOME }}"
