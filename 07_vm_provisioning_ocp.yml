@@ -3,12 +3,11 @@
   vars_files:
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
-    - vars/libvirt.yml
   tasks:
     - name: Provision bootstrap node with Terraform
       community.general.terraform:
         force_init: true
-        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/bootstrap"
         variables:
           hostname: "bootstrap"
           libvirt_network: "{{ cluster.name }}"
@@ -22,7 +21,7 @@
 
     - name: Provision master nodes with Terraform
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/masters"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/masters"
         force_init: true
         variables:
           hostname: "master"
@@ -38,7 +37,7 @@
 
     - name: Provision worker nodes with Terraform
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/workers"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/workers"
         force_init: true
         variables:
           hostname: "worker"

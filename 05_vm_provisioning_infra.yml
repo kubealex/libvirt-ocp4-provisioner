@@ -3,7 +3,6 @@
   vars_files:
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
-    - vars/libvirt.yml
   tasks:
 
     - ansible.builtin.set_fact:
@@ -20,7 +19,7 @@
     - name: Deploy bastion VM with terraform
       community.general.terraform:
         force_init: true
-        project_path: "{{ workspace_directory.base_path }}/terraform/bastion"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/bastion"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
@@ -36,7 +35,7 @@
     - name: Deploy loadbalancer VM
       community.general.terraform:
         force_init: true
-        project_path: "{{ workspace_directory.base_path }}/terraform/loadbalancer"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/loadbalancer"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
