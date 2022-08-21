@@ -3,6 +3,7 @@
   hosts: vm_host
   vars_files:
     - vars/cluster_vars.yml
+    - vars/infra_vars.yml
   become: true
   tasks:
 
@@ -57,9 +58,10 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources"
         variables:
-          domain: "{{ domain }}"
+          dns: "{{ infra_nodes.host_list.bastion[0].ip }}"
+          domain: "{{ cluster.name }}.{{ domain }}"
           network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
         force_init: true

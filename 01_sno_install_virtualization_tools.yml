@@ -43,17 +43,33 @@
         mode: 755
         remote_src: yes
 
-    - name: Virtualization services are enabled
-      ansible.builtin.service:
+    - name: Ensure libvirtd is running
+      ansible.builtin.service: 
         name: libvirtd
         state: started
         enabled: true
 
+    - name: Ensure libvirt can use root as user
+      ansible.builtin.replace:
+        path: /etc/libvirt/qemu.conf
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.line }}"
+      loop:
+        - regexp: '#user = "root"'
+          line: 'user = "root"'
+        - regexp: '#group = "root"'
+          line: 'group = "root"'
+
+    - name: Restart libvirtd service
+      ansible.builtin.service: 
+        name: libvirtd
+        state: restarted
+
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources"
         variables:
-          domain: "{{ domain }}"
+          domain: "{{ cluster.name }}.{{ domain }}"
           network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
         force_init: true
