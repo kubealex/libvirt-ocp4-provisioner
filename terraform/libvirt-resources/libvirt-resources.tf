@@ -1,5 +1,6 @@
 # variables that can be overriden
 variable "domain" { default = "hetzner.lab" }
+variable "dns" { default = "192.168.100.7" }
 variable "network_cidr" { 
   type = list
   default = ["192.168.100.0/24"] 
@@ -32,6 +33,17 @@ resource "libvirt_network" "ocp_network" {
   }
   dns { 
     enabled = true
+    local_only = true
+  }
+  dnsmasq_options {
+    options  {
+        option_name = "server"
+        option_value = "/${var.domain}/${cidrhost(var.network_cidr[0],1)}"
+      }
+    options  {
+        option_name = "address"
+        option_value = "/${var.domain}/${var.dns}"
+      }
   }
 }
 

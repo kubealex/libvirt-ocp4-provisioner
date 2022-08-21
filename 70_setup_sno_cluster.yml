@@ -5,14 +5,13 @@
   vars_files:
     - vars/sno_vars.yml
     - vars/infra_vars.yml
-    - vars/libvirt.yml
   tasks:
     - name: Preparing workspace
       ansible.builtin.file:
         state: directory
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
 
-    - name: Creating ssh keys if not exists
+    - name: Creating ssh keys if the do not exist
       community.crypto.openssh_keypair:
         path: "~/.ssh/id_rsa_{{ cluster.name }}"
 
@@ -49,7 +48,7 @@
     - name: Download coreOS ISO and save it locally
       ansible.builtin.get_url:
         url: "{{ downloads.coreos.live_media }}" 
-        dest: "{{ workspace_directory.base_path }}/coreos.iso"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
 
     - name: Download coreOS-installer and save it locally
       ansible.builtin.get_url:
@@ -117,18 +116,17 @@
     - name: Copy pull secret to a file
       ansible.builtin.copy: 
         content: "{{ cluster.pullSecret }}"
-        dest: "{{ workspace_directory.base_path }}/pull-secret"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret"
 
     - name: Extract openshift-baremetal-install from release image
-      ansible.builtin.shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/openshift-baremetal-install {{ release_image }}"
+      ansible.builtin.shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/{{ cluster.name }}/openshift-baremetal-install {{ release_image }}"
 
     - name: Move openshift installer to PATH
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/openshift-baremetal-install/openshift-baremetal-install"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/openshift-baremetal-install/openshift-baremetal-install"
         dest: /usr/bin/openshift-baremetal-install
         remote_src: true
         mode: +x
-
 
     - name: Getting ssh public key
       ansible.builtin.slurp:
@@ -141,20 +139,19 @@
     - name: Firing up install-config.yaml
       ansible.builtin.template:
         src: templates/install-config-sno.j2
-        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/install-config.yaml"
 
     - name: Generate ignition config
-      ansible.builtin.shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
+      ansible.builtin.shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
 
     - name: Patch live ISO with generate ignition file
-      ansible.builtin.shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/coreos.iso
+      ansible.builtin.shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso
 
-    - name: Move coreos image in libvirt pool directory
-      ansible.builtin.copy: 
-        src: "{{ workspace_directory.base_path }}/coreos.iso"
-        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
-        remote_src: true
-
+#    - name: Move coreos image in libvirt pool directory
+#      ansible.builtin.copy: 
+#        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
+#        dest: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+#        remote_src: true
 
     - name: Restart net-services
       ansible.builtin.service:
@@ -162,20 +159,19 @@
         state: restarted
       loop:
         - NetworkManager
-        - dnsmasq
-        - libvirtd
-
+#        - dnsmasq
+#        - libvirtd
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/sno"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/sno"
         force_init: true
         variables:
           hostname: "master-sno"
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
           vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
-          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+          coreos_iso_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
@@ -186,14 +182,14 @@
 
     - name: Provision OCP node with Terraform
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/sno"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/sno"
         force_init: true
         variables:
           hostname: "master-sno"
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
           vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
-          coreos_iso_path: "{{ libvirt.pool.pool_dir }}/{{ cluster.name }}/coreos.iso"
+          coreos_iso_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
@@ -204,13 +200,12 @@
       when: local_storage.enabled
 
     - name: Start Openshift install
-      ansible.builtin.shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Ensuring httpd-tools is present
       ansible.builtin.yum:
         name: httpd-tools
         state: present
-
 
     - name: Ensuring passlib is present
       ansible.builtin.pip:
@@ -218,11 +213,10 @@
           - passlib
           - bcrypt
 
-
     - name: Firing yaml configuration template for htpasswd identity provider
       ansible.builtin.template:
         src: templates/htpasswd_provider.j2
-        dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/htpasswd_provider.yaml"
 
     - name: Firing configuration script template for user creation
       ansible.builtin.template:
@@ -239,4 +233,4 @@
 
     - name: Your cluster is ready
       ansible.builtin.debug: 
-        msg: "Cluster setup finished, grab your kubeconfig in {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth or log in the console at the address: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }} with the credentials you chose"
+        msg: "Cluster setup finished, grab your kubeconfig in {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/auth or log in the console at the address: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }} with the credentials you chose"
