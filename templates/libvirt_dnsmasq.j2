@@ -1,5 +1,1 @@
-listen-address=127.0.0.1
-bind-interfaces
-server=8.8.8.8
-server=192.168.100.1
-address=/{{ cluster.name }}.{{ domain }}/{{ cluster_nodes.host_list.masters[0].ip }} 
+server=/{{ cluster.name }}.{{ domain }}/{{ network_cidr | ansible.utils.next_nth_usable(1) }}
