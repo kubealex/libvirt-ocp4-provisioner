@@ -1,1 +1,2 @@
-server=/{{ cluster.name }}.{{ domain }}/{{ network_cidr | ansible.utils.next_nth_usable(1) }}
+server={{ network_cidr | ansible.utils.next_nth_usable(1) }}
+address=/{{ cluster.name }}.{{ domain }}/{{ cluster_nodes.host_list.sno.ip }} 

@@ -1,1 +1,1 @@
-server=/{{ cluster.name }}.{{ domain }}/{{ network_cidr | ansible.utils.next_nth_usable(1) }}
+server=/{{ cluster.name }}.{{ domain }}/{{ infra_vars.host_list.bastion[0].ip }}
