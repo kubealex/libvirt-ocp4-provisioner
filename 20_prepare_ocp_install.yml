@@ -6,13 +6,13 @@
   tasks:
     - name: Removing config directory
       ansible.builtin.file:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         state: absent
       become: true
 
     - name: Creating config directory
       ansible.builtin.file:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         state: directory
 
     - name: Getting ssh public key
@@ -26,7 +26,7 @@
     - name: Firing up install-config.yaml
       ansible.builtin.template:
         src: templates/install-config.j2
-        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/install-config.yaml"
 
     - name: Create backup dir
       ansible.builtin.file:
@@ -35,16 +35,16 @@
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
 
     - name: Creating ignition manifest
-      ansible.builtin.command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Setting master unschedulable
       ansible.builtin.lineinfile:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable'
         line: '  mastersSchedulable: False'
       when: 
@@ -53,22 +53,22 @@
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
 
     - name: Creating ignition files
-      ansible.builtin.command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
 
     - name: Copying ignition files to webserver
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/{{ item }}"
         dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}"
         remote_src: yes
         mode: 644
@@ -87,11 +87,11 @@
     - name: Creating csr approver script
       ansible.builtin.template:
         src: templates/csr.j2
-        dest: "{{ workspace_directory.base_path }}/csr.sh"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/csr.sh"
         mode: '0755'
 
     - name: Installing csr cronjob
       ansible.builtin.cron:
         name: "Openshift csr approver"
-        job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
+        job: "{{ workspace_directory.base_path }}/{{ cluster.name }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present

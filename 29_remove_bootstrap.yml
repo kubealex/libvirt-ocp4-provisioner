@@ -2,6 +2,8 @@
 - name: Remove cronjob on bastion for csr 
   hosts: bastion
   become: true
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
     - name: Removing csr cronjob
       ansible.builtin.cron:
@@ -31,6 +33,6 @@
   tasks:
     - name: Destroy bootstrap VM
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/bootstrap"
         state: absent    
       become: true

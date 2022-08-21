@@ -20,10 +20,10 @@
           - name: Create machine config pool 
             ansible.builtin.copy:
               src: files/machineconfigpool.yml
-              dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
+              dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml"
 
           - name: Creating machine config pool for infra nodes
-            ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
 
           - name: Copy script for node labeling
             ansible.builtin.template: 
