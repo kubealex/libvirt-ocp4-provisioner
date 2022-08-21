@@ -60,7 +60,7 @@
         project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"
-          network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
+          network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: present

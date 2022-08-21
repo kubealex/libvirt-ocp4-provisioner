@@ -2,7 +2,6 @@
 - name: Cleanup playbook
   hosts: vm_host
   vars_files:
-    - vars/libvirt.yml
     - vars/infra_vars.yml
     - vars/cluster_vars.yml
   tasks:
@@ -38,7 +37,7 @@
         project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
         variables:
           domain: "{{ domain }}"
-          network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
+          network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: absent
