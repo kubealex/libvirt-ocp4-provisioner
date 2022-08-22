@@ -81,13 +81,6 @@ Or, in case of Single Node Openshift:
 
 ## Common vars
 
-**vars/libvirt.yml**
-
-    libvirt:                       
-      network:                     
-        network_gateway: 192.168.100.1
-	network_cidr: 192.168.100.0/24
-
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
 ## HA Configuration vars
@@ -107,6 +100,7 @@ The kind of network created is a simple NAT configuration, without DHCP since it
 **vars/cluster_vars.yml**
 
     three_node: false
+    network_cidr: 192.168.100.0/24
     domain: hetzner.lab
     cluster:
       version: stable
@@ -171,6 +165,7 @@ For testing purposes, minimum storage value is set at **40GB**.
 **vars/cluster_vars.yml**
 
     domain: hetzner.lab
+    network_cidr: 192.168.100.0/24
     cluster:
       version: stable
       name: ocp4
@@ -180,7 +175,7 @@ For testing purposes, minimum storage value is set at **40GB**.
     cluster_nodes:
       host_list:
         sno:
-	        ip: 192.168.100.7
+          ip: 192.168.100.7
       specs:
         sno:
           vcpu: 8
