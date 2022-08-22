@@ -2,8 +2,6 @@
 - name: Remove cronjob on bastion for csr 
   hosts: bastion
   become: true
-  vars_files:
-    - vars/cluster_vars.yml
   tasks:
     - name: Removing csr cronjob
       ansible.builtin.cron:
@@ -21,7 +19,6 @@
         path: /etc/haproxy/haproxy.cfg
       notify: restart haproxy
 
-
   handlers: 
     - name: restart haproxy
       ansible.builtin.service:
@@ -30,6 +27,8 @@
 
 - name: Destroy bootstrap VM
   hosts: vm_host
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
     - name: Destroy bootstrap VM
       community.general.terraform:

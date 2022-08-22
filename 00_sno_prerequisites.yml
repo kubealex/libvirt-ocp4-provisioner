@@ -25,8 +25,8 @@
       
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           ansible.builtin.fail:
-            msg: "Bootstrap nodes must be provisioned with at least 32GB memory, 40GB storage and 4vCPUs"
-          when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
+            msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 60GB storage and 8vCPUs"
+          when: ( cluster_nodes.specs.sno.vcpu < 8 ) or ( cluster_nodes.specs.sno.mem < 16 ) or ( cluster_nodes.specs.sno.disk < 60 )
         
         - name: Check for pullSecret variable and fail fast
           ansible.builtin.fail:

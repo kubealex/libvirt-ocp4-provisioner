@@ -38,6 +38,10 @@ resource "libvirt_network" "ocp_network" {
   dnsmasq_options {
     options  {
         option_name = "server"
+        option_value = "/${var.domain}/${cidrhost(var.network_cidr[0],1)}"
+      }
+    options  {
+        option_name = "address"
         option_value = "/${var.domain}/${var.dns}"
       }
   }

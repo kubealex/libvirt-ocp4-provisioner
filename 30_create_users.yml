@@ -33,7 +33,7 @@
 
     - name: Sleeping 180 seconds...
       ansible.builtin.pause: 
-        seconds: 180
+        seconds: 240
 
     - name: Try to login with admin
       ansible.builtin.command: > 

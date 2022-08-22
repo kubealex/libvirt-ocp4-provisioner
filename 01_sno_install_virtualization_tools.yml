@@ -67,11 +67,12 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources-sno"
         variables:
           domain: "{{ cluster.name }}.{{ domain }}"
           network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
+          dns: "{{ cluster_nodes.host_list.sno.ip }}" 
         force_init: true
         state: present
       become: true
