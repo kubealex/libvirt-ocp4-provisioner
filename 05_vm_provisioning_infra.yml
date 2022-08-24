@@ -28,7 +28,7 @@
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKeyPub }}"
+          sshkey: "{{ ssh_service_key_pub }}"
         state: present
       become: true
       register: output_ba
@@ -44,7 +44,7 @@
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKeyPub }}"
+          sshkey: "{{ ssh_service_key_pub }}"
         state: present
       become: true
       register: output_lb

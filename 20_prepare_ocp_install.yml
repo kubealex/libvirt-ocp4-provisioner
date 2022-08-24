@@ -21,8 +21,9 @@
         src: ~/.ssh/id_rsa.pub
       register: key
 
-    - ansible.builtin.set_fact:
-        sshKey: "{{ key['content'] | b64decode }}"
+    - name: Save SSH key as fact
+      ansible.builtin.set_fact:
+        sshkey: "{{ key['content'] | b64decode }}"
 
     - name: Firing up install-config.yaml
       ansible.builtin.template:
@@ -77,7 +78,7 @@
         src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/{{ item }}"
         dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}"
         remote_src: true
-        mode: 644
+        mode: 0644
       loop:
         - bootstrap.ign
         - master.ign

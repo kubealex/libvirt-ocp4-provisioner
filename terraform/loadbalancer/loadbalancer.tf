@@ -8,15 +8,15 @@ variable "iface" { default = "eth0" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
 variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default = "ocp4" }
-variable "sshKey" { default = "" }
-variable "network_data" { 
+variable "sshkey" { default = "" }
+variable "network_data" {
   type = map
   default = {
        hostIP = "192.168.100.31"
        broadcast = "192.168.100.255"
        dns = "192.168.100.1"
        gateway = "192.168.100.1"
-       network = "192.168.100.0"    
+       network = "192.168.100.0"
     }
 }
 # instance the provider
@@ -45,9 +45,9 @@ data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
   vars = {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
-    fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
+    fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"
     iface = var.iface
-    sshKey = var.sshKey
+    sshkey = var.sshkey
   }
 }
 

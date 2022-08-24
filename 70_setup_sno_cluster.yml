@@ -59,20 +59,17 @@
         dest: /usr/bin/coreos-installer
         mode: +x
 
-
     - name: Ensure NM configuration directory exists
       ansible.builtin.file:
         path: /etc/NetworkManager/conf.d
         state: directory
         mode: 0755
 
-
     - name: Ensure NM dnsmasq directory exists
       ansible.builtin.file:
         path: /etc/NetworkManager/dnsmasq.d
         state: directory
         mode: 0755
-
 
     - name: Configure NetworkManager for local DNS
       ansible.builtin.copy:
@@ -86,7 +83,6 @@
         src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
         mode: 0755
-
 
     - name: Take care of systemd-resolved on F33 and Ubuntu hosts
       block:
@@ -146,7 +142,7 @@
 
     - name: Set SSH Keys as fact
       ansible.builtin.set_fact:
-        sshKey: "{{ key['content'] | b64decode }}"
+        sshkey: "{{ key['content'] | b64decode }}"
 
     - name: Firing up install-config.yaml
       ansible.builtin.template:

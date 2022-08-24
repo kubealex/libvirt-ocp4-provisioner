@@ -1,6 +1,5 @@
 - name: Bastion services configuration
   hosts: bastion
-  gather_facts: no
   become: true
   vars_files:
     - vars/infra_vars.yml

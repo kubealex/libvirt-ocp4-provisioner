@@ -1,11 +1,9 @@
 ---
 - name: Creating a workspace on Bastion
   hosts: bastion
-  gather_facts: no
   vars_files:
     - vars/cluster_vars.yml
   tasks:
-
     - name: Erasing dnsmasq lease
       ansible.builtin.file:
         path: /var/lib/dnsmasq/dnsmasq.leases
