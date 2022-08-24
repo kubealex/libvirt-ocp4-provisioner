@@ -40,8 +40,8 @@
         remote_src: true
       become: true
       loop:
-        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '-' + cluster.version + '.tar.gz' }}"
-        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_installer + '-' + cluster.version + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux-{{ cluster.version }}.tar.gz"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux-{{ cluster.version }}.tar.gz"
       when:
         - not (skip_download | bool)
         - cluster.version != "latest"
@@ -56,8 +56,8 @@
         remote_src: true
       become: true
       loop:
-        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_oc_cli + '.tar.gz' }}"
-        - "{{ downloads.ocp.base_url + cluster.version + '/' + downloads.ocp.ocp_installer + '.tar.gz' }}"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux.tar.gz"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux.tar.gz"
       when:
         - not (skip_download | bool)
         - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
