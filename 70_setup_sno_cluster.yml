@@ -18,11 +18,11 @@
 
     - name: Retrieve image for current version
       ansible.builtin.shell: "curl -s {{ downloads.ocp.base_url }}/{{ cluster.version }} | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
-      register: version
+      register: image_version
 
     - name: Save version as fact
       ansible.builtin.set_fact:
-        release_image: "{{ version.stdout }}"
+        release_image: "{{ image_version.stdout }}"
 
     - name: Downloading Openshift CLI
       ansible.builtin.unarchive:
