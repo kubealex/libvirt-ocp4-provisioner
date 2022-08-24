@@ -1,6 +1,6 @@
 downloads:
   ocp:
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp
     ocp_oc_cli: openshift-client-linux
   coreos:
     installer: https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer
