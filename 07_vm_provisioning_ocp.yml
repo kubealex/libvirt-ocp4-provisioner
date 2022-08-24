@@ -51,12 +51,12 @@
       become: true
       register: output_workers
       when: not three_node
- 
+
     - name: Add bootstrap node and set vars
       ansible.builtin.add_host:
         hostname: 'bootstrap'
         node_hostname: 'bootstrap'
-        node_mac: "{{ output_bootstrap.outputs.macs.value[0]|lower }}"
+        node_mac: "{{ output_bootstrap.outputs.macs.value[0] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "bootstrap"
@@ -71,11 +71,11 @@
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
         etcd_ip: '{{ item.ip }}'
-        node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
+        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
-        node_fqdn: master-{{ master_idx }}.{{ ocp_domain }} 
+        node_fqdn: master-{{ master_idx }}.{{ ocp_domain }}
         groups:
           - "masters"
       loop: "{{ cluster_nodes.host_list.masters }}"
@@ -89,7 +89,7 @@
         node_hostname: 'master-{{ master_idx }}'
         etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
         etcd_ip: '{{ item.ip }}'
-        node_mac: "{{ output_masters.outputs.macs.value[master_idx]|lower }}"
+        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
@@ -106,7 +106,7 @@
       ansible.builtin.add_host:
         hostname: 'worker-{{ worker_idx }}'
         node_hostname: 'worker-{{ worker_idx }}'
-        node_mac: "{{ output_workers.outputs.macs.value[worker_idx]|lower }}"
+        node_mac: "{{ output_workers.outputs.macs.value[worker_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "worker"
@@ -118,15 +118,15 @@
       loop_control:
         index_var: worker_idx
       when: not three_node
-    
-    - block:
-      - name: Add infra nodes to correct group and set facts
-        ansible.builtin.add_host:
-          hostname: '{{ item }}'
-          groups:
-            - "infra"
-        loop: "{{ groups['workers'] }}"
-        when: 
-          - hostvars[item].ocp_role == 'infra'
+
+    - name: Run dynamic inventory creation for infra nodes
+      block:
+        - name: Add infra nodes to correct group and set facts
+          ansible.builtin.add_host:
+            hostname: '{{ item }}'
+            groups:
+              - "infra"
+          loop: "{{ groups['workers'] }}"
+          when:
+            - hostvars[item].ocp_role == 'infra'
       when: not three_node
-    

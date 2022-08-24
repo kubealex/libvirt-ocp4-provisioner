@@ -4,7 +4,8 @@
   vars_files:
     - vars/cluster_vars.yml
   tasks:
-    - ansible.builtin.debug:
+    - name: State message
+      ansible.builtin.debug:
         msg: All VMs booted up, using the MAC-tailored pxeboot configuration
 
     - name: Waiting for bootstrap to complete
@@ -24,4 +25,3 @@
     - name: Jedy
       ansible.builtin.debug:
         msg: May OCP be with you
- 

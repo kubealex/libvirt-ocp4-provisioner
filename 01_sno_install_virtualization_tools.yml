@@ -9,14 +9,14 @@
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.rhel }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'RedHat'
 
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.centos8 }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 8
@@ -24,7 +24,7 @@
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.centos7 }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 7
@@ -32,7 +32,7 @@
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.fedora }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'Fedora'
 
@@ -40,11 +40,11 @@
       ansible.builtin.unarchive:
         src: "{{ terraform_release_url }}"
         dest: /usr/bin/
-        mode: 755
-        remote_src: yes
+        mode: 0755
+        remote_src: true
 
     - name: Ensure libvirtd is running
-      ansible.builtin.service: 
+      ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true
@@ -61,7 +61,7 @@
           line: 'group = "root"'
 
     - name: Restart libvirtd service
-      ansible.builtin.service: 
+      ansible.builtin.service:
         name: libvirtd
         state: restarted
 
@@ -72,7 +72,7 @@
           domain: "{{ cluster.name }}.{{ domain }}"
           network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
-          dns: "{{ cluster_nodes.host_list.sno.ip }}" 
+          dns: "{{ cluster_nodes.host_list.sno.ip }}"
         force_init: true
         state: present
       become: true

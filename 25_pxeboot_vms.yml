@@ -44,5 +44,7 @@
             state: running
           loop: "{{ groups['workers'] }}"
           when: not three_node
-    - ansible.builtin.debug:
+
+    - name: State message
+      ansible.builtin.debug:
         msg: All VMs are booting...

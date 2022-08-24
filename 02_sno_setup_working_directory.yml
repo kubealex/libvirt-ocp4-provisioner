@@ -4,19 +4,21 @@
   vars_files:
     - sno_vars.yml
   tasks:
-    - ansible.builtin.set_fact:
+    - name: Set home directory as fact for the user
+      ansible.builtin.set_fact:
         home_dir: "{{ ansible_env.HOME }}"
 
     - name: Creating workspace
       ansible.builtin.file:
         state: directory
-        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}" 
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}"
         recurse: true
 
     - name: Copy terraform files on host
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/"
+        mode: 0755
 
     - name: Create ssh keypair
       community.crypto.openssh_keypair:
@@ -27,6 +29,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/{{ item }}"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ item }}"
+        mode: 0755
       loop:
         - id_rsa_ocp_setup
         - id_rsa_ocp_setup.pub
@@ -41,6 +44,7 @@
         src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/id_rsa_ocp_setup.pub"
       register: service_key_pub
 
-    - ansible.builtin.set_fact:
+    - name: Save SSH keys as fact
+      ansible.builtin.set_fact:
         sshServiceKey: "{{ service_key['content'] | b64decode }}"
         sshServiceKeyPub: "{{ service_key_pub['content'] | b64decode }}"

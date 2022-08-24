@@ -4,7 +4,8 @@
   vars_files:
     - vars/sno_vars.yml
   tasks:
-    - ansible.builtin.set_fact:
+    - name: Set home directory as fact
+      ansible.builtin.set_fact:
         home_dir: "{{ ansible_env.HOME }}"
 
     - name: Destroy support VM
@@ -42,9 +43,10 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
-      loop: 
+      loop:
         - /usr/bin/terraform
         - /usr/bin/openshift-baremetal-install
+        - /usr/bin/coreos-installer
         - "{{ workspace_directory.base_path }}/{{ cluster.name }}"
         - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
         - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf
