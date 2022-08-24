@@ -2,8 +2,7 @@
 - name: Cleanup playbook
   hosts: vm_host
   vars_files:
-    - vars/infra_vars.yml
-    - vars/cluster_vars.yml
+    - vars/sno_vars.yml
   tasks:
     - name: Set home directory as fact
       ansible.builtin.set_fact:
@@ -35,11 +34,7 @@
 
     - name: Use TF project to ensure pool and network are removed
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources"
-        variables:
-          domain: "{{ domain }}"
-          network_cidr: ' ["{{ network_cidr }}"]'
-          cluster_name: "{{ cluster.name }}"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources-sno"
         force_init: true
         state: absent
       become: true
@@ -50,6 +45,8 @@
         state: absent
       loop:
         - /usr/bin/terraform
+        - /usr/bin/openshift-baremetal-install
+        - /usr/bin/coreos-installer
         - "{{ workspace_directory.base_path }}/{{ cluster.name }}"
         - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
         - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf

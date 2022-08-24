@@ -1,9 +1,8 @@
 ---
 - name: Bastion packages installer
   hosts: bastion
-  become: True
+  become: true
   tasks:
-     
     - name: Installing required packages for Bastion Vm (Fedora)
       ansible.builtin.yum:
         name: "{{ packages.fedora }}"
@@ -15,13 +14,11 @@
         name: "{{ packages.centos }}"
         state: present
       when: ansible_distribution == "CentOS"
-      
 
 - name: Loadbalancer packages installer
   hosts: loadbalancer
   become: true
   tasks:
-
     - name: Installing required packages
       ansible.builtin.yum:
         name: "{{ packages }}"

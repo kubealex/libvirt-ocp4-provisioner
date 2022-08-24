@@ -2,22 +2,21 @@
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
   vars_files:
-    - vars/libvirt.yml
     - vars/cluster_vars.yml
+    - vars/infra_vars.yml
   become: true
   tasks:
-
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.rhel }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'RedHat'
 
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.centos8 }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 8
@@ -25,7 +24,7 @@
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.centos7 }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 7
@@ -33,7 +32,7 @@
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.fedora }}"
-        state: latest
+        state: latest # noqa package-latest
       when:
         - ansible_distribution == 'Fedora'
 
@@ -41,15 +40,14 @@
       ansible.builtin.unarchive:
         src: "{{ terraform_release_url }}"
         dest: /usr/bin/
-        mode: 755
-        remote_src: yes
+        mode: 0755
+        remote_src: true
 
     - name: Virtualization services are enabled
       ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true
-
 
     - name: Ensuring libvirt module is present
       ansible.builtin.pip:
@@ -58,10 +56,11 @@
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/libvirt-resources"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/libvirt-resources"
         variables:
-          domain: "{{ domain }}"
-          network_cidr: ' ["{{ libvirt.network.network_cidr }}"]'
+          dns: "{{ infra_nodes.host_list.bastion[0].ip }}"
+          domain: "{{ cluster.name }}.{{ domain }}"
+          network_cidr: ' ["{{ network_cidr }}"]'
           cluster_name: "{{ cluster.name }}"
         force_init: true
         state: present

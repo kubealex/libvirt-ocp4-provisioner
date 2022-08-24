@@ -4,53 +4,54 @@
   vars_files:
     - vars/cluster_vars.yml
   tasks:
-    - block:
-   
-      - name: Set fact if infra patching is needed
-        ansible.builtin.set_fact:
-          infra_present: false
+    - name: Patch nodes if needed
+      block:
+        - name: Set fact if infra patching is needed
+          ansible.builtin.set_fact:
+            infra_present: false
 
-      - name: Set fact if infra patching is needed
-        ansible.builtin.set_fact:
-          infra_present: true
-        when: "'infra' in groups"
+        - name: Set fact if infra patching is needed
+          ansible.builtin.set_fact:
+            infra_present: true
+          when: "'infra' in groups"
 
-      - block: 
+        - name: Create Infra machine config pools if needed
+          block:
+            - name: Create machine config pool
+              ansible.builtin.copy:
+                src: files/machineconfigpool.yml
+                dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml"
+                mode: 0755
 
-          - name: Create machine config pool 
-            ansible.builtin.copy:
-              src: files/machineconfigpool.yml
-              dest: "{{ workspace_directory.base_path }}/machineconfigpool.yml"
+            - name: Creating machine config pool for infra nodes
+              ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
 
-          - name: Creating machine config pool for infra nodes
-            ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
+            - name: Copy script for node labeling
+              ansible.builtin.template:
+                src: templates/label_nodes.j2
+                dest: /tmp/label_nodes.sh
+                mode: +x
 
-          - name: Copy script for node labeling
-            ansible.builtin.template: 
-              src: templates/label_nodes.j2
-              dest: /tmp/label_nodes.sh
-              mode: +x
+            - name: Applying patch
+              ansible.builtin.command: /tmp/label_nodes.sh
 
-          - name: Applying patch
-            ansible.builtin.command: /tmp/label_nodes.sh
+            - name: Deleting label node script
+              ansible.builtin.file:
+                path: /tmp/label_nodes.sh
+                state: absent
 
-          - name: Deleting label node script
-            ansible.builtin.file:
-              path: /tmp/label_nodes.sh
-              state: absent
+            - name: Set default nodeSelector
+              ansible.builtin.template:
+                src: templates/patch_default_selector.j2
+                dest: /tmp/patch_default_selector.sh
+                mode: +x
 
-          - name: Set default nodeSelector
-            ansible.builtin.template:
-              src: templates/patch_default_selector.j2
-              dest: /tmp/patch_default_selector.sh
-              mode: +x
-          - name: Execute script 
-            ansible.builtin.command: /tmp/patch_default_selector.sh
+            - name: Execute script
+              ansible.builtin.command: /tmp/patch_default_selector.sh
 
-          - name: Delete node selector patch
-            ansible.builtin.file:
-              path: /tmp/patch_default_selector.sh
-              state: absent
-
-        when: infra_present
+            - name: Delete node selector patch
+              ansible.builtin.file:
+                path: /tmp/patch_default_selector.sh
+                state: absent
+          when: infra_present
       when: not three_node

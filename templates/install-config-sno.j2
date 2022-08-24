@@ -4,7 +4,7 @@ metadata:
   name: {{ cluster.name }}
 networking:
   networkType: OVNKubernetes
-  machineCIDR: {{ libvirt.network.network_cidr }}
+  machineCIDR: {{ network_cidr }}
 compute:
 - name: worker
   replicas: 0
@@ -16,4 +16,4 @@ platform:
 BootstrapInPlace:
   InstallationDisk: /dev/vda
 pullSecret: '{{ cluster.pullSecret }}'
-sshKey: '{{ sshKey }}'
+sshKey: '{{ sshkey }}'

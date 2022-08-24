@@ -1,40 +1,43 @@
 - name: Patch configs to use infra nodes
   hosts: bastion
   become: True
-  vars_files: 
+  vars_files:
     - vars/cluster_vars.yml
   tasks:
-    - block:
-      - block:
-          - name: Copy ingress and registry patcher templates
-            ansible.builtin.template: 
-              src: templates/{{ item }}.j2
-              dest: /tmp/{{ item }}.sh
-              mode: +x
-            loop:
-              - patch_ingress_selector
-              - patch_registry_selector
+    - name: Take care of moving core operators to infra nodes
+      block:
+        - name: Take care of moving core operators to infra nodes
+          block:
+            - name: Copy ingress and registry patcher templates
+              ansible.builtin.template:
+                src: templates/{{ item }}.j2
+                dest: /tmp/{{ item }}.sh
+                mode: +x
+              loop:
+                - patch_ingress_selector
+                - patch_registry_selector
 
-          - name: Run scripts
-            ansible.builtin.command: /tmp/{{ item }}.sh 
-            loop:
-              - patch_ingress_selector
-              - patch_registry_selector
+            - name: Run scripts
+              ansible.builtin.command: /tmp/{{ item }}.sh
+              loop:
+                - patch_ingress_selector
+                - patch_registry_selector
 
-          - name: Delete scripts
-            ansible.builtin.file: 
-              path: /tmp/{{ item }}.sh
-              state: absent
-            loop:
-              - patch_ingress_selector
-              - patch_registry_selector
+            - name: Delete scripts
+              ansible.builtin.file:
+                path: /tmp/{{ item }}.sh
+                state: absent
+              loop:
+                - patch_ingress_selector
+                - patch_registry_selector
 
-          - name: Copy monitoring CM
-            ansible.builtin.copy:
-              src: files/patch_monitoring.yml
-              dest: "{{ workspace_directory.base_path }}/patch_monitoring.yml"
+            - name: Copy monitoring CM
+              ansible.builtin.copy:
+                src: files/patch_monitoring.yml
+                dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/patch_monitoring.yml"
+                mode: 0755
 
-          - name: Patch monitoring
-            ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/config/auth/kubeconfig
-        when: infra_present
+            - name: Patch monitoring
+              ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
+          when: infra_present
       when: not three_node

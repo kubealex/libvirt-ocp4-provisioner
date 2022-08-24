@@ -3,7 +3,7 @@
   vars_files:
     vars/cluster_vars.yml
   tasks:
-    
+
     - name: Ensuring httpd-tools is present
       ansible.builtin.dnf:
         name: httpd-tools
@@ -12,31 +12,32 @@
 
     - name: Ensuring passlib is present
       ansible.builtin.pip:
-        name: 
+        name:
           - passlib
           - bcrypt
       become: true
-      
+
     - name: Firing yaml configuration template for htpasswd identity provider
       ansible.builtin.template:
         src: templates/htpasswd_provider.j2
-        dest: "{{ workspace_directory.base_path }}/htpasswd_provider.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/htpasswd_provider.yaml"
+        mode: 0755
 
     - name: Firing configuration script template for user creation
       ansible.builtin.template:
         src: templates/ocp_user_script.j2
         dest: /tmp/ocp_user.sh
         mode: +x
-        
+
     - name: Creating htpasswd identity and user
       ansible.builtin.command: /tmp/ocp_user.sh
 
     - name: Sleeping 180 seconds...
-      ansible.builtin.pause: 
-        seconds: 180
+      ansible.builtin.pause:
+        seconds: 240
 
     - name: Try to login with admin
-      ansible.builtin.command: > 
-               /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} 
-               https://api.{{ hostvars['bastion'].ocp_domain }}:6443 --kubeconfig {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
-      retries: 10   
+      ansible.builtin.command: >
+               /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }}
+               https://api.{{ hostvars['bastion'].ocp_domain }}:6443 --kubeconfig {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
+      retries: 10

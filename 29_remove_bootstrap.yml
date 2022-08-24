@@ -1,5 +1,5 @@
 ---
-- name: Remove cronjob on bastion for csr 
+- name: Remove cronjob on bastion for csr
   hosts: bastion
   become: true
   tasks:
@@ -19,8 +19,7 @@
         path: /etc/haproxy/haproxy.cfg
       notify: restart haproxy
 
-
-  handlers: 
+  handlers:
     - name: restart haproxy
       ansible.builtin.service:
         name: haproxy
@@ -28,9 +27,11 @@
 
 - name: Destroy bootstrap VM
   hosts: vm_host
+  vars_files:
+    - vars/cluster_vars.yml
   tasks:
     - name: Destroy bootstrap VM
       community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/terraform/bootstrap"
-        state: absent    
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/bootstrap"
+        state: absent
       become: true

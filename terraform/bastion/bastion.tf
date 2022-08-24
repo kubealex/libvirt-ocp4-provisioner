@@ -8,9 +8,9 @@ variable "iface" { default = "eth0" }
 variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default= "ocp4" }
 variable "vm_volume_size" { default = 20 }
-variable "sshKey" { default = "" }
+variable "sshkey" { default = "" }
 #variable "mac" { default = "FF:FF:FF:FF:FF:FF" }
-variable "network_data" { 
+variable "network_data" {
   type = map
   default = {
        hostIP = "192.168.100.31"
@@ -36,7 +36,7 @@ resource "libvirt_volume" "os_image" {
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "${var.hostname}-commoninit.iso"
-  pool = var.libvirt_pool 
+  pool = var.libvirt_pool
   user_data = data.template_file.user_data.rendered
   meta_data = data.template_file.meta_data.rendered
 }
@@ -46,9 +46,9 @@ data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
   vars = {
     hostname = "${var.hostname}.${var.cluster_name}.${var.domain}"
-    fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"  
+    fqdn = "${var.hostname}.${var.cluster_name}.${var.domain}"
     iface = "${var.iface}"
-    sshKey = var.sshKey
+    sshkey = var.sshkey
   }
 }
 
@@ -77,7 +77,7 @@ resource "libvirt_domain" "bastion" {
   disk {
      volume_id = libvirt_volume.os_image.id
   }
- 
+
   network_interface {
        network_name = var.libvirt_network
   }

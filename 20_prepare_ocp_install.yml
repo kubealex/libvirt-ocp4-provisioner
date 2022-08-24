@@ -1,97 +1,104 @@
 ---
 - name: Install config
-  hosts: bastion 
+  hosts: bastion
   vars_files:
     - vars/cluster_vars.yml
   tasks:
     - name: Removing config directory
       ansible.builtin.file:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         state: absent
       become: true
 
     - name: Creating config directory
       ansible.builtin.file:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         state: directory
+        mode: 0755
 
     - name: Getting ssh public key
       ansible.builtin.slurp:
         src: ~/.ssh/id_rsa.pub
       register: key
 
-    - ansible.builtin.set_fact:
-        sshKey: "{{ key['content'] | b64decode }}"
+    - name: Save SSH key as fact
+      ansible.builtin.set_fact:
+        sshkey: "{{ key['content'] | b64decode }}"
 
     - name: Firing up install-config.yaml
       ansible.builtin.template:
         src: templates/install-config.j2
-        dest: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/install-config.yaml"
+        mode: 0755
 
     - name: Create backup dir
       ansible.builtin.file:
         state: directory
         path: /tmp/ocpinstall
+        mode: 0755
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
+        mode: 0755
 
     - name: Creating ignition manifest
-      ansible.builtin.command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Setting master unschedulable
       ansible.builtin.lineinfile:
-        path: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
+        path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
         regexp: '  mastersSchedulable'
         line: '  mastersSchedulable: False'
-      when: 
+      when:
         - not three_node
         - hostvars['bastion'].version.1 | int > 1
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
+        mode: 0755
 
     - name: Creating ignition files
-      ansible.builtin.command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Backup install directory
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
         dest: /tmp/ocpinstall
         remote_src: true
+        mode: 0755
 
     - name: Copying ignition files to webserver
       ansible.builtin.copy:
-        src: "{{ workspace_directory.base_path }}/{{ workspace_directory.config_dir }}/{{ item }}"
+        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/{{ item }}"
         dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}"
-        remote_src: yes
-        mode: 644
+        remote_src: true
+        mode: 0644
       loop:
         - bootstrap.ign
         - master.ign
         - worker.ign
-      become: True
+      become: true
 
     - name: Restart nginx
       ansible.builtin.service:
         name: nginx
         state: restarted
-      become: true 
+      become: true
 
     - name: Creating csr approver script
       ansible.builtin.template:
         src: templates/csr.j2
-        dest: "{{ workspace_directory.base_path }}/csr.sh"
+        dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/csr.sh"
         mode: '0755'
 
     - name: Installing csr cronjob
       ansible.builtin.cron:
         name: "Openshift csr approver"
-        job: "{{ workspace_directory.base_path }}/csr.sh >> /tmp/aJob.log 2>&1"
+        job: "{{ workspace_directory.base_path }}/{{ cluster.name }}/csr.sh >> /tmp/aJob.log 2>&1"
         state: present

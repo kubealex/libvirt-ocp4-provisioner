@@ -2,7 +2,7 @@
 - name: This play installs needed tools to provision infrastructure VMs
   hosts: vm_host
   vars_files:
-    - cluster_vars.yml
+    - sno_vars.yml
   tasks:
     - name: Set home directory as fact for the user
       ansible.builtin.set_fact:
@@ -33,18 +33,3 @@
       loop:
         - id_rsa_ocp_setup
         - id_rsa_ocp_setup.pub
-
-    - name: Getting ssh private key
-      ansible.builtin.slurp:
-        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/id_rsa_ocp_setup"
-      register: service_key
-
-    - name: Getting ssh public key
-      ansible.builtin.slurp:
-        src: "{{ workspace_directory.base_path }}/{{ cluster.name }}/id_rsa_ocp_setup.pub"
-      register: service_key_pub
-
-    - name: Save SSH keys as fact for further use
-      ansible.builtin.set_fact:
-        ssh_service_key: "{{ service_key['content'] | b64decode }}"
-        ssh_service_key_pub: "{{ service_key_pub['content'] | b64decode }}"

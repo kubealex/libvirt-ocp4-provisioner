@@ -3,24 +3,24 @@
   vars_files:
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
-    - vars/libvirt.yml
   tasks:
 
-    - ansible.builtin.set_fact:
+    - name: Set ocp_domain as fact
+      ansible.builtin.set_fact:
         ocp_domain: "{{ cluster.name }}.{{ domain }}"
 
     - name: Ensure to clean known_hosts
       ansible.builtin.known_hosts:
-        host: "{{ item.value[0].ip }}" 
+        host: "{{ item.value[0].ip }}"
         path: ~/.ssh/known_hosts
         state: absent
-      loop: "{{ infra_nodes.host_list|dict2items }}"
+      loop: "{{ infra_nodes.host_list | dict2items }}"
       delegate_to: localhost
 
     - name: Deploy bastion VM with terraform
       community.general.terraform:
         force_init: true
-        project_path: "{{ workspace_directory.base_path }}/terraform/bastion"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/bastion"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
@@ -28,7 +28,7 @@
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKeyPub }}"
+          sshkey: "{{ ssh_service_key_pub }}"
         state: present
       become: true
       register: output_ba
@@ -36,7 +36,7 @@
     - name: Deploy loadbalancer VM
       community.general.terraform:
         force_init: true
-        project_path: "{{ workspace_directory.base_path }}/terraform/loadbalancer"
+        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/loadbalancer"
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
@@ -44,7 +44,7 @@
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
-          sshKey: "{{ sshServiceKeyPub }}"
+          sshkey: "{{ ssh_service_key_pub }}"
         state: present
       become: true
       register: output_lb
@@ -61,32 +61,35 @@
         ocp_domain: "{{ ocp_domain }}"
         timezone: "{{ dhcp.timezone }}"
         ntp_server: "{{ dhcp.ntp }}"
-      loop: "{{ infra_nodes.host_list|dict2items }}"
+      loop: "{{ infra_nodes.host_list | dict2items }}"
       delegate_to: localhost
 
 
 - name: Check connection to infra VMs and set facts
   hosts: bastion,loadbalancer
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Wait 600 seconds for target connection to become reachable/usable
-      ansible.builtin.wait_for_connection: 
+      ansible.builtin.wait_for_connection:
         timeout: 120
         delay: 0
-    - ansible.builtin.ping:
+    - name: Verify the host can be reached
+      ansible.builtin.ping:
 
-    - ansible.builtin.setup:
+    - name: Save host facts
+      ansible.builtin.setup:
       register: machine_facts
 
-    - ansible.builtin.set_fact:
+    - name: Fetch specific facts for further use
+      ansible.builtin.set_fact:
         host_ip: "{{ machine_facts.ansible_facts.ansible_default_ipv4.address }}"
         host_interface: "{{ machine_facts.ansible_facts.ansible_default_ipv4.interface }}"
         host_mac: "{{ machine_facts.ansible_facts.ansible_default_ipv4.macaddress }}"
         host_fqdn: "{{ machine_facts.ansible_facts.ansible_fqdn }}"
-    
-    - ansible.builtin.set_fact: 
+
+    - name: Fetch specific facts for further use
+      ansible.builtin.set_fact:
         host_api_fqdn: "api.{{ ocp_domain }}"
         host_api_int_fqdn: "api-int.{{ ocp_domain }}"
-        host_apps_fqdn: "apps.{{ ocp_domain }}"  
+        host_apps_fqdn: "apps.{{ ocp_domain }}"
       when: inventory_hostname == 'loadbalancer'
-

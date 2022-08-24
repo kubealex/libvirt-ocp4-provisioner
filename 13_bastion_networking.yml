@@ -1,11 +1,10 @@
 ---
-- name: Bastion networking playbook 
-  hosts: bastion 
-  become: True
+- name: Bastion networking playbook
+  hosts: bastion
+  become: true
   tasks:
-    
     - name: Checking Bastion internal network interfaces
-      ansible.builtin.fail: 
+      ansible.builtin.fail:
         msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
       when: host_interface not in ansible_facts.interfaces
 
@@ -13,7 +12,7 @@
       ansible.builtin.service:
         name: firewalld
         state: started
-        enabled: true  
+        enabled: true
 
     # - name: Adding interface {{ host_interface }} to internal zone
     #   community.general.nmcli:
@@ -21,20 +20,20 @@
     #     zone: internal
     #     state: present
     - name: Adding interface {{ host_interface }} to internal zone
-      command: nmcli con mod {{ host_interface }} connection.zone internal  
+      ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal
 
-    - name: Adding Bastion interface {{ host_interface }} to firewall internal zone  
+    - name: Adding Bastion interface {{ host_interface }} to firewall internal zone
       ansible.posix.firewalld:
         zone: internal
         interface: "{{ host_interface }}"
-        permanent: yes
+        permanent: true
         state: enabled
 
     - name: Allow required service for internal zone
       ansible.posix.firewalld:
         zone: internal
         state: enabled
-        permanent: yes
+        permanent: true
         service: "{{ item }}"
       loop: "{{ services }}"
 
@@ -42,11 +41,11 @@
       ansible.posix.firewalld:
         zone: internal
         state: enabled
-        permanent: yes
+        permanent: true
         port: "{{ item }}"
       loop: "{{ ports }}"
 
     - name: Reload Bastion firewalld service
       ansible.builtin.service:
         name: firewalld
-        state: restarted 
+        state: restarted

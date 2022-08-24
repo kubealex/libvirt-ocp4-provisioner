@@ -1,6 +1,5 @@
 - name: Bastion services configuration
   hosts: bastion
-  gather_facts: no
   become: true
   vars_files:
     - vars/infra_vars.yml
@@ -10,21 +9,24 @@
       ansible.builtin.file:
         state: directory
         path: "{{ tftp_boot_root }}/pxelinux.cfg"
+        mode: 0755
 
     - name: Copy pxelinux.0 file
       ansible.builtin.copy:
         src: /usr/share/syslinux/{{ item }}
         dest: "{{ tftp_boot_root }}/"
-        remote_src: yes
+        mode: 0755
+        remote_src: true
       loop: "{{ pxe_files }}"
 
     - name: Creating seelinux rules for dnsmasq service
       ansible.builtin.copy:
         src: files/my-dnsmasq.pp
         dest: /tmp
+        mode: 0755
 
     - name: Apply seelinux rules for dnsmasq service
-      ansible.builtin.shell: semodule -X 300 -i /tmp/my-dnsmasq.pp 
+      ansible.builtin.shell: semodule -X 300 -i /tmp/my-dnsmasq.pp
 
     - name: Delete selinux temp file
       ansible.builtin.file:
@@ -32,59 +34,68 @@
         state: absent
       loop:
         - /tmp/my-dnsmasq.pp
-        - /tmp/my-dnsmasq.te 
+        - /tmp/my-dnsmasq.te
 
     - name: Firing dnsmasq template
       ansible.builtin.template:
         src: templates/dnsmasq.j2
         dest: /etc/dnsmasq.conf
+        mode: 0755
 
-    - block:
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['masters'] }}"
+    - name: Take care of PXE configuration
+      block:
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['masters'] }}"
 
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['bootstrap'] }}"
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['bootstrap'] }}"
 
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['workers'] }}"
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['workers'] }}"
       when: hostvars['bastion'].version.1 | int >= 6
 
-    - block:
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac_pre-4.6.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['masters'] }}"
+    - name: Take care of PXE configuration
+      block:
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac_pre-4.6.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['masters'] }}"
 
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac_pre-4.6.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['bootstrap'] }}"
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac_pre-4.6.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['bootstrap'] }}"
 
-      - name: Firing pxe boot template
-        ansible.builtin.template:
-          src: templates/pxeboot_mac_pre-4.6.j2
-          dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-        loop: "{{ groups['workers'] }}"
+        - name: Firing pxe boot template
+          ansible.builtin.template:
+            src: templates/pxeboot_mac_pre-4.6.j2
+            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
+            mode: 0755
+          loop: "{{ groups['workers'] }}"
       when: hostvars['bastion'].version.1 | int <= 5
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}" 
+      ansible.builtin.shell: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
 
     - name: Refreshing {{ host_interface }}
       ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
-                
+
     - name: Enable services
       ansible.builtin.service:
         name: "{{ item }}"

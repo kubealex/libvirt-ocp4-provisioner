@@ -10,24 +10,26 @@
         msg: Your distribution is actually unsupported
       when:
         - ansible_distribution != 'CentOS'
-        - ansible_distribution != 'Fedora'    
+        - ansible_distribution != 'Fedora'
         - ansible_distribution != 'RedHat'
-    
+
     - name: Block of cluster checks
       block:
-        - ansible.builtin.fail: 
+        - name: Fail fast if node count is not consistent
+          ansible.builtin.fail:
             msg: "Only ONE node can be present"
           when: ( cluster_nodes.host_list.sno | count != 1 )
 
-        - ansible.builtin.fail: 
+        - name: Fail fast if node count is not consistent
+          ansible.builtin.fail:
             msg: "Please check the host_list variable in cluster_nodes, one node must be present"
-          when: ( cluster_nodes.host_list.sno | count <= 0 ) 
-      
+          when: ( cluster_nodes.host_list.sno | count <= 0 )
+
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           ansible.builtin.fail:
-            msg: "Bootstrap nodes must be provisioned with at least 32GB memory, 40GB storage and 4vCPUs"
-          when: ( cluster_nodes.specs.sno.vcpu < 4 ) or ( cluster_nodes.specs.sno.mem < 32 ) or ( cluster_nodes.specs.sno.disk < 40 )
-        
+            msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 60GB storage and 8vCPUs"
+          when: ( cluster_nodes.specs.sno.vcpu < 8 ) or ( cluster_nodes.specs.sno.mem < 16 ) or ( cluster_nodes.specs.sno.disk < 60 )
+
         - name: Check for pullSecret variable and fail fast
           ansible.builtin.fail:
             msg: "Check the pullSecret var in files/vars.yaml"
