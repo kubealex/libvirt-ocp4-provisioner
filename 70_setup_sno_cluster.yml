@@ -17,7 +17,7 @@
         path: "~/.ssh/id_rsa_{{ cluster.name }}"
 
     - name: Retrieve image for current version
-      ansible.builtin.shell: "curl -s {{ downloads.ocp.base_url }}/{{ cluster.version }} | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
+      ansible.builtin.shell: "curl -s {{ downloads.ocp.base_url }}/{{ cluster.version }}/release.txt | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
       register: image_version
 
     - name: Save version as fact
