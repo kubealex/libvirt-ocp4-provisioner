@@ -10,8 +10,8 @@
         state: present
       become: true
 
-    - name: pip self-update
-      pip:
+    - name: Ensure pip is up to date
+      ansible.builtin.pip:
         name: pip
         state: latest
       become: true
