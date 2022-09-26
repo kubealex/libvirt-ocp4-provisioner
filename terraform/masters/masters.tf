@@ -22,7 +22,7 @@ resource "libvirt_volume" "os_image" {
 }
 
 resource "libvirt_volume" "storage_image" {
-  count = var.ocs_ready ? var.vm_count : 0
+  count = var.vm_block_device ? var.vm_count : 0
   name = "${var.hostname}-storage_image-${count.index}"
   pool = var.libvirt_pool
   size = var.vm_block_device_size*1073741824
