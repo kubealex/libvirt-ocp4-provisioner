@@ -7,6 +7,9 @@ cluster:
   ocp_user: admin
   ocp_pass: openshift
   pullSecret: ''
+  additional_block_device:
+    enabled: false
+    size: 100
 cluster_nodes:
   host_list:
     sno:
@@ -28,8 +31,8 @@ cluster_nodes:
     masters:
       vcpu: 4
       mem: 16
-      disk: 40	  
+      disk: 40
     workers:
       vcpu: 2
-      mem: 16 
+      mem: 16
       disk: 40

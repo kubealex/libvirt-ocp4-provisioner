@@ -6,11 +6,8 @@ variable "vm_count" { default = 3 }
 variable "libvirt_network" { default = "ocp4" }
 variable "libvirt_pool" { default = "ocp4" }
 variable "vm_volume_size" { default = 20 }
-variable "ocs_disk1_size" { default = 10 }
-variable "ocs_disk2_size" { default = 150 }
-variable "ocs_ready" { default = false }
-variable "ocs_1" { default = { ocs_storage1 = true } }
-variable "ocs_2" { default = { ocs_storage2 = true } }
+variable "vm_block_device" { default = false }
+variable "vm_block_device_size" { default = 100 }
 
 # instance the provider
 provider "libvirt" {
@@ -25,19 +22,11 @@ resource "libvirt_volume" "os_image" {
   format = "qcow2"
 }
 
-resource "libvirt_volume" "storage1_image" {
-  count = var.ocs_ready ? var.vm_count : 0
+resource "libvirt_volume" "storage_image" {
+  count = tobool(lower(var.vm_block_device)) ? var.vm_count : 0
   name = "${var.hostname}-storage_image-${count.index}"
   pool = var.libvirt_pool
-  size = var.ocs_disk1_size*1073741824
-  format = "qcow2"
-}
-
-resource "libvirt_volume" "storage2_image" {
-  count = var.ocs_ready ? var.vm_count : 0
-  name = "${var.hostname}-storage2_image-${count.index}"
-  pool = var.libvirt_pool
-  size = var.ocs_disk2_size*1073741824
+  size = var.vm_block_device_size*1073741824
   format = "qcow2"
 }
 
@@ -55,19 +44,11 @@ resource "libvirt_domain" "worker" {
   disk {
      volume_id = libvirt_volume.os_image[count.index].id
   }
-  dynamic "disk"  {
-     for_each = var.ocs_ready ? var.ocs_1 : {}
+
+  dynamic "disk" {
+     for_each = tobool(lower(var.vm_block_device)) ? { storage = true } : {}
      content {
-
-     volume_id = libvirt_volume.storage1_image[count.index].id
-     }
-   }
-
-  dynamic "disk"  {
-     for_each = var.ocs_ready ? var.ocs_2 : {}
-     content {
-
-     volume_id = libvirt_volume.storage2_image[count.index].id
+     volume_id = libvirt_volume.storage_image[count.index].id
      }
    }
 

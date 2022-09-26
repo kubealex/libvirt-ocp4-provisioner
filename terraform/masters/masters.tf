@@ -4,6 +4,8 @@ variable "memory" { default = 16 }
 variable "cpu" { default = 4 }
 variable "vm_count" { default = 3 }
 variable "vm_volume_size" { default = 40 }
+variable "vm_block_device" { default = false }
+variable "vm_block_device_size" { default = 100 }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
@@ -16,6 +18,14 @@ resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image-${count.index}"
   size = var.vm_volume_size*1073741824
   pool = var.libvirt_pool
+  format = "qcow2"
+}
+
+resource "libvirt_volume" "storage_image" {
+  count = tobool(lower(var.vm_block_device)) ? var.vm_count : 0
+  name = "${var.hostname}-storage_image-${count.index}"
+  pool = var.libvirt_pool
+  size = var.vm_block_device_size*1073741824
   format = "qcow2"
 }
 
@@ -33,6 +43,14 @@ resource "libvirt_domain" "master" {
   disk {
        volume_id = libvirt_volume.os_image[count.index].id
   }
+
+  dynamic "disk" {
+     for_each = tobool(lower(var.vm_block_device)) ? { storage = true } : {}
+     content {
+     volume_id = libvirt_volume.storage_image[count.index].id
+     }
+   }
+
   network_interface {
        network_name = var.libvirt_network
   }
