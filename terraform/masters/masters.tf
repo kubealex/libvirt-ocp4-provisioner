@@ -22,7 +22,7 @@ resource "libvirt_volume" "os_image" {
 }
 
 resource "libvirt_volume" "storage_image" {
-  count = var.vm_block_device ? var.vm_count : 0
+  count = tobool(var.vm_block_device) ? var.vm_count : 0
   name = "${var.hostname}-storage_image-${count.index}"
   pool = var.libvirt_pool
   size = var.vm_block_device_size*1073741824
@@ -45,7 +45,7 @@ resource "libvirt_domain" "master" {
   }
 
   dynamic "disk" {
-     for_each = var.vm_block_device ? { storage = true } : {}
+     for_each = tobool(var.vm_block_device) ? { storage = true } : {}
      content {
      volume_id = libvirt_volume.storage_image[count.index].id
      }
