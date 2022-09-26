@@ -102,6 +102,9 @@ The kind of network created is a simple NAT configuration, without DHCP since it
     three_node: false
     network_cidr: 192.168.100.0/24
     domain: hetzner.lab
+    additional_block_device:
+      enabled: false
+      size: 100
     cluster:
       version: stable
       name: ocp4
@@ -140,6 +143,8 @@ Where **domain** is the dns domain assigned to the nodes and **cluster.name** is
 **mem** and **disk** are intended in GB
 
 **cluster.version** allows you to choose a particular version to be installed (i.e. 4.5.0, stable)
+
+**additional_block_device** controls whether an additional disk of the given size should be added to Workers or Control Plane nodes in case of compact (3 nodes) setup
 
 The **role** for workers is intended for nodes labelling. Omitting labels sets them to their default value, **worker**
 
