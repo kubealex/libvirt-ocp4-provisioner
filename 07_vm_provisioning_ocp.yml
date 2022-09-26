@@ -31,8 +31,8 @@
           memory: "{{ cluster_nodes.specs.masters.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.masters.disk }}"
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
-          vm_block_device: "{{ cluster.additional_block_device.enabled if three_node else false | boolean }}"
-          vm_block_device_size: "{{ cluster.additional_block_device.size | boolean }}"
+          vm_block_device: "{{ cluster.additional_block_device.enabled if three_node else false | bool }}"
+          vm_block_device_size: "{{ cluster.additional_block_device.size | bool }}"
         state: present
       become: true
       register: output_masters
@@ -49,8 +49,8 @@
           memory: "{{ cluster_nodes.specs.workers.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.workers.disk }}"
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
-          vm_block_device: "{{ cluster.additional_block_device.enabled | default(false, true) | boolean }}"
-          vm_block_device_size: "{{ cluster.additional_block_device.size | boolean }}"
+          vm_block_device: "{{ cluster.additional_block_device.enabled | default(false, true) | bool }}"
+          vm_block_device_size: "{{ cluster.additional_block_device.size | bool }}"
         state: present
       become: true
       register: output_workers
