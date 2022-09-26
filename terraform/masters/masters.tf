@@ -45,7 +45,7 @@ resource "libvirt_domain" "master" {
   }
 
   dynamic "disk" {
-     for_each = var.vm_block_device ? "{ storage = true }" : {}
+     for_each = var.vm_block_device ? { storage = true } : {}
      content {
      volume_id = libvirt_volume.storage_image[count.index].id
      }
