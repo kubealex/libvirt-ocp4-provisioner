@@ -8,27 +8,12 @@
       ansible.builtin.set_fact:
         home_dir: "{{ ansible_env.HOME }}"
 
-    - name: Destroy support VM
-      community.general.terraform:
-        force_init: true
-        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/{{ item }}"
-        state: absent
-        variables:
-          sshkey: "{{ playbook_dir }}"
-      loop:
-        - bastion
-        - loadbalancer
-      become: true
-
     - name: Destroy cluster VM
       community.general.terraform:
         force_init: true
         project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/{{ item }}"
         state: absent
       loop:
-        - bootstrap
-        - workers
-        - masters
         - sno
       become: true
 
