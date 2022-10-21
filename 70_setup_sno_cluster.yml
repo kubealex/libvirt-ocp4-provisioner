@@ -197,6 +197,7 @@
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
           local_volume_size: "{{ local_storage.volume_size }}"
+          local_volume_enabled: "{{ local_storage.enabled }}"
         state: present
 
       register: output_sno_local
