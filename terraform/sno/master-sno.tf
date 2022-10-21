@@ -44,7 +44,7 @@ resource "libvirt_domain" "master" {
   }
 
   disk {
-    volume_id = libvirt_volume.local_disk.id
+    volume_id = libvirt_volume.local_disk[count.index].id
   }
 
   disk {
