@@ -31,6 +31,7 @@ resource "libvirt_volume" "local_disk" {
 
 # Create the machine
 resource "libvirt_domain" "master" {
+  count = 1
   name = "${var.hostname}"
   memory = var.memory*1024
   vcpu = var.cpu
@@ -43,9 +44,12 @@ resource "libvirt_domain" "master" {
     volume_id = libvirt_volume.os_image.id
   }
 
-  disk {
+  dynamic "disk" {
+    for_each = tobool(lower(var.local_volume_enabled)) ? { storage = true } : {}
+    content {
     volume_id = libvirt_volume.local_disk[count.index].id
-  }
+    }
+   }
 
   disk {
     file = "${var.coreos_iso_path}"
