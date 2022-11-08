@@ -1,9 +1,9 @@
 # variables that can be overriden
 variable "domain" { default = "hetzner.lab" }
 variable "dns" { default = "192.168.100.7" }
-variable "network_cidr" { 
+variable "network_cidr" {
   type = list
-  default = ["192.168.100.0/24"] 
+  default = ["192.168.100.0/24"]
 }
 variable "cluster_name" { default = "ocp4" }
 variable "libvirt_pool_path" { default = "/var/lib/libvirt/images" }
@@ -31,7 +31,7 @@ resource "libvirt_network" "ocp_network" {
   dhcp {
     enabled = false
   }
-  dns { 
+  dns {
     enabled = true
     local_only = true
   }
@@ -48,7 +48,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.14"
+      version = "0.7.0"
     }
   }
 }

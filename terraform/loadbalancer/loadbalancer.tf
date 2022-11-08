@@ -81,9 +81,6 @@ resource "libvirt_domain" "infra-machine" {
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id
 
-  # IMPORTANT
-  # Ubuntu can hang is a isa-serial is not present at boot time.
-  # If you find your CPU 100% and never is available this is why
   console {
     type        = "pty"
     target_port = "0"
@@ -102,7 +99,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.6.14"
+      version = "0.7.0"
     }
   }
 }
