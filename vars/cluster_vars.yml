@@ -27,12 +27,12 @@ cluster_nodes:
     bootstrap:
       vcpu: 4
       mem: 16
-      disk: 40
+      disk: 60
     masters:
       vcpu: 4
       mem: 16
-      disk: 40
+      disk: 60
     workers:
       vcpu: 2
       mem: 16
-      disk: 40
+      disk: 60
