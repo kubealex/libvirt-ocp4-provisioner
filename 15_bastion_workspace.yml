@@ -347,6 +347,59 @@
             - version.0 | int == 4
             - version.1 | int == 10
 
+        - name: Take care of retrieving packages for CoreOS
+          block:
+            - name: Download initramfs and kernel
+              ansible.builtin.get_url:
+                url: "{{ downloads.rhcos.411.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+                mode: 0755
+              loop:
+                - "{{ downloads.rhcos.411.initramfs }}"
+                - "{{ downloads.rhcos.411.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              ansible.builtin.get_url:
+                url: "{{ downloads.rhcos.411.base_url + downloads.rhcos.411.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.411.rootfs }}"
+                mode: 0755
+
+            - name: Set fact for files
+              ansible.builtin.set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.411.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.411.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.411.rootfs }}"
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 11
+
+        - name: Take care of retrieving packages for CoreOS
+          block:
+            - name: Download initramfs and kernel
+              ansible.builtin.get_url:
+                url: "{{ downloads.rhcos.412.base_url + item }}"
+                dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
+                mode: 0755
+              loop:
+                - "{{ downloads.rhcos.412.initramfs }}"
+                - "{{ downloads.rhcos.412.kernel }}"
+
+            - name: Download Red Hat CoreOS for bare metal
+              ansible.builtin.get_url:
+                url: "{{ downloads.rhcos.412.base_url + downloads.rhcos.412.rootfs }}"
+                dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ downloads.rhcos.412.rootfs }}"
+                mode: 0755
+
+            - name: Set fact for files
+              ansible.builtin.set_fact:
+                rhcos_kernel: "{{ downloads.rhcos.412.kernel }}"
+                rhcos_initramfs: "{{ downloads.rhcos.412.initramfs }}"
+                rhcos_os: "{{ downloads.rhcos.412.rootfs }}"
+
+          when:
+            - version.0 | int == 4
+            - version.1 | int == 12
+
       when:
         - not (skip_download | bool)
         - cluster.version != "stable"

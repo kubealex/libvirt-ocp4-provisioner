@@ -2,14 +2,14 @@
 
 # libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
 Welcome to the home of the project!
-This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt and preparing for cluster installation.  
+This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt and preparing for cluster installation.
 
 I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
 To give a quick overview, this project will allow you to provision a **fully working** and **stable** OCP environment, consisting of:
 
 - Bastion machine provisioned with:
-	- dnsmasq (with SELinux module, compiled and activated) 
+	- dnsmasq (with SELinux module, compiled and activated)
 	- dhcp based on dnsmasq
 	- nginx (for ignition files and rhcos pxe-boot)
 	- pxeboot
@@ -21,8 +21,8 @@ To give a quick overview, this project will allow you to provision a **fully wor
 
 It also takes care of preparing the host machine with needed packages, configuring:
 - dedicated libvirt network (fully customizable)
-- dedicated libvirt storage pool (fully customizable) 
-- terraform 
+- dedicated libvirt storage pool (fully customizable)
+- terraform
 - libvirt-terraform-provider ( compiled and initialized based on [https://github.com/dmacvicar/terraform-provider-libvirt](https://github.com/dmacvicar/terraform-provider-libvirt))
 
 PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP up and running.
@@ -32,13 +32,13 @@ The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 
 Now support for **Single Node Openshift - SNO** has been added!
 ## **bastion** and **loadbalancer** VMs spec:
 
-- OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)  
-- cloud-init:   
-  - user: ocpinstall  
-  - pass: ocprocks  
-  - ssh-key: generated during vm-provisioning and stores in the project folder  
+- OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)
+- cloud-init:
+  - user: ocpinstall
+  - pass: ocprocks
+  - ssh-key: generated during vm-provisioning and stores in the project folder
 
-The user is capable of logging via SSH too.  
+The user is capable of logging via SSH too.
 
 ## Quickstart
 
@@ -46,7 +46,7 @@ First of all, you need to install required collections to get started:
 
     ansible-galaxy collection install -r requirements.yml
 
-The playbook is meant to run against local host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.  
+The playbook is meant to run against local host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.
 
 ### HA Clusters
 
@@ -72,7 +72,7 @@ To build the EE image, jump in the *execution-environment* folder and run the bu
 
 To run the playbooks use ansible navigator:
 
-    ansible-navigator run main.yml -m stdout 
+    ansible-navigator run main.yml -m stdout
 
 Or, in case of Single Node Openshift:
 
@@ -132,12 +132,12 @@ The kind of network created is a simple NAT configuration, without DHCP since it
         masters:
           vcpu: 4
           mem: 16
-          disk: 40	  
+          disk: 40
         workers:
           vcpu: 2
           mem: 8
           disk: 40
-          
+
 Where **domain** is the dns domain assigned to the nodes and **cluster.name** is the name chosen for our OCP cluster installation.
 
 **mem** and **disk** are intended in GB
@@ -151,7 +151,7 @@ The **role** for workers is intended for nodes labelling. Omitting labels sets t
 The count of VMs is taken by the elements of the list, in this example, we got:
 
 - 3 master nodes with 4vcpu and 16G memory
-- 3 worker nodes with 2vcpu and 8G memory  
+- 3 worker nodes with 2vcpu and 8G memory
 
 Recommended values are:
 
@@ -161,9 +161,9 @@ Recommended values are:
 | master | 4 | 16G | 120G |
 | worker | 2 | 8G | 120G |
 
-For testing purposes, minimum storage value is set at **40GB**.
+For testing purposes, minimum storage value is set at **60GB**.
 
-**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var ONLY FOR 4.6+** 
+**The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var ONLY FOR 4.6+**
 
 ## Single Node Openshift vars
 
@@ -185,7 +185,7 @@ For testing purposes, minimum storage value is set at **40GB**.
         sno:
           vcpu: 8
           mem: 32
-          disk: 120            
+          disk: 120
     local_storage:
       enabled: true
       volume_size: 50
@@ -193,7 +193,7 @@ For testing purposes, minimum storage value is set at **40GB**.
 
 **local_storage** field can be used to provision an additional disk to the VM in order to provision volumes using, for instance, rook-ceph or local storage operator.
 
-In both cases, Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)  
+In both cases, Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)
 
 **HTPasswd** provider is created after the installation, you can use **ocp_user** and **ocp_pass** to login!
 
