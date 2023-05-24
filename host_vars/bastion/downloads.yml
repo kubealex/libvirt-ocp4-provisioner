@@ -1,72 +1,12 @@
-skip_download: no
+skip_download: false
 downloads:
   ocp:
     base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp
     ocp_oc_cli: openshift-client-linux
     ocp_installer: openshift-install-linux
   rhcos:
-    41:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.1/latest/
-      coreos: rhcos-4.1.0-x86_64-metal-bios.raw.gz
-      kernel: rhcos-4.1.0-x86_64-installer-kernel
-      initramfs: rhcos-4.1.0-x86_64-installer-initramfs.img
-    42:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.2/latest/
-      coreos: rhcos-4.2.18-x86_64-metal-bios.raw.gz
-      kernel: rhcos-4.2.18-x86_64-installer-kernel
-      initramfs: rhcos-4.2.18-x86_64-installer-initramfs.img
-    43:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.3/latest/
-      coreos : rhcos-metal.x86_64.raw.gz
-      kernel: rhcos-installer-kernel-x86_64
-      initramfs: rhcos-installer-initramfs.x86_64.img
-    44:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.4/latest/
-      coreos : rhcos-metal.x86_64.raw.gz
-      kernel: rhcos-installer-kernel-x86_64
-      initramfs: rhcos-installer-initramfs.x86_64.img
-    45:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/latest/
-      coreos : rhcos-metal.x86_64.raw.gz
-      kernel: rhcos-installer-kernel-x86_64
-      initramfs: rhcos-installer-initramfs.x86_64.img
-    46:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.6/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    47:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.7/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    48:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.8/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    49:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.9/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    410:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.10/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    411:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.11/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    412:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.12/latest/
-      initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
-      rootfs: rhcos-live-rootfs.x86_64.img
-    stable:
-      base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/
+    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+    boot_files:
       initramfs: rhcos-live-initramfs.x86_64.img
       kernel: rhcos-live-kernel-x86_64
       rootfs: rhcos-live-rootfs.x86_64.img

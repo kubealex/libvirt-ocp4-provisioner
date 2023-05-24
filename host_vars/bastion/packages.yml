@@ -1,7 +1,7 @@
 packages:
   fedora:
     - syslinux
-    - dnsmasq-2.80-10.fc31.x86_64
+    - dnsmasq
     - nginx
     - cronie
     - cronie-anacron

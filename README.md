@@ -27,7 +27,7 @@ It also takes care of preparing the host machine with needed packages, configuri
 
 PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP up and running.
 
-The version can be selected freely, by specifying the desired one (i.e. 4.2.33, 4.7.7) or the latest stable release with "stable".
+The version can be selected freely, by specifying the desired one (i.e. 4.10.x, 4.12.7) or the latest stable release with "stable". **Versions before 4.6 are not supported anymore**
 
 Now support for **Single Node Openshift - SNO** has been added!
 ## **bastion** and **loadbalancer** VMs spec:

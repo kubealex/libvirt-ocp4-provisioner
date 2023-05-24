@@ -21,32 +21,37 @@
             msg: "Only ONE bootstrap node can be present"
           when: cluster_nodes.host_list.bootstrap | count > 1
 
+        - name: Fail fast if more than one bootstrap node is provided
+          ansible.builtin.fail:
+            msg: "Versions before 4.6 are not supported"
+          when: cluster.version is version('4.6', '<')
+
         - name: Fail fast when no workers are provided and it's not in Compact mode (three nodes)
           ansible.builtin.fail:
             msg: 'To provision NO workers, you must flag "three_node" varible to true in vars/cluster_vars.yml'
           when:
-            - ( cluster_nodes.host_list.workers | count <= 0 )
+            - (cluster_nodes.host_list.workers | count <= 0)
             - not three_node
 
         - name: Fail fast if hosts are missing from the list
           ansible.builtin.fail:
             msg: "Please check the host_list variable in cluster_nodes"
-          when: ( cluster_nodes.host_list.masters | count <= 0 ) or ( cluster_nodes.host_list.workers | count <= 0 ) or ( cluster_nodes.host_list.bootstrap | count <= 0 )
+          when: (cluster_nodes.host_list.masters | count <= 0) or (cluster_nodes.host_list.workers | count <= 0) or (cluster_nodes.host_list.bootstrap | count <= 0)
 
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           ansible.builtin.fail:
             msg: "Bootstrap nodes must be provisioned with at least 16GB memory, 40GB storage and 4vCPUs"
-          when: ( cluster_nodes.specs.bootstrap.vcpu < 4 ) or ( cluster_nodes.specs.bootstrap.mem < 16 ) or ( cluster_nodes.specs.bootstrap.disk < 40 )
+          when: (cluster_nodes.specs.bootstrap.vcpu < 4) or (cluster_nodes.specs.bootstrap.mem < 16) or (cluster_nodes.specs.bootstrap.disk < 40)
 
         - name: Fail fast if master nodes don't meet minimum requirements
           ansible.builtin.fail:
             msg: "Master nodes must be provisioned with at least 16GB memory, 40GB storage and 4vCPUs"
-          when: ( cluster_nodes.specs.masters.vcpu < 4 ) or ( cluster_nodes.specs.masters.mem < 16 ) or ( cluster_nodes.specs.masters.disk < 40 )
+          when: (cluster_nodes.specs.masters.vcpu < 4) or (cluster_nodes.specs.masters.mem < 16) or (cluster_nodes.specs.masters.disk < 40)
 
         - name: Fail fast if worker nodes don't meet minimum requirements
           ansible.builtin.fail:
             msg: "Worker nodes must be provisioned with at least 8GB memory and 2vCPUs"
-          when: ( cluster_nodes.specs.workers.vcpu < 2 ) or ( cluster_nodes.specs.workers.mem < 8 ) or ( cluster_nodes.specs.workers.disk < 40 )
+          when: (cluster_nodes.specs.workers.vcpu < 2) or (cluster_nodes.specs.workers.mem < 8) or (cluster_nodes.specs.workers.disk < 40)
 
         - name: Check for pullSecret variable and fail fast
           ansible.builtin.fail:
@@ -56,4 +61,4 @@
     - name: Fail fast if bastion and/or loadbalancer are not provided
       ansible.builtin.fail:
         msg: "At least one bastion and one loadbalancer VMs must be created"
-      when: ( infra_nodes.host_list.bastion | count != 1 or infra_nodes.host_list.loadbalancer | count != 1 )
+      when: (infra_nodes.host_list.bastion | count != 1 or infra_nodes.host_list.loadbalancer | count != 1)

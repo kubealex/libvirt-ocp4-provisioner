@@ -23,14 +23,6 @@
 
     - name: Install needed packages
       ansible.builtin.yum:
-        name: "{{ virtualization_packages.centos7 }}"
-        state: latest # noqa package-latest
-      when:
-        - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version | int == 7
-
-    - name: Install needed packages
-      ansible.builtin.yum:
         name: "{{ virtualization_packages.fedora }}"
         state: latest # noqa package-latest
       when:
@@ -40,7 +32,7 @@
       ansible.builtin.unarchive:
         src: "{{ terraform_release_url }}"
         dest: /usr/bin/
-        mode: 0755
+        mode: "0755"
         remote_src: true
 
     - name: Ensure libvirtd is running
