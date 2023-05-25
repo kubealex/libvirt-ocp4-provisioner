@@ -91,7 +91,7 @@
             rhcos_kernel: "{{ downloads.rhcos.boot_files.kernel }}"
             rhcos_initramfs: "{{ downloads.rhcos.boot_files.initramfs }}"
             rhcos_os: "{{ downloads.rhcos.boot_files.rootfs }}"
-            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version == 'stable' else (downloads.rhcos.base_url + 'latest/') }}"
+            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version != 'stable' else (downloads.rhcos.base_url + 'latest/') }}"
 
         - name: Download initramfs and kernel
           ansible.builtin.get_url:
