@@ -91,10 +91,11 @@
             rhcos_kernel: "{{ downloads.rhcos.boot_files.kernel }}"
             rhcos_initramfs: "{{ downloads.rhcos.boot_files.initramfs }}"
             rhcos_os: "{{ downloads.rhcos.boot_files.rootfs }}"
+            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version == 'stable' else (downloads.rhcos.base_url + 'latest/') }}"
 
         - name: Download initramfs and kernel
           ansible.builtin.get_url:
-            url: "{{ downloads.rhcos.base_url + version | default('', true) + '/latest/' + item }}"
+            url: "{{ rhcos_download_url + item }}"
             dest: "{{ tftp_boot_root }}/{{ tftp_workspace_dir }}/{{ item }}"
             mode: "0755"
           loop:
@@ -103,6 +104,6 @@
 
         - name: Download Red Hat CoreOS for bare metal
           ansible.builtin.get_url:
-            url: "{{ downloads.rhcos.base_url + version | default('', true) + '/latest/' + rhcos_os }}"
+            url: "{{ rhcos_download_url + rhcos_os }}"
             dest: "{{ nginx_document_root }}/{{ nginx_workspace_dir }}/{{ rhcos_os }}"
             mode: "0755"
