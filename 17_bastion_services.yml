@@ -9,13 +9,13 @@
       ansible.builtin.file:
         state: directory
         path: "{{ tftp_boot_root }}/pxelinux.cfg"
-        mode: 0755
+        mode: "0755"
 
     - name: Copy pxelinux.0 file
       ansible.builtin.copy:
         src: /usr/share/syslinux/{{ item }}
         dest: "{{ tftp_boot_root }}/"
-        mode: 0755
+        mode: "0755"
         remote_src: true
       loop: "{{ pxe_files }}"
 
@@ -23,7 +23,7 @@
       ansible.builtin.copy:
         src: files/my-dnsmasq.pp
         dest: /tmp
-        mode: 0755
+        mode: "0755"
 
     - name: Apply seelinux rules for dnsmasq service
       ansible.builtin.shell: semodule -X 300 -i /tmp/my-dnsmasq.pp
@@ -40,61 +40,34 @@
       ansible.builtin.template:
         src: templates/dnsmasq.j2
         dest: /etc/dnsmasq.conf
-        mode: 0755
+        mode: "0755"
 
-    - name: Take care of PXE configuration
-      block:
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['masters'] }}"
+    - name: Firing pxe boot template
+      ansible.builtin.template:
+        src: templates/pxeboot_mac.j2
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':', '-') }}"
+        mode: "0755"
+      loop: "{{ groups['masters'] }}"
 
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['bootstrap'] }}"
+    - name: Firing pxe boot template
+      ansible.builtin.template:
+        src: templates/pxeboot_mac.j2
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':', '-') }}"
+        mode: "0755"
+      loop: "{{ groups['bootstrap'] }}"
 
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['workers'] }}"
-      when: hostvars['bastion'].version.1 | int >= 6
-
-    - name: Take care of PXE configuration
-      block:
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac_pre-4.6.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['masters'] }}"
-
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac_pre-4.6.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['bootstrap'] }}"
-
-        - name: Firing pxe boot template
-          ansible.builtin.template:
-            src: templates/pxeboot_mac_pre-4.6.j2
-            dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':','-') }}"
-            mode: 0755
-          loop: "{{ groups['workers'] }}"
-      when: hostvars['bastion'].version.1 | int <= 5
+    - name: Firing pxe boot template
+      ansible.builtin.template:
+        src: templates/pxeboot_mac.j2
+        dest: "{{ tftp_boot_root }}/pxelinux.cfg/01-{{ hostvars[item].node_mac | replace(':', '-') }}"
+        mode: "0755"
+      loop: "{{ groups['workers'] }}"
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
+      ansible.builtin.command: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
 
     - name: Refreshing {{ host_interface }}
-      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+      ansible.builtin.command: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
     - name: Enable services
       ansible.builtin.service:
