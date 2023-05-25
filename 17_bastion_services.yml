@@ -64,10 +64,10 @@
       loop: "{{ groups['workers'] }}"
 
     - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server
-      ansible.builtin.command: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
+      ansible.builtin.shell: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
 
     - name: Refreshing {{ host_interface }}
-      ansible.builtin.command: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
     - name: Enable services
       ansible.builtin.service:
