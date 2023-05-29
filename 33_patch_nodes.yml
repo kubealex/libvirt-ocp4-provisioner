@@ -24,7 +24,7 @@
                 mode: 0755
 
             - name: Creating machine config pool for infra nodes
-              ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
+              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
 
             - name: Copy script for node labeling
               ansible.builtin.template:
@@ -33,7 +33,7 @@
                 mode: +x
 
             - name: Applying patch
-              ansible.builtin.command: /tmp/label_nodes.sh
+              ansible.builtin.shell: /tmp/label_nodes.sh
 
             - name: Deleting label node script
               ansible.builtin.file:
@@ -47,7 +47,7 @@
                 mode: +x
 
             - name: Execute script
-              ansible.builtin.command: /tmp/patch_default_selector.sh
+              ansible.builtin.shell: /tmp/patch_default_selector.sh
 
             - name: Delete node selector patch
               ansible.builtin.file:

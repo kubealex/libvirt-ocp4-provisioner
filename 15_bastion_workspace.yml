@@ -63,12 +63,12 @@
         - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
     - name: Checking for openshift-install tool
-      ansible.builtin.command: openshift-install version
+      ansible.builtin.shell: openshift-install version
       register: output
       failed_when: output.rc != 0
 
     - name: Checking for OCP cli tool
-      ansible.builtin.command: oc
+      ansible.builtin.shell: oc
       register: output
       failed_when: output.rc != 0
 

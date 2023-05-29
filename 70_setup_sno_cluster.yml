@@ -43,7 +43,7 @@
       when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
     - name: Checking for OCP cli tool
-      ansible.builtin.command: oc
+      ansible.builtin.shell: oc
       register: output
       failed_when: output.rc !=0
 
@@ -230,7 +230,7 @@
         mode: +x
 
     - name: Creating htpasswd identity and user
-      ansible.builtin.command: /tmp/ocp_user.sh
+      ansible.builtin.shell: /tmp/ocp_user.sh
 
     - name: Sleeping 180 seconds...
       ansible.builtin.pause:

@@ -45,7 +45,7 @@
         mode: 0755
 
     - name: Creating ignition manifest
-      ansible.builtin.command: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.shell: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Setting master unschedulable
       ansible.builtin.lineinfile:
@@ -64,7 +64,7 @@
         mode: 0755
 
     - name: Creating ignition files
-      ansible.builtin.command: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+      ansible.builtin.shell: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
 
     - name: Backup install directory
       ansible.builtin.copy:
