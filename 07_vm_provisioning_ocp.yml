@@ -124,6 +124,7 @@
       when: not three_node
 
     - name: Run dynamic inventory creation for infra nodes
+      when: not three_node
       block:
         - name: Add infra nodes to correct group and set facts
           ansible.builtin.add_host:
@@ -133,4 +134,3 @@
           loop: "{{ groups['workers'] }}"
           when:
             - hostvars[item].ocp_role == 'infra'
-      when: not three_node
