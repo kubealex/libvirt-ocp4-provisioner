@@ -1,3 +1,0 @@
-#!/bin/bash
-export KUBECONFIG=/home/ocpinstall/ocpInstallerFile/config/auth/kubeconfig
-/usr/bin/oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'

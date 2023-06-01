@@ -1,5 +1,5 @@
 virtualization_packages:
-  rhel: 
+  rhel:
     - unzip
     - git
     - gcc
@@ -7,7 +7,7 @@ virtualization_packages:
     - python3-lxml
     - python3-netaddr
     - python3-libvirt
-    - python3-devel    
+    - python3-devel
     - libvirt-devel
     - libvirt
     - qemu-kvm
@@ -35,7 +35,7 @@ virtualization_packages:
     - python3-lxml
     - python3-netaddr
     - python3-libvirt
-    - python3-libvirt    
+    - python3-libvirt
     - libvirt-devel
     - libvirt
     - qemu-kvm

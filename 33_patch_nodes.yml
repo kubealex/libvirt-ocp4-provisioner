@@ -5,6 +5,7 @@
     - vars/cluster_vars.yml
   tasks:
     - name: Patch nodes if needed
+      when: not three_node
       block:
         - name: Set fact if infra patching is needed
           ansible.builtin.set_fact:
@@ -16,15 +17,16 @@
           when: "'infra' in groups"
 
         - name: Create Infra machine config pools if needed
+          when: infra_present
           block:
             - name: Create machine config pool
               ansible.builtin.copy:
                 src: files/machineconfigpool.yml
                 dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml"
-                mode: 0755
+                mode: "0755"
 
             - name: Creating machine config pool for infra nodes
-              ansible.builtin.command: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
+              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
 
             - name: Copy script for node labeling
               ansible.builtin.template:
@@ -33,7 +35,7 @@
                 mode: +x
 
             - name: Applying patch
-              ansible.builtin.command: /tmp/label_nodes.sh
+              ansible.builtin.shell: /tmp/label_nodes.sh
 
             - name: Deleting label node script
               ansible.builtin.file:
@@ -47,11 +49,9 @@
                 mode: +x
 
             - name: Execute script
-              ansible.builtin.command: /tmp/patch_default_selector.sh
+              ansible.builtin.shell: /tmp/patch_default_selector.sh
 
             - name: Delete node selector patch
               ansible.builtin.file:
                 path: /tmp/patch_default_selector.sh
                 state: absent
-          when: infra_present
-      when: not three_node

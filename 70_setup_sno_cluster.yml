@@ -10,7 +10,7 @@
       ansible.builtin.file:
         state: directory
         path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}"
-        mode: 0755
+        mode: "0755"
 
     - name: Creating ssh keys if the do not exist
       community.crypto.openssh_keypair:
@@ -43,7 +43,7 @@
       when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
     - name: Checking for OCP cli tool
-      ansible.builtin.command: oc
+      ansible.builtin.shell: oc
       register: output
       failed_when: output.rc !=0
 
@@ -63,26 +63,26 @@
       ansible.builtin.file:
         path: /etc/NetworkManager/conf.d
         state: directory
-        mode: 0755
+        mode: "0755"
 
     - name: Ensure NM dnsmasq directory exists
       ansible.builtin.file:
         path: /etc/NetworkManager/dnsmasq.d
         state: directory
-        mode: 0755
+        mode: "0755"
 
     - name: Configure NetworkManager for local DNS
       ansible.builtin.copy:
         src: files/localdns.conf
         dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
-        mode: 0755
+        mode: "0755"
 
 
     - name: Configure NetworkManager for libvirt network
       ansible.builtin.template:
         src: templates/libvirt_dnsmasq_sno.j2
         dest: "/etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf"
-        mode: 0755
+        mode: "0755"
 
     - name: Take care of systemd-resolved on F33 and Ubuntu hosts
       block:
@@ -90,13 +90,13 @@
           ansible.builtin.file:
             path: /etc/systemd/resolved.conf.d/
             state: directory
-            mode: 0755
+            mode: "0755"
 
         - name: Enable localdns if systemd-resolved is present
           ansible.builtin.template:
             src: systemd-resolved.j2
             dest: /etc/systemd/resolved.conf.d/{{ cluster.name }}-local.conf
-            mode: 0755
+            mode: "0755"
 
         - name: Restart systemd-resolved
           ansible.builtin.service:
@@ -108,7 +108,7 @@
             src: /etc/resolv.conf
             dest: /etc/resolv.conf.bak
             remote_src: true
-            mode: 0755
+            mode: "0755"
 
         - name: Ensure systemd-resolved config dir is present
           ansible.builtin.file:
@@ -123,7 +123,7 @@
       ansible.builtin.copy:
         content: "{{ cluster.pullSecret }}"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret"
-        mode: 0755
+        mode: "0755"
 
     - name: Extract openshift-baremetal-install from release image
       ansible.builtin.shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/{{ cluster.name }}/openshift-baremetal-install {{ release_image }}"
@@ -148,7 +148,7 @@
       ansible.builtin.template:
         src: templates/install-config-sno.j2
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/install-config.yaml"
-        mode: 0755
+        mode: "0755"
 
     - name: Generate ignition config
       ansible.builtin.shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
@@ -230,7 +230,7 @@
         mode: +x
 
     - name: Creating htpasswd identity and user
-      ansible.builtin.command: /tmp/ocp_user.sh
+      ansible.builtin.shell: /tmp/ocp_user.sh
 
     - name: Sleeping 180 seconds...
       ansible.builtin.pause:
