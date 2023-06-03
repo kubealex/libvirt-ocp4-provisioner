@@ -17,7 +17,7 @@
         regexp: 'bootstrap'
         state: absent
         path: /etc/haproxy/haproxy.cfg
-      notify: restart haproxy
+      notify: Restart haproxy
 
   handlers:
     - name: Restart haproxy
