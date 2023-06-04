@@ -43,5 +43,5 @@
         seconds: 240
 
     - name: Try to login with admin
-      ansible.builtin.shell: /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} https://api.{{ hostvars['bastion'].ocp_domain }}:6443
+      ansible.builtin.command: /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} https://api.{{ hostvars['bastion'].ocp_domain }}:6443
       retries: 10
