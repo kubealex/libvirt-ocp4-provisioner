@@ -43,7 +43,5 @@
         seconds: 240
 
     - name: Try to login with admin
-      ansible.builtin.shell: >
-               /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }}
-               https://api.{{ hostvars['bastion'].ocp_domain }}:6443 --kubeconfig {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/auth/kubeconfig
+      ansible.builtin.shell: /usr/bin/oc login -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} https://api.{{ hostvars['bastion'].ocp_domain }}:6443
       retries: 10
