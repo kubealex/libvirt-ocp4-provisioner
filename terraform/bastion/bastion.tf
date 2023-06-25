@@ -94,7 +94,7 @@ resource "libvirt_domain" "bastion" {
   }
 
   graphics {
-    type = "spice"
+    type = "vnc"
     listen_type = "address"
     autoport = "true"
   }

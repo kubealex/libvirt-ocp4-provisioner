@@ -67,7 +67,7 @@ resource "libvirt_domain" "worker" {
   }
 
   graphics {
-    type = "spice"
+    type = "vnc"
     listen_type = "address"
     autoport = "true"
   }

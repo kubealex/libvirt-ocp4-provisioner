@@ -66,7 +66,7 @@ resource "libvirt_domain" "master" {
   }
 
   graphics {
-    type = "spice"
+    type = "vnc"
     listen_type = "address"
     autoport = "true"
   }

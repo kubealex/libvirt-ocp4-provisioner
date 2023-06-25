@@ -43,7 +43,7 @@ resource "libvirt_domain" "bootstrap" {
   }
 
   graphics {
-    type = "spice"
+    type = "vnc"
     listen_type = "address"
     autoport = "true"
   }
