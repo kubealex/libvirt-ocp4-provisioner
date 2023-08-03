@@ -77,7 +77,6 @@
         dest: /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
         mode: "0755"
 
-
     - name: Configure NetworkManager for libvirt network
       ansible.builtin.template:
         src: templates/libvirt_dnsmasq_sno.j2
@@ -163,7 +162,24 @@
       loop:
         - NetworkManager
         - dnsmasq
-        - libvirtd
+
+    - name: Virtualization services are enabled
+      ansible.builtin.service:
+        name: libvirtd
+        state: restarted
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 8
+
+    - name: Virtualization services are enabled
+      ansible.builtin.service:
+        name: virtqemud
+        state: restarted
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 9
 
     - name: Provision OCP node with Terraform
       community.general.terraform:

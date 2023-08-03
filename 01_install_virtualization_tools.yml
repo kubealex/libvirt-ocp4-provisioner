@@ -40,6 +40,18 @@
         name: libvirtd
         state: started
         enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 8
+
+    - name: Virtualization services are enabled
+      ansible.builtin.service:
+        name: virtqemud
+        state: started
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 9
 
     - name: Ensuring libvirt module is present
       ansible.builtin.pip:

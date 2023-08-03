@@ -5,7 +5,6 @@
     - vars/sno_vars.yml
   become: true
   tasks:
-
     - name: Install needed packages
       ansible.builtin.yum:
         name: "{{ virtualization_packages.rhel }}"
@@ -35,11 +34,23 @@
         mode: "0755"
         remote_src: true
 
-    - name: Ensure libvirtd is running
+    - name: Virtualization services are enabled
       ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 8
+
+    - name: Virtualization services are enabled
+      ansible.builtin.service:
+        name: virtqemud
+        state: started
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 9
 
     - name: Ensure libvirt can use root as user
       ansible.builtin.replace:
@@ -52,10 +63,23 @@
         - regexp: '#group = "root"'
           line: 'group = "root"'
 
-    - name: Restart libvirtd service
+    - name: Virtualization services are enabled
       ansible.builtin.service:
         name: libvirtd
         state: restarted
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 8
+
+    - name: Virtualization services are enabled
+      ansible.builtin.service:
+        name: virtqemud
+        state: restarted
+        enabled: true
+      when:
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version | int == 9
 
     - name: Use TF project to ensure pool and network are defined
       community.general.terraform:
