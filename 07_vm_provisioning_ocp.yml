@@ -33,6 +33,8 @@
           vm_count: "{{ cluster_nodes.host_list.masters | count }}"
           vm_block_device: "{{ cluster.additional_block_device.enabled if three_node else false }}"
           vm_block_device_size: "{{ cluster.additional_block_device.size }}"
+          vm_additional_nic: "{{ cluster.additional_nic.enabled | default(false, true) }}"
+          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(omit, true) }}"
         state: present
       become: true
       register: output_masters
@@ -51,6 +53,8 @@
           vm_count: "{{ cluster_nodes.host_list.workers | count }}"
           vm_block_device: "{{ cluster.additional_block_device.enabled | default(false, true) }}"
           vm_block_device_size: "{{ cluster.additional_block_device.size }}"
+          vm_additional_nic: "{{ cluster.additional_nic.enabled | default(false, true) }}"
+          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(omit, true) }}"
         state: present
       become: true
       register: output_workers
@@ -58,8 +62,8 @@
 
     - name: Add bootstrap node and set vars
       ansible.builtin.add_host:
-        hostname: 'bootstrap'
-        node_hostname: 'bootstrap'
+        hostname: "bootstrap"
+        node_hostname: "bootstrap"
         node_mac: "{{ output_bootstrap.outputs.macs.value[0] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
@@ -71,10 +75,10 @@
 
     - name: Add masters to correct group and set facts
       ansible.builtin.add_host:
-        hostname: 'master-{{ master_idx }}'
-        node_hostname: 'master-{{ master_idx }}'
-        etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
-        etcd_ip: '{{ item.ip }}'
+        hostname: "master-{{ master_idx }}"
+        node_hostname: "master-{{ master_idx }}"
+        etcd_fqdn: "etcd-{{ master_idx }}.{{ ocp_domain }}"
+        etcd_ip: "{{ item.ip }}"
         node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
@@ -89,10 +93,10 @@
 
     - name: Add masters to correct group and set facts
       ansible.builtin.add_host:
-        hostname: 'master-{{ master_idx }}'
-        node_hostname: 'master-{{ master_idx }}'
-        etcd_fqdn: 'etcd-{{ master_idx }}.{{ ocp_domain }}'
-        etcd_ip: '{{ item.ip }}'
+        hostname: "master-{{ master_idx }}"
+        node_hostname: "master-{{ master_idx }}"
+        etcd_fqdn: "etcd-{{ master_idx }}.{{ ocp_domain }}"
+        etcd_ip: "{{ item.ip }}"
         node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
@@ -108,8 +112,8 @@
 
     - name: Add workers to correct group and set facts
       ansible.builtin.add_host:
-        hostname: 'worker-{{ worker_idx }}'
-        node_hostname: 'worker-{{ worker_idx }}'
+        hostname: "worker-{{ worker_idx }}"
+        node_hostname: "worker-{{ worker_idx }}"
         node_mac: "{{ output_workers.outputs.macs.value[worker_idx] | lower }}"
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
@@ -128,7 +132,7 @@
       block:
         - name: Add infra nodes to correct group and set facts
           ansible.builtin.add_host:
-            hostname: '{{ item }}'
+            hostname: "{{ item }}"
             groups:
               - "infra"
           loop: "{{ groups['workers'] }}"
