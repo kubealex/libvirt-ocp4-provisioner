@@ -34,7 +34,7 @@
           vm_block_device: "{{ cluster.additional_block_device.enabled if three_node else false }}"
           vm_block_device_size: "{{ cluster.additional_block_device.size }}"
           vm_additional_nic: "{{ cluster.additional_nic.enabled | default(false, true) }}"
-          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(omit, true) }}"
+          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(cluster.name, true) }}"
         state: present
       become: true
       register: output_masters
@@ -54,7 +54,7 @@
           vm_block_device: "{{ cluster.additional_block_device.enabled | default(false, true) }}"
           vm_block_device_size: "{{ cluster.additional_block_device.size }}"
           vm_additional_nic: "{{ cluster.additional_nic.enabled | default(false, true) }}"
-          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(omit, true) }}"
+          vm_additional_nic_network: "{{ cluster.additional_nic.network | default(cluster.name, true) }}"
         state: present
       become: true
       register: output_workers

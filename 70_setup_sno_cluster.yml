@@ -197,7 +197,7 @@
           local_volume_enabled: "{{ local_storage.enabled | default(false, true) }}"
           local_volume_size: "{{ local_storage.volume_size | default(omit, true) }}"
           vm_additional_nic: "{{ additional_nic.enabled | default(false, true) }}"
-          vm_additional_nic_network: "{{ additional_nic.network | default(omit, true) }}"
+          vm_additional_nic_network: "{{ additional_nic.network | default(cluster.name, true) }}"
         state: present
       register: output_sno
 
