@@ -8,7 +8,7 @@ variable "vm_net_ip" { default = "192.168.100.7" }
 variable "local_volume_size" { default = 50 }
 variable "local_volume_enabled" { default = false }
 variable "vm_additional_nic" { default = false }
-variable "vm_additional_nic_network" { default = rh-lab }
+variable "vm_additional_nic_network" { default = "rh-lab" }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
