@@ -6,7 +6,10 @@ cluster:
   version: stable
   ocp_user: admin
   ocp_pass: openshift
-  pullSecret: ''
+  pullSecret: ""
+  additional_nic:
+    enabled: false
+    network:
   additional_block_device:
     enabled: false
     size: 100

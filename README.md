@@ -1,6 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # libvirt-ocp4-provisioner - Automate your cluster provisioning from 0 to OCP!
+
 Welcome to the home of the project!
 This project has been inspired by [@ValentinoUberti](https://github.com/ValentinoUberti), who did a GREAT job creating the playbooks to provision existing infrastructure nodes on oVirt and preparing for cluster installation.
 
@@ -9,17 +10,18 @@ I wanted to play around with terraform and port his great work to libvirt and so
 To give a quick overview, this project will allow you to provision a **fully working** and **stable** OCP environment, consisting of:
 
 - Bastion machine provisioned with:
-	- dnsmasq (with SELinux module, compiled and activated)
-	- dhcp based on dnsmasq
-	- nginx (for ignition files and rhcos pxe-boot)
-	- pxeboot
+  - dnsmasq (with SELinux module, compiled and activated)
+  - dhcp based on dnsmasq
+  - nginx (for ignition files and rhcos pxe-boot)
+  - pxeboot
 - Loadbalancer machine provisioned with:
-	- haproxy
+  - haproxy
 - OCP Bootstrap VM
 - OCP Master VM(s)
 - OCP Worker VM(s)
 
 It also takes care of preparing the host machine with needed packages, configuring:
+
 - dedicated libvirt network (fully customizable)
 - dedicated libvirt storage pool (fully customizable)
 - terraform
@@ -27,9 +29,10 @@ It also takes care of preparing the host machine with needed packages, configuri
 
 PXE is automatic, based on MAC binding to different OCP nodes role, so no need of choosing it from the menus, this means you can just run the playbook, take a beer and have your fully running OCP up and running.
 
-The version can be selected freely, by specifying the desired one (i.e. 4.10.x, 4.12.7) or the latest stable release with "stable". **Versions before 4.6 are not supported anymore!!**
+The version can be selected freely, by specifying the desired one (i.e. 4.10.x, 4.13.2) or the latest stable release with "stable". **Versions before 4.6 are not supported anymore!!**
 
 Now support for **Single Node Openshift - SNO** has been added!
+
 ## **bastion** and **loadbalancer** VMs spec:
 
 - OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)
@@ -64,7 +67,7 @@ The playbooks are compatible with the newly introduced **Execution environments 
 
 ### Build EE image
 
-To build the EE image, jump in the *execution-environment* folder and run the build:
+To build the EE image, jump in the _execution-environment_ folder and run the build:
 
     ansible-builder build -f execution-environment/execution-environment.yml -t ocp-ee
 
@@ -77,7 +80,6 @@ To run the playbooks use ansible navigator:
 Or, in case of Single Node Openshift:
 
     ansible-navigator run main-sno.yml -m stdout
-
 
 ## Common vars
 
@@ -105,6 +107,9 @@ The kind of network created is a simple NAT configuration, without DHCP since it
     additional_block_device:
       enabled: false
       size: 100
+    additional_nic:
+      enabled: false
+      network:
     cluster:
       version: stable
       name: ocp4
@@ -146,6 +151,8 @@ Where **domain** is the dns domain assigned to the nodes and **cluster.name** is
 
 **additional_block_device** controls whether an additional disk of the given size should be added to Workers or Control Plane nodes in case of compact (3 nodes) setup
 
+**additional_nic** allows the creation of an additional network interface on all nodes. It is possible to customize the libvirt network to attach to it.
+
 The **role** for workers is intended for nodes labelling. Omitting labels sets them to their default value, **worker**
 
 The count of VMs is taken by the elements of the list, in this example, we got:
@@ -155,11 +162,11 @@ The count of VMs is taken by the elements of the list, in this example, we got:
 
 Recommended values are:
 
-| Role | vCPU | RAM | Storage |
-|--|--|--|--|
-| bootstrap | 4 | 16G | 120G |
-| master | 4 | 16G | 120G |
-| worker | 2 | 8G | 120G |
+| Role      | vCPU | RAM | Storage |
+| --------- | ---- | --- | ------- |
+| bootstrap | 4    | 16G | 120G    |
+| master    | 4    | 16G | 120G    |
+| worker    | 2    | 8G  | 120G    |
 
 For testing purposes, minimum storage value is set at **60GB**.
 
@@ -189,9 +196,13 @@ For testing purposes, minimum storage value is set at **60GB**.
     local_storage:
       enabled: true
       volume_size: 50
-
+    additional_nic:
+      enabled: false
+      network:
 
 **local_storage** field can be used to provision an additional disk to the VM in order to provision volumes using, for instance, rook-ceph or local storage operator.
+
+**additional_nic** allows the creation of an additional network interface on the node. It is possible to customize the libvirt network to attach to it.
 
 In both cases, Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)
 

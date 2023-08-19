@@ -194,30 +194,12 @@
           cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
           memory: "{{ cluster_nodes.specs.sno.mem }}"
           vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
+          local_volume_enabled: "{{ local_storage.enabled | default(false, true) }}"
+          local_volume_size: "{{ local_storage.volume_size | default(omit, true) }}"
+          vm_additional_nic: "{{ additional_nic.enabled | default(false, true) }}"
+          vm_additional_nic_network: "{{ additional_nic.network | default(cluster.name, true) }}"
         state: present
-
       register: output_sno
-      when: not local_storage.enabled
-
-    - name: Provision OCP node with Terraform
-      community.general.terraform:
-        project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/sno"
-        force_init: true
-        variables:
-          hostname: "master-sno"
-          libvirt_network: "{{ cluster.name }}"
-          libvirt_pool: "{{ cluster.name }}"
-          vm_net_ip: "{{ cluster_nodes.host_list.sno.ip }}"
-          coreos_iso_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
-          cpu: "{{ cluster_nodes.specs.sno.vcpu }}"
-          memory: "{{ cluster_nodes.specs.sno.mem }}"
-          vm_volume_size: "{{ cluster_nodes.specs.sno.disk }}"
-          local_volume_size: "{{ local_storage.volume_size }}"
-          local_volume_enabled: "{{ local_storage.enabled }}"
-        state: present
-
-      register: output_sno_local
-      when: local_storage.enabled
 
     - name: Start Openshift install
       ansible.builtin.shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
