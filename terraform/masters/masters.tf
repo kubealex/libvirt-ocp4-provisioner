@@ -7,7 +7,7 @@ variable "vm_volume_size" { default = 40 }
 variable "vm_block_device" { default = false }
 variable "vm_block_device_size" { default = 100 }
 variable "vm_additional_nic" { default = false }
-variable "vm_additional_nic_network" { default = "rh-lab" }
+variable "vm_additional_nic_network" { default = "default" }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
