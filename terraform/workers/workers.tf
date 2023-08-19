@@ -8,6 +8,8 @@ variable "libvirt_pool" { default = "ocp4" }
 variable "vm_volume_size" { default = 20 }
 variable "vm_block_device" { default = false }
 variable "vm_block_device_size" { default = 100 }
+variable "vm_additional_nic" { default = false }
+variable "vm_additional_nic_network" { default = rh-lab }
 
 # instance the provider
 provider "libvirt" {
@@ -54,6 +56,13 @@ resource "libvirt_domain" "worker" {
 
   network_interface {
        network_name = var.libvirt_network
+  }
+
+  dynamic "network_interface" {
+     for_each = tobool(lower(var.vm_additional_nic)) ? { nic = true } : {}
+     content {
+       network_name = var.vm_additional_nic_network
+     }
   }
 
   boot_device {

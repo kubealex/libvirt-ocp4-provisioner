@@ -6,6 +6,8 @@ variable "vm_count" { default = 3 }
 variable "vm_volume_size" { default = 40 }
 variable "vm_block_device" { default = false }
 variable "vm_block_device_size" { default = 100 }
+variable "vm_additional_nic" { default = false }
+variable "vm_additional_nic_network" { default = rh-lab }
 variable "libvirt_network" { default = "ocp" }
 variable "libvirt_pool" { default = "default" }
 
@@ -53,6 +55,13 @@ resource "libvirt_domain" "master" {
 
   network_interface {
        network_name = var.libvirt_network
+  }
+
+  dynamic "network_interface" {
+     for_each = tobool(lower(var.vm_additional_nic)) ? { nic = true } : {}
+     content {
+       network_name = var.vm_additional_nic_network
+     }
   }
 
   boot_device {

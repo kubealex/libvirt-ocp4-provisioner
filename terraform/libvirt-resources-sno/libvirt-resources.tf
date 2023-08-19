@@ -22,11 +22,8 @@ resource "libvirt_pool" "cluster" {
 
 resource "libvirt_network" "ocp_network" {
   name = var.cluster_name
-
   mode = "nat"
-
   domain = var.domain
-
   addresses = var.network_cidr
   dhcp {
     enabled = false
