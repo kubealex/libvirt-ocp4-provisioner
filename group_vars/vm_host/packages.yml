@@ -22,7 +22,6 @@ virtualization_packages:
     - python3-netaddr
     - python3-libvirt
     - python3-devel
-    - libvirt-devel
     - libvirt
     - qemu-kvm
     - virt-install
