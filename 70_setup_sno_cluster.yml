@@ -170,7 +170,6 @@
         enabled: true
       when:
         - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version | int == 8
 
     - name: Virtualization services are enabled
       ansible.builtin.service:

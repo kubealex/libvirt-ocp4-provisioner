@@ -14,11 +14,10 @@
 
     - name: Install needed packages
       ansible.builtin.yum:
-        name: "{{ virtualization_packages.centos8 }}"
+        name: "{{ virtualization_packages.centos }}"
         state: latest # noqa package-latest
       when:
         - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version | int == 8
 
     - name: Install needed packages
       ansible.builtin.yum:
@@ -41,7 +40,6 @@
         enabled: true
       when:
         - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version | int == 8
 
     - name: Virtualization services are enabled
       ansible.builtin.service:
@@ -70,7 +68,6 @@
         enabled: true
       when:
         - ansible_distribution == 'CentOS'
-        - ansible_distribution_major_version | int == 8
 
     - name: Virtualization services are enabled
       ansible.builtin.service:

@@ -13,7 +13,7 @@ virtualization_packages:
     - qemu-kvm
     - virt-install
     - virt-manager
-  centos8:
+  centos:
     - unzip
     - git
     - gcc
