@@ -40,7 +40,7 @@
         state: started
         enabled: true
       when:
-        - ansible_distribution == 'CentOS'
+        - ansible_distribution != 'CentOS'
 
     - name: Virtualization services are enabled
       ansible.builtin.service:
