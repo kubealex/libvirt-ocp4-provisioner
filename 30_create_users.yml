@@ -43,3 +43,6 @@
     - name: Try to login with admin
       ansible.builtin.command: /usr/bin/oc login --insecure-skip-tls-verify -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} https://api.{{ hostvars['bastion'].ocp_domain }}:6443
       retries: 10
+
+    - name: Remove kubeadmin user
+      ansible.builtin.shell: /usr/bin/oc delete secrets kubeadmin -n kube-system
