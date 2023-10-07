@@ -5,6 +5,11 @@
   vars_files:
     - vars/cluster_vars.yml
   tasks:
+    - name: Restart NetworkManager service
+      ansible.builtin.service:
+        name: NetworkManager
+        state: restarted
+
     - name: Restart OCP VMs sequentially
       block:
         - name: Shutdown bootstrap node
