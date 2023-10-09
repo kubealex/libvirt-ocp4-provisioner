@@ -47,17 +47,23 @@ The user is capable of logging via SSH too.
 
 First of all, you need to install required collections to get started:
 
-    ansible-galaxy collection install -r requirements.yml
+```bash
+ansible-galaxy collection install -r requirements.yml
+```
 
 The playbook is meant to run against local host/s, defined under **vm_host** group in your inventory, depending on how many clusters you want to configure at once.
 
 ### HA Clusters
 
-    ansible-playbook main.yml
+```bash
+ansible-playbook main.yml
+```
 
 ### Single Node Openshift (SNO)
 
-    ansible-playbook main-sno.yml
+```bash
+ansible-playbook main-sno.yml
+```
 
 You can quickly make it work by configuring the needed vars, but you can go straight with the defaults!
 
@@ -69,17 +75,23 @@ The playbooks are compatible with the newly introduced **Execution environments 
 
 To build the EE image, jump in the _execution-environment_ folder and run the build:
 
-    ansible-builder build -f execution-environment/execution-environment.yml -t ocp-ee
+```bash
+ansible-builder build -f execution-environment/execution-environment.yml -t ocp-ee
+```
 
 ### Run playbooks
 
 To run the playbooks use ansible navigator:
 
+```
     ansible-navigator run main.yml -m stdout
+```
 
 Or, in case of Single Node Openshift:
 
+```bash
     ansible-navigator run main-sno.yml -m stdout
+```
 
 ## Common vars
 
@@ -89,59 +101,63 @@ The kind of network created is a simple NAT configuration, without DHCP since it
 
 **vars/infra_vars.yml**
 
-    infra_nodes:
-      host_list:
-        bastion:
-          - ip: 192.168.100.4
-        loadbalancer:
-          - ip: 192.168.100.5
-    dhcp:
-      timezone: "Europe/Rome"
-      ntp: 204.11.201.10
+```yaml
+infra_nodes:
+  host_list:
+    bastion:
+      - ip: 192.168.100.4
+    loadbalancer:
+      - ip: 192.168.100.5
+dhcp:
+  timezone: "Europe/Rome"
+  ntp: 204.11.201.10
+```
 
 **vars/cluster_vars.yml**
 
-    three_node: false
-    network_cidr: 192.168.100.0/24
-    domain: hetzner.lab
-    additional_block_device:
-      enabled: false
-      size: 100
-    additional_nic:
-      enabled: false
-      network:
-    cluster:
-      version: stable
-      name: ocp4
-      ocp_user: admin
-      ocp_pass: openshift
-      pullSecret: ''
-    cluster_nodes:
-      host_list:
-        bootstrap:
-          - ip: 192.168.100.6
-        masters:
-          - ip: 192.168.100.7
-          - ip: 192.168.100.8
-          - ip: 192.168.100.9
-        workers:
-          - ip: 192.168.100.10
-            role: infra
-          - ip: 192.168.100.11
-          - ip: 192.168.100.12
-      specs:
-        bootstrap:
-          vcpu: 4
-          mem: 16
-          disk: 40
-        masters:
-          vcpu: 4
-          mem: 16
-          disk: 40
-        workers:
-          vcpu: 2
-          mem: 8
-          disk: 40
+```yaml
+three_node: false
+network_cidr: 192.168.100.0/24
+domain: hetzner.lab
+additional_block_device:
+  enabled: false
+  size: 100
+additional_nic:
+  enabled: false
+  network:
+cluster:
+  version: stable
+  name: ocp4
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ""
+cluster_nodes:
+  host_list:
+    bootstrap:
+      - ip: 192.168.100.6
+    masters:
+      - ip: 192.168.100.7
+      - ip: 192.168.100.8
+      - ip: 192.168.100.9
+    workers:
+      - ip: 192.168.100.10
+        role: infra
+      - ip: 192.168.100.11
+      - ip: 192.168.100.12
+  specs:
+    bootstrap:
+      vcpu: 4
+      mem: 16
+      disk: 40
+    masters:
+      vcpu: 4
+      mem: 16
+      disk: 40
+    workers:
+      vcpu: 2
+      mem: 8
+      disk: 40
+```
 
 Where **domain** is the dns domain assigned to the nodes and **cluster.name** is the name chosen for our OCP cluster installation.
 
@@ -176,29 +192,31 @@ For testing purposes, minimum storage value is set at **60GB**.
 
 **vars/cluster_vars.yml**
 
-    domain: hetzner.lab
-    network_cidr: 192.168.100.0/24
-    cluster:
-      version: stable
-      name: ocp4
-      ocp_user: admin
-      ocp_pass: openshift
-      pullSecret: ''
-    cluster_nodes:
-      host_list:
-        sno:
-          ip: 192.168.100.7
-      specs:
-        sno:
-          vcpu: 8
-          mem: 32
-          disk: 120
-    local_storage:
-      enabled: true
-      volume_size: 50
-    additional_nic:
-      enabled: false
-      network:
+```yaml
+domain: hetzner.lab
+network_cidr: 192.168.100.0/24
+cluster:
+  version: stable
+  name: ocp4
+  ocp_user: admin
+  ocp_pass: openshift
+  pullSecret: ""
+cluster_nodes:
+  host_list:
+    sno:
+      ip: 192.168.100.7
+  specs:
+    sno:
+      vcpu: 8
+      mem: 32
+      disk: 120
+local_storage:
+  enabled: true
+  volume_size: 50
+additional_nic:
+  enabled: false
+  network:
+```
 
 **local_storage** field can be used to provision an additional disk to the VM in order to provision volumes using, for instance, rook-ceph or local storage operator.
 
