@@ -90,7 +90,7 @@ To run the playbooks use ansible navigator:
 Or, in case of Single Node Openshift:
 
 ```bash
-    ansible-navigator run main-sno.yml -m stdout
+ansible-navigator run main-sno.yml -m stdout
 ```
 
 ## Common vars
