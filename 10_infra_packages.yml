@@ -9,7 +9,7 @@
         state: present
       when: ansible_distribution == "Fedora"
 
-    - name: Installing required packages for Bastion Vm (Centos 8)
+    - name: Installing required packages for Bastion Vm (Centos)
       ansible.builtin.yum:
         name: "{{ packages.centos }}"
         state: present

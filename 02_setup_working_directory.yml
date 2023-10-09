@@ -18,7 +18,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/terraform"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/"
-        mode: 0755
+        mode: "0755"
 
     - name: Create ssh keypair
       community.crypto.openssh_keypair:
@@ -29,7 +29,7 @@
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/{{ item }}"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ item }}"
-        mode: 0755
+        mode: "0755"
       loop:
         - id_rsa_ocp_setup
         - id_rsa_ocp_setup.pub

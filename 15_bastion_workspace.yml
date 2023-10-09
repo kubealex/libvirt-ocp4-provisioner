@@ -62,13 +62,13 @@
         - not (skip_download | bool)
         - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
-    - name: Checking for openshift-install tool
-      ansible.builtin.shell: openshift-install version
+    - name: Checking for openshift-install tool # noqa no-changed-when
+      ansible.builtin.command: openshift-install version
       register: output
       failed_when: output.rc != 0
 
-    - name: Checking for OCP cli tool
-      ansible.builtin.shell: oc
+    - name: Checking for OCP cli tool # noqa no-changed-when
+      ansible.builtin.command: oc
       register: output
       failed_when: output.rc != 0
 
@@ -91,7 +91,7 @@
             rhcos_kernel: "{{ downloads.rhcos.boot_files.kernel }}"
             rhcos_initramfs: "{{ downloads.rhcos.boot_files.initramfs }}"
             rhcos_os: "{{ downloads.rhcos.boot_files.rootfs }}"
-            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version != 'stable' else (downloads.rhcos.base_url + 'latest/') }}"
+            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version != 'stable' else (downloads.rhcos.base_url + 'latest/') }}" # noqa yaml[line-length]
 
         - name: Download initramfs and kernel
           ansible.builtin.get_url:

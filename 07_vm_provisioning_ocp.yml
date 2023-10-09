@@ -66,7 +66,7 @@
         node_hostname: "bootstrap"
         node_mac: "{{ output_bootstrap.outputs.macs.value[0] | lower }}"
         node_ip: "{{ item.ip }}"
-        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
+        node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}" # noqa jinja[invalid]
         node_role: "bootstrap"
         node_fqdn: bootstrap.{{ ocp_domain }}
         groups:
@@ -79,7 +79,7 @@
         node_hostname: "master-{{ master_idx }}"
         etcd_fqdn: "etcd-{{ master_idx }}.{{ ocp_domain }}"
         etcd_ip: "{{ item.ip }}"
-        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
+        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}" # noqa jinja[invalid]
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
@@ -97,7 +97,7 @@
         node_hostname: "master-{{ master_idx }}"
         etcd_fqdn: "etcd-{{ master_idx }}.{{ ocp_domain }}"
         etcd_ip: "{{ item.ip }}"
-        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}"
+        node_mac: "{{ output_masters.outputs.macs.value[master_idx] | lower }}" # noqa jinja[invalid]
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "master"
@@ -114,7 +114,7 @@
       ansible.builtin.add_host:
         hostname: "worker-{{ worker_idx }}"
         node_hostname: "worker-{{ worker_idx }}"
-        node_mac: "{{ output_workers.outputs.macs.value[worker_idx] | lower }}"
+        node_mac: "{{ output_workers.outputs.macs.value[worker_idx] | lower }}" # noqa jinja[invalid]
         node_ip: "{{ item.ip }}"
         node_reversedns: "{{ item.ip | ansible.utils.ipaddr('revdns') }}"
         node_role: "worker"

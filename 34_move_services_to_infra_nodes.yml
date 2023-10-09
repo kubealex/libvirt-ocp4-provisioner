@@ -1,12 +1,14 @@
 - name: Patch configs to use infra nodes
   hosts: bastion
-  become: True
+  become: true
   vars_files:
     - vars/cluster_vars.yml
   tasks:
     - name: Take care of moving core operators to infra nodes
+      when: not three_node
       block:
         - name: Take care of moving core operators to infra nodes
+          when: infra_present
           block:
             - name: Copy ingress and registry patcher templates
               ansible.builtin.template:
@@ -17,7 +19,7 @@
                 - patch_ingress_selector
                 - patch_registry_selector
 
-            - name: Run scripts
+            - name: Run scripts # noqa command-instead-of-shell no-changed-when
               ansible.builtin.shell: /tmp/{{ item }}.sh
               loop:
                 - patch_ingress_selector
@@ -37,7 +39,5 @@
                 dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/patch_monitoring.yml"
                 mode: "0755"
 
-            - name: Patch monitoring
-              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
-          when: infra_present
-      when: not three_node
+            - name: Patch monitoring # noqa command-instead-of-shell no-changed-when
+              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/patch_monitoring.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig # noqa yaml[line-length]

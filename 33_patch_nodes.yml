@@ -25,8 +25,8 @@
                 dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml"
                 mode: "0755"
 
-            - name: Creating machine config pool for infra nodes
-              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig
+            - name: Creating machine config pool for infra nodes # noqa command-instead-of-shell no-changed-when
+              ansible.builtin.shell: /usr/bin/oc create -f {{ workspace_directory.base_path }}/{{ cluster.name }}/machineconfigpool.yml --kubeconfig={{ workspace_directory.base_path }}/{{ cluster.name }}/config/auth/kubeconfig # noqa yaml[line-length]
 
             - name: Copy script for node labeling
               ansible.builtin.template:
@@ -34,7 +34,7 @@
                 dest: /tmp/label_nodes.sh
                 mode: +x
 
-            - name: Applying patch
+            - name: Applying patch # noqa command-instead-of-shell no-changed-when
               ansible.builtin.shell: /tmp/label_nodes.sh
 
             - name: Deleting label node script
@@ -48,7 +48,7 @@
                 dest: /tmp/patch_default_selector.sh
                 mode: +x
 
-            - name: Execute script
+            - name: Execute script # noqa command-instead-of-shell no-changed-when
               ansible.builtin.shell: /tmp/patch_default_selector.sh
 
             - name: Delete node selector patch

@@ -19,8 +19,8 @@
     #     conn_name: "{{ host_interface }}"
     #     zone: internal
     #     state: present
-    - name: Adding interface to internal zone
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal
+    - name: Adding interface to internal zone # noqa no-changed-when
+      ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal
 
     - name: Adding Bastion interface to firewall internal zone
       ansible.posix.firewalld:

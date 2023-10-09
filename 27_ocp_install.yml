@@ -8,15 +8,15 @@
       ansible.builtin.debug:
         msg: All VMs booted up, using the MAC-tailored pxeboot configuration
 
-    - name: Waiting for bootstrap to complete
-      ansible.builtin.shell: openshift-install wait-for bootstrap-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+    - name: Waiting for bootstrap to complete # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: openshift-install wait-for bootstrap-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} # noqa yaml[line-length]
       retries: 10
       delay: 5
       register: result
       until: result.rc == 0
 
-    - name: Waiting for install to complete
-      ansible.builtin.shell: openshift-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+    - name: Waiting for install to complete # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: openshift-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} # noqa yaml[line-length]
       retries: 10
       delay: 5
       register: result
