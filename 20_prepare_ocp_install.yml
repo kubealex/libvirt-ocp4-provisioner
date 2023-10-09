@@ -44,14 +44,14 @@
         remote_src: true
         mode: "0755"
 
-    - name: Creating ignition manifest
-      ansible.builtin.shell: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+    - name: Creating ignition manifest # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: openshift-install create manifests --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} # noqa yaml[line-length]
 
     - name: Setting master unschedulable
       ansible.builtin.lineinfile:
         path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/manifests/cluster-scheduler-02-config.yml"
-        regexp: '  mastersSchedulable'
-        line: '  mastersSchedulable: False'
+        regexp: "  mastersSchedulable"
+        line: "  mastersSchedulable: False"
       when:
         - not three_node
         - hostvars['bastion'].version.1 | int > 1
@@ -63,8 +63,8 @@
         remote_src: true
         mode: "0755"
 
-    - name: Creating ignition files
-      ansible.builtin.shell: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+    - name: Creating ignition files # noqa command-instead-of-shell yaml[line-length] no-changed-when
+      ansible.builtin.shell: openshift-install create ignition-configs --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} # noqa yaml[line-length]
 
     - name: Backup install directory
       ansible.builtin.copy:

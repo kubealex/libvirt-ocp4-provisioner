@@ -5,7 +5,6 @@
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
   tasks:
-
     - name: Check if distribution is supported
       ansible.builtin.fail:
         msg: Your distribution is actually unsupported
@@ -24,7 +23,7 @@
         - name: Fail fast if more than one bootstrap node is provided
           ansible.builtin.fail:
             msg: "Versions before 4.6 are not supported"
-          when: 
+          when:
             - cluster.version != "stable"
             - cluster.version is version('4.6', '<')
 
@@ -38,7 +37,9 @@
         - name: Fail fast if hosts are missing from the list
           ansible.builtin.fail:
             msg: "Please check the host_list variable in cluster_nodes"
-          when: (cluster_nodes.host_list.masters | count <= 0) or (cluster_nodes.host_list.workers | count <= 0) or (cluster_nodes.host_list.bootstrap | count <= 0)
+          when: (cluster_nodes.host_list.masters | count <= 0) or
+            (cluster_nodes.host_list.workers | count <= 0) or
+            (cluster_nodes.host_list.bootstrap | count <= 0)
 
         - name: Fail fast if bootstrap node doesn't meet minimum requirements
           ansible.builtin.fail:

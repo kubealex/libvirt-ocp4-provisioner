@@ -16,13 +16,15 @@
       community.crypto.openssh_keypair:
         path: "~/.ssh/id_rsa_{{ cluster.name }}"
 
-    - name: Retrieve image for current version
-      ansible.builtin.shell: "curl -s {{ downloads.ocp.base_url }}/{{ cluster.version }}/release.txt | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'"
+    - name: Fetch information about the release
+      ansible.builtin.uri:
+        url: "{{ downloads.ocp.base_url }}/{{ cluster.version }}/release.txt"
+        return_content: true
       register: image_version
 
     - name: Save version as fact
       ansible.builtin.set_fact:
-        release_image: "{{ image_version.stdout }}"
+        release_image: "{{ image_version.content | regex_search('Pull From: ([^\\s]+)') | replace('Pull From: ', '') }}"
 
     - name: Downloading Openshift CLI
       ansible.builtin.unarchive:
@@ -42,16 +44,16 @@
         remote_src: true
       when: cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
-    - name: Checking for OCP cli tool
-      ansible.builtin.shell: oc
+    - name: Checking for OCP cli tool # noqa no-changed-when
+      ansible.builtin.command: oc
       register: output
-      failed_when: output.rc !=0
+      failed_when: output.rc != 0
 
     - name: Download coreOS ISO and save it locally
       ansible.builtin.get_url:
         url: "{{ downloads.coreos.live_media }}"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso"
-        mode: 0755
+        mode: "0755"
 
     - name: Download coreOS-installer and save it locally
       ansible.builtin.get_url:
@@ -84,6 +86,7 @@
         mode: "0755"
 
     - name: Take care of systemd-resolved on F33 and Ubuntu hosts
+      when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33)
       block:
         - name: Ensure systemd-resolved config dir is present
           ansible.builtin.file:
@@ -116,16 +119,14 @@
             state: link
             force: true
 
-      when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version | int >= 33)
-
     - name: Copy pull secret to a file
       ansible.builtin.copy:
         content: "{{ cluster.pullSecret }}"
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret"
         mode: "0755"
 
-    - name: Extract openshift-baremetal-install from release image
-      ansible.builtin.shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/{{ cluster.name }}/openshift-baremetal-install {{ release_image }}"
+    - name: Extract openshift-baremetal-install from release image # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: "oc adm release extract --registry-config {{ workspace_directory.base_path }}/{{ cluster.name }}/pull-secret --command=openshift-baremetal-install --to {{ workspace_directory.base_path }}/{{ cluster.name }}/openshift-baremetal-install {{ release_image }}" # noqa yaml[line-length]
 
     - name: Move openshift installer to PATH
       ansible.builtin.copy:
@@ -149,11 +150,11 @@
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/install-config.yaml"
         mode: "0755"
 
-    - name: Generate ignition config
-      ansible.builtin.shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} create single-node-ignition-config
+    - name: Generate ignition config # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: openshift-baremetal-install --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} create single-node-ignition-config # noqa yaml[line-length]
 
-    - name: Patch live ISO with generate ignition file
-      ansible.builtin.shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso
+    - name: Patch live ISO with generate ignition file # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: coreos-installer iso ignition embed -fi {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/bootstrap-in-place-for-live-iso.ign {{ workspace_directory.base_path }}/{{ cluster.name }}/coreos.iso # noqa yaml[line-length]
 
     - name: Restart net-services
       ansible.builtin.service:
@@ -200,8 +201,8 @@
         state: present
       register: output_sno
 
-    - name: Start Openshift install
-      ansible.builtin.shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}
+    - name: Start Openshift install # noqa command-instead-of-shell no-changed-when
+      ansible.builtin.shell: openshift-baremetal-install wait-for install-complete --dir {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }} # noqa yaml[line-length]
 
     - name: Ensuring httpd-tools is present
       ansible.builtin.yum:
@@ -218,7 +219,7 @@
       ansible.builtin.template:
         src: templates/htpasswd_provider.j2
         dest: "{{ workspace_directory.base_path }}/{{ cluster.name }}/htpasswd_provider.yaml"
-        mode: 0755
+        mode: "0755"
 
     - name: Firing configuration script template for user creation
       ansible.builtin.template:
@@ -226,7 +227,7 @@
         dest: /tmp/ocp_user.sh
         mode: +x
 
-    - name: Creating htpasswd identity and user
+    - name: Creating htpasswd identity and user # noqa command-instead-of-shell no-changed-when
       ansible.builtin.shell: /tmp/ocp_user.sh
 
     - name: Sleeping 180 seconds...
@@ -235,4 +236,7 @@
 
     - name: Your cluster is ready
       ansible.builtin.debug:
-        msg: "Cluster setup finished, grab your kubeconfig in {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/auth or log in the console at the address: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }} with the credentials you chose"
+        msg:
+          - "Cluster setup finished"
+          - "Console URL: https://console-openshift-console.apps.{{ cluster.name }}.{{ domain }}"
+          - "Kubeconfig available at {{ workspace_directory.base_path }}/{{ cluster.name }}/{{ workspace_directory.config_dir }}/auth or log in the console with the credentials you chose" # noqa yaml[line-length]

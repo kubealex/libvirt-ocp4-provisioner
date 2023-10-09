@@ -25,8 +25,8 @@
         dest: /tmp
         mode: "0755"
 
-    - name: Apply seelinux rules for dnsmasq service
-      ansible.builtin.shell: semodule -X 300 -i /tmp/my-dnsmasq.pp
+    - name: Apply seelinux rules for dnsmasq service # noqa no-changed-when
+      ansible.builtin.command: semodule -X 300 -i /tmp/my-dnsmasq.pp
 
     - name: Delete selinux temp file
       ansible.builtin.file:
@@ -63,11 +63,11 @@
         mode: "0755"
       loop: "{{ groups['workers'] }}"
 
-    - name: Configure {{ host_interface }} to use {{ host_ip }} as DNS server
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
+    - name: Configure interface to use bastion as DNS server # noqa no-changed-when
+      ansible.builtin.command: nmcli con mod {{ host_interface }} ipv4.dns "{{ host_ip }}"
 
-    - name: Refreshing {{ host_interface }}
-      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+    - name: Refreshing inteface # noqa no-changed-when
+      ansible.builtin.command: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
     - name: Enable services
       ansible.builtin.service:

@@ -4,7 +4,6 @@
     - vars/cluster_vars.yml
     - vars/infra_vars.yml
   tasks:
-
     - name: Set ocp_domain as fact
       ansible.builtin.set_fact:
         ocp_domain: "{{ cluster.name }}.{{ domain }}"
@@ -24,7 +23,7 @@
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
-          network_data: "{ hostIP = \"{{ infra_nodes.host_list.bastion[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
+          network_data: '{ hostIP = "{{ infra_nodes.host_list.bastion[0].ip }}", broadcast= "{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''broadcast'') }}", dns = "{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') | ansible.utils.ipmath(1) }}", gateway = "{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') | ansible.utils.ipmath(1) }}", network = "{{ infra_nodes.host_list.bastion[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') }}" }' # noqa yaml[line-length]
           hostname: "bastion"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
@@ -40,7 +39,7 @@
         variables:
           libvirt_network: "{{ cluster.name }}"
           libvirt_pool: "{{ cluster.name }}"
-          network_data: "{ hostIP = \"{{ infra_nodes.host_list.loadbalancer[0].ip }}\", broadcast= \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('broadcast') }}\", dns = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", gateway = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') | ansible.utils.ipmath(1) }}\", network = \"{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr('network') }}\" }"
+          network_data: '{ hostIP = "{{ infra_nodes.host_list.loadbalancer[0].ip }}", broadcast= "{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''broadcast'') }}", dns = "{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') | ansible.utils.ipmath(1) }}", gateway = "{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') | ansible.utils.ipmath(1) }}", network = "{{ infra_nodes.host_list.loadbalancer[0].ip | ansible.utils.ipsubnet(24) | ansible.utils.ipaddr(''network'') }}" }' # noqa yaml[line-length]
           hostname: "loadbalancer"
           domain: "{{ domain }}"
           cluster_name: "{{ cluster.name }}"
@@ -51,11 +50,11 @@
 
     - name: Add bastion and loadbalancer to in-memory inventory
       ansible.builtin.add_host:
-        hostname: '{{ item.key }}'
-        ansible_host: '{{ item.value[0].ip }}'
+        hostname: "{{ item.key }}"
+        ansible_host: "{{ item.value[0].ip }}"
         ansible_ssh_private_key_file: "{{ playbook_dir }}/id_rsa_ocp_setup"
         ansible_user: ocpinstall
-        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
         domain: "{{ domain }}"
         cluster_name: "{{ cluster.name }}"
         ocp_domain: "{{ ocp_domain }}"
@@ -63,7 +62,6 @@
         ntp_server: "{{ dhcp.ntp }}"
       loop: "{{ infra_nodes.host_list | dict2items }}"
       delegate_to: localhost
-
 
 - name: Check connection to infra VMs and set facts
   hosts: bastion,loadbalancer

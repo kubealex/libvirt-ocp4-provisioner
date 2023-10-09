@@ -14,7 +14,7 @@
   tasks:
     - name: Remove bootstrap from HAProxy
       ansible.builtin.lineinfile:
-        regexp: 'bootstrap'
+        regexp: "bootstrap"
         state: absent
         path: /etc/haproxy/haproxy.cfg
       notify: Restart haproxy

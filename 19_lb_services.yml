@@ -3,16 +3,15 @@
   hosts: loadbalancer
   become: true
   tasks:
-
     - name: Checking internal network interfaces
       ansible.builtin.fail:
         msg: "{{ host_interface }} not found in {{ ansible_facts.interfaces }}"
       when: host_interface not in ansible_facts.interfaces
 
-    - name: Adding interface {{ host_interface }} to internal zone
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal && nmcli con mod {{ host_interface }} ipv4.dns {{ hostvars['bastion']['host_ip'] }}
+    - name: Adding interface to internal zone # noqa no-changed-when
+      ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal && nmcli con mod {{ host_interface }} ipv4.dns {{ hostvars['bastion']['host_ip'] }} # noqa yaml[line-length]
 
-    - name: enable firewalld
+    - name: Enable firewalld
       ansible.builtin.service:
         name: "{{ item }}"
         enabled: true
@@ -31,13 +30,13 @@
     #     gw4:
     #     state: present
 
-    - name: Setting bastion's IP as DNS for our interface
-      ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
+    - name: Setting bastion's IP as DNS for our interface # noqa no-changed-when
+      ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
 
-    - name: Refreshing {{ host_interface }}
-      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+    - name: Refreshing {{ host_interface }} # noqa no-changed-when
+      ansible.builtin.command: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
-    - name: Adding interface {{ host_interface }} to firewall internal zone
+    - name: Adding interface to firewall internal zone
       ansible.posix.firewalld:
         zone: internal
         interface: "{{ host_interface }}"

@@ -4,7 +4,6 @@
   vars_files:
     - vars/sno_vars.yml
   tasks:
-
     - name: Check if distribution is supported
       ansible.builtin.fail:
         msg: Your distribution is actually unsupported
