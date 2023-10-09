@@ -83,8 +83,8 @@ ansible-builder build -f execution-environment/execution-environment.yml -t ocp-
 
 To run the playbooks use ansible navigator:
 
-```
-    ansible-navigator run main.yml -m stdout
+```bash
+ansible-navigator run main.yml -m stdout
 ```
 
 Or, in case of Single Node Openshift:
