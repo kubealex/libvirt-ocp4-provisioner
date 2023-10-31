@@ -7,6 +7,22 @@ This project has been inspired by [@ValentinoUberti](https://github.com/Valentin
 
 I wanted to play around with terraform and port his great work to libvirt and so, here we are! I adapted his playbooks to libvirt needs, making massive use of in-memory inventory creation for provisioned VMs, to minimize the impact on customizable stuff in variables.
 
+- [Project Overview](#project-overview)
+- [Quickstart](#quickstart)
+  - [HA Clusters](#ha-clusters)
+  - [Single Node Openshift (SNO)](#single-node-openshift--sno-)
+- [Quickstart with Execution Environment](#quickstart-with-execution-environment)
+  - [Build EE image](#build-ee-image)
+  - [Run playbooks](#run-playbooks)
+- [Common vars](#common-vars)
+  - [HA Configuration vars](#ha-configuration-vars)
+  - [Single Node Openshift vars](#single-node-openshift-vars)
+- [Cleanup](#cleanup)
+  - [Full deployment cleanup](#full-deployment-cleanup)
+  - [SNO deployment cleanup](#sno-deployment-cleanup)
+
+## Project Overview
+
 To give a quick overview, this project will allow you to provision a **fully working** and **stable** OCP environment, consisting of:
 
 - Bastion machine provisioned with:
@@ -33,7 +49,7 @@ The version can be selected freely, by specifying the desired one (i.e. 4.10.x, 
 
 Now support for **Single Node Openshift - SNO** has been added!
 
-## **bastion** and **loadbalancer** VMs spec:
+**bastion** and **loadbalancer** VMs spec:
 
 - OS: Centos8 Generic Cloud base image [https://cloud.centos.org/centos/8-stream/x86_64/images/](https://cloud.centos.org/centos/8-stream/x86_64/images/)
 - cloud-init:
@@ -97,7 +113,7 @@ ansible-navigator run main-sno.yml -m stdout
 
 The kind of network created is a simple NAT configuration, without DHCP since it will be provisioned with **bastion** VM. Defaults can be OK if you don't have any overlapping network.
 
-## HA Configuration vars
+### HA Configuration vars
 
 **vars/infra_vars.yml**
 
@@ -188,7 +204,7 @@ For testing purposes, minimum storage value is set at **60GB**.
 
 **The playbook now supports three nodes setup (3 masters with both master and worker node role) intended for pure testing purposes and you can enable it with the three_node boolean var ONLY FOR 4.6+**
 
-## Single Node Openshift vars
+### Single Node Openshift vars
 
 **vars/cluster_vars.yml**
 
@@ -225,6 +241,22 @@ additional_nic:
 In both cases, Pull Secret can be retrived easily at [https://cloud.redhat.com/openshift/install/pull-secret](https://cloud.redhat.com/openshift/install/pull-secret)
 
 **HTPasswd** provider is created after the installation, you can use **ocp_user** and **ocp_pass** to login!
+
+## Cleanup
+
+To clean all resources, you can simply run the cleanup playbooks.
+
+### Full deployment cleanup
+
+```bash
+ansible-playbook -i inventory 99_cleanup.yml
+```
+
+### SNO deployment cleanup
+
+```bash
+ansible-playbook -i inventory 99_cleanup_sno.yml
+```
 
 **DISCLAIMER**
 This project is for testing/lab only, it is not supported in any way by Red Hat nor endorsed.

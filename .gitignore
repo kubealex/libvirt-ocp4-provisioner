@@ -3,4 +3,4 @@ id_rsa*
 terraform.tfstate*
 .terraform*
 ansible.log
-context
+execution-environment/context
