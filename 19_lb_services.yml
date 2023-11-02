@@ -9,7 +9,7 @@
       when: host_interface not in ansible_facts.interfaces
 
     - name: Adding interface to internal zone # noqa no-changed-when
-      ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal && nmcli con mod {{ host_interface }} ipv4.dns {{ hostvars['bastion']['host_ip'] }} # noqa yaml[line-length]
+      ansible.builtin.shell: nmcli con mod {{ host_interface }} connection.zone internal && nmcli con mod {{ host_interface }} ipv4.dns {{ hostvars['bastion']['host_ip'] }} # noqa yaml[line-length]
 
     - name: Enable firewalld
       ansible.builtin.service:
@@ -34,7 +34,7 @@
       ansible.builtin.command: nmcli con mod {{ host_interface }} connection.zone internal ipv4.dns {{ hostvars['bastion']['host_ip'] }}
 
     - name: Refreshing {{ host_interface }} # noqa no-changed-when
-      ansible.builtin.command: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
+      ansible.builtin.shell: nmcli con down "{{ host_interface }}"; nmcli con up "{{ host_interface }}"
 
     - name: Adding interface to firewall internal zone
       ansible.posix.firewalld:

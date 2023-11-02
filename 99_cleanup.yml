@@ -49,7 +49,6 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - /usr/bin/terraform
         - "{{ workspace_directory.base_path }}/{{ cluster.name }}"
         - /etc/NetworkManager/conf.d/{{ cluster.name }}-localdns.conf
         - /etc/NetworkManager/dnsmasq.d/{{ cluster.name }}-libvirt_dnsmasq.conf
