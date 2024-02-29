@@ -36,9 +36,9 @@
     - name: Creating htpasswd identity and user # noqa command-instead-of-shell no-changed-when
       ansible.builtin.shell: /tmp/ocp_user.sh
 
-    - name: Sleeping 180 seconds...
+    - name: Sleeping 300 seconds...
       ansible.builtin.pause:
-        seconds: 240
+        seconds: 300
 
     - name: Try to login with admin # noqa command-instead-of-shell no-changed-when
       ansible.builtin.shell: /usr/bin/oc login --insecure-skip-tls-verify -u {{ cluster.ocp_user }} -p {{ cluster.ocp_pass }} https://api.{{ hostvars['bastion'].ocp_domain }}:6443 # noqa yaml[line-length]

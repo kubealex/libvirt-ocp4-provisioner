@@ -22,10 +22,10 @@
 
         - name: Fail fast if more than one bootstrap node is provided
           ansible.builtin.fail:
-            msg: "Versions before 4.6 are not supported"
+            msg: "Versions before 4.10 are not supported"
           when:
             - cluster.version != "stable"
-            - cluster.version is version('4.6', '<')
+            - cluster.version is version('4.10', '<')
 
         - name: Fail fast when no workers are provided and it's not in Compact mode (three nodes)
           ansible.builtin.fail:
