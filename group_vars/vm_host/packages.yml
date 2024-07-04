@@ -13,6 +13,7 @@ virtualization_packages:
     - qemu-kvm
     - virt-install
     - virt-manager
+    - edk2-ovmf
   centos:
     - unzip
     - git
@@ -26,6 +27,7 @@ virtualization_packages:
     - qemu-kvm
     - virt-install
     - virt-manager
+    - edk2-ovmf
   fedora:
     - unzip
     - git
@@ -40,3 +42,4 @@ virtualization_packages:
     - qemu-kvm
     - virt-install
     - virt-manager
+    - edk2-ovmf

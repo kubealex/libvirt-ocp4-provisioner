@@ -71,6 +71,8 @@ resource "libvirt_domain" "infra-machine" {
   name = var.hostname
   memory = var.memory
   vcpu = var.cpu
+  machine = "q35"
+  firmware = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
 
   disk {
        volume_id = libvirt_volume.os_image.id
