@@ -75,6 +75,10 @@ resource "libvirt_domain" "bastion" {
   machine = "q35"
   firmware = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
 
+  cpu {
+    mode = "host-passthrough"
+  }
+  
   disk {
      volume_id = libvirt_volume.os_image.id
   }
