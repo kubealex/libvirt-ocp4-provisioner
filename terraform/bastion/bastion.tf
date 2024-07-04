@@ -102,6 +102,10 @@ resource "libvirt_domain" "bastion" {
     listen_type = "address"
     autoport = "true"
   }
+
+  xml {
+    xslt = file("${path.module}/uefi-patch.xsl")
+  }  
 }
 
 terraform {

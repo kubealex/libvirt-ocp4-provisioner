@@ -76,7 +76,7 @@ resource "libvirt_domain" "infra-machine" {
   cpu {
     mode = "host-passthrough"
   }
-
+  
   disk {
        volume_id = libvirt_volume.os_image.id
   }
@@ -96,6 +96,10 @@ resource "libvirt_domain" "infra-machine" {
     type = "vnc"
     listen_type = "address"
     autoport = "true"
+  }
+
+  xml {
+    xslt = file("${path.module}/uefi-patch.xsl")
   }
 }
 
