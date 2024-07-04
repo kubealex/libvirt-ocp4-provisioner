@@ -29,10 +29,9 @@ provider "libvirt" {
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   pool = var.libvirt_pool
-  source = "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-latest.x86_64.qcow2"
+  source = "https://cloud.centos.org/centos/9-stream/x86_64/images/CentOS-Stream-GenericCloud-9-latest.x86_64.qcow2"
   format = "qcow2"
 }
-
 # Use CloudInit ISO to add ssh-key to the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "${var.hostname}-commoninit.iso"
