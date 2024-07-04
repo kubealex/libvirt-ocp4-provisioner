@@ -3,4 +3,4 @@ export KUBECONFIG={{ workspace_directory.base_path }}/{{ cluster.name }}/config/
 {% for node in groups['infra'] %}
 oc label node {{ hostvars[node].node_fqdn }} node-role.kubernetes.io/worker-
 oc label node {{ hostvars[node].node_fqdn }} node-role.kubernetes.io/{{ hostvars[node].ocp_role }}=""
-{% endfor %}
+{% endfor %}
