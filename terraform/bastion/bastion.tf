@@ -73,12 +73,11 @@ resource "libvirt_domain" "bastion" {
   memory = var.memory*1024
   vcpu = var.cpu
   machine = "q35"
-  firmware = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
 
   cpu {
     mode = "host-passthrough"
   }
-  
+
   disk {
      volume_id = libvirt_volume.os_image.id
   }
@@ -103,17 +102,6 @@ resource "libvirt_domain" "bastion" {
     listen_type = "address"
     autoport = "true"
   }
-
-  # necessary when using UEFI
-  lifecycle {
-    ignore_changes = [
-      nvram
-    ]
-  }
-
-  xml {
-    xslt = file("${path.module}/uefi-patch.xsl")
-  }  
 }
 
 terraform {
