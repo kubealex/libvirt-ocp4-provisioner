@@ -94,6 +94,17 @@ resource "libvirt_domain" "infra-machine" {
     listen_type = "address"
     autoport = "true"
   }
+
+  # necessary when using UEFI
+  lifecycle {
+    ignore_changes = [
+      nvram
+    ]
+  }
+
+  xml {
+    xslt = file("${path.module}/uefi-patch.xsl")
+  }
 }
 
 terraform {
