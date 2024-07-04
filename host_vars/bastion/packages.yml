@@ -9,7 +9,7 @@ packages:
     - firewalld
 
   centos:
-    - python36
+    - python39
     - syslinux
     - dnsmasq
     - nginx
