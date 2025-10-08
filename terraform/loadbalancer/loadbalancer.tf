@@ -76,7 +76,7 @@ resource "libvirt_domain" "infra-machine" {
   cpu {
     mode = "host-passthrough"
   }
-  
+
   disk {
        volume_id = libvirt_volume.os_image.id
   }
@@ -108,7 +108,7 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.7.1"
+      version = "0.8.3"
     }
   }
 }

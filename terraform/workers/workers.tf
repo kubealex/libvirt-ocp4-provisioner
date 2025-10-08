@@ -87,11 +87,10 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.7.1"
+      version = "0.8.3"
     }
   }
 }
 output "macs" {
   value = "${flatten(libvirt_domain.worker.*.network_interface.0.mac)}"
 }
-
