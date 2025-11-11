@@ -181,6 +181,13 @@
         - ansible_distribution == 'CentOS'
         - ansible_distribution_major_version | int == 9
 
+    - name: Network and dns are availble
+      ansible.builtin.shell: ping -c 3 registry.terraform.io
+      register: debug
+      until: "debug is not failed"
+      retries: 5
+      delay: 2 
+
     - name: Provision OCP node with Terraform
       community.general.terraform:
         project_path: "{{ workspace_directory.base_path }}/{{ cluster.name }}/terraform/sno"
