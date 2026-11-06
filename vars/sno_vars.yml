@@ -1,8 +1,8 @@
 domain: hetzner.lab
 network_cidr: 192.168.100.0/24
 cluster:
-  version: stable
-  name: ocp4
+  version: 5.0.0
+  name: ocp5
   ocp_user: admin
   ocp_pass: openshift
   pullSecret: ""

@@ -1,11 +1,11 @@
 skip_download: false
 downloads:
   ocp:
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp
+    base_url: https://mirror.openshift.com/pub/openshift-v5/clients/ocp
     ocp_oc_cli: openshift-client-linux
     ocp_installer: openshift-install-linux
   rhcos:
-    base_url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+    base_url: https://mirror.openshift.com/pub/openshift-v5/dependencies/rhcos/
     boot_files:
       initramfs: rhcos-live-initramfs.x86_64.img
       kernel: rhcos-live-kernel-x86_64

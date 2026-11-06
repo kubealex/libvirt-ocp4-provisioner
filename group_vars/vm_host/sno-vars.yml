@@ -1,10 +1,10 @@
 downloads:
   ocp:
-    base_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp
+    base_url: https://mirror.openshift.com/pub/openshift-v5/clients/ocp
     ocp_oc_cli: openshift-client-linux
   coreos:
-    installer: https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer
-    live_media: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/rhcos-live-iso.x86_64.iso
+    installer: https://mirror.openshift.com/pub/openshift-v5/clients/coreos-installer/latest/coreos-installer
+    live_media: https://mirror.openshift.com/pub/openshift-v5/dependencies/rhcos/latest/rhcos-live-iso.x86_64.iso
 workspace_directory:
   base_path: "{{ home_dir }}/ocpsetup"
   config_dir: config

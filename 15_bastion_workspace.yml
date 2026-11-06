@@ -40,8 +40,8 @@
         remote_src: true
       become: true
       loop:
-        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux-{{ cluster.version }}.tar.gz"
-        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux-{{ cluster.version }}.tar.gz"
+        - "{{ downloads.ocp.base_url }}/5.0/{{ cluster.version }}/openshift-client-linux-{{ cluster.version }}.tar.gz"
+        - "{{ downloads.ocp.base_url }}/5.0/{{ cluster.version }}/openshift-install-linux-{{ cluster.version }}.tar.gz"
       when:
         - not (skip_download | bool)
         - cluster.version != "latest"
@@ -49,18 +49,18 @@
         - cluster.version != "stable"
         - cluster.version != "candidate"
 
-    - name: Downloading Openshift installer and CLI
-      ansible.builtin.unarchive:
-        src: "{{ item }}"
-        dest: /usr/bin
-        remote_src: true
-      become: true
-      loop:
-        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux.tar.gz"
-        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux.tar.gz"
-      when:
-        - not (skip_download | bool)
-        - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
+    # - name: Downloading Openshift installer and CLI
+    #   ansible.builtin.unarchive:
+    #     src: "{{ item }}"
+    #     dest: /usr/bin
+    #     remote_src: true
+    #   become: true
+    #   loop:
+    #     - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux.tar.gz"
+    #     - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux.tar.gz"
+    #   when:
+    #     - not (skip_download | bool)
+    #     - cluster.version == "latest" or cluster.version == "fast" or cluster.version == "stable" or cluster.version == "candidate"
 
     - name: Checking for openshift-install tool # noqa no-changed-when
       ansible.builtin.command: openshift-install version
@@ -91,7 +91,7 @@
             rhcos_kernel: "{{ downloads.rhcos.boot_files.kernel }}"
             rhcos_initramfs: "{{ downloads.rhcos.boot_files.initramfs }}"
             rhcos_os: "{{ downloads.rhcos.boot_files.rootfs }}"
-            rhcos_download_url: "{{ (downloads.rhcos.base_url + version + '/latest/') if cluster.version != 'stable' else (downloads.rhcos.base_url + 'latest/') }}" # noqa yaml[line-length]
+            rhcos_download_url: "{{ (downloads.rhcos.base_url + '/5.0-el10' + '/latest/') if cluster.version != 'stable' else (downloads.rhcos.base_url + 'latest/') }}" # noqa yaml[line-length]
 
         - name: Download initramfs and kernel
           ansible.builtin.get_url:
