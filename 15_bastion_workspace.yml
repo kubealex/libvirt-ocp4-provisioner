@@ -40,8 +40,8 @@
         remote_src: true
       become: true
       loop:
-        - "{{ downloads.ocp.base_url }}/5.0/{{ cluster.version }}/openshift-client-linux-{{ cluster.version }}.tar.gz"
-        - "{{ downloads.ocp.base_url }}/5.0/{{ cluster.version }}/openshift-install-linux-{{ cluster.version }}.tar.gz"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-client-linux-{{ cluster.version }}.tar.gz"
+        - "{{ downloads.ocp.base_url }}/{{ cluster.version }}/openshift-install-linux-{{ cluster.version }}.tar.gz"
       when:
         - not (skip_download | bool)
         - cluster.version != "latest"
