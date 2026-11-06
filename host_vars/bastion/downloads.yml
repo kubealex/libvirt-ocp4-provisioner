@@ -8,5 +8,5 @@ downloads:
     base_url: https://mirror.openshift.com/pub/openshift-v5/dependencies/rhcos/
     boot_files:
       initramfs: rhcos-live-initramfs.x86_64.img
-      kernel: rhcos-live-kernel-x86_64
+      kernel: rhcos-live-kernel.x86_64
       rootfs: rhcos-live-rootfs.x86_64.img
